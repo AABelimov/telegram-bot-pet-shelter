@@ -9,15 +9,19 @@ import com.pengrad.telegrambot.response.SendResponse;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
+import pro.sky.telegrambot.enums.UserState;
+import pro.sky.telegrambot.model.Volunteer;
 
 @Service
 public class TelegramBotService {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(TelegramBotService.class);
     private final TelegramBot telegramBot;
+    private final UserService userService;
 
-    public TelegramBotService(TelegramBot telegramBot) {
+    public TelegramBotService(TelegramBot telegramBot, UserService userService) {
         this.telegramBot = telegramBot;
+        this.userService = userService;
     }
 
     public void sendMessage(Long chatId, String text) {
@@ -44,6 +48,21 @@ public class TelegramBotService {
 
         if (!baseResponse.isOk()) {
             LOGGER.error("Send inline keyboard was failed due to: " + baseResponse.description());
+        }
+    }
+
+    public void start(Long id, Volunteer volunteer) {
+
+        if (volunteer == null) {
+            UserState userState = userService.getUserState(id);
+            if (userState.equals(UserState.NEW_USER)) {
+                greetingNewUser(id);
+                String userName = message.chat().firstName();
+                userService.setUserName(id, userName);
+                sendMessage(id, String.format("%s, Доброго времени суток. " +
+                        "Это учебный бот из курса по java разработке школы skyPro.\n\n", userName));
+            }
+            userService.setUserState(id, UserState.START);
         }
     }
 }

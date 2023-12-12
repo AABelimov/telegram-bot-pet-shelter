@@ -24,11 +24,11 @@ public class UserCommandHandler {
         this.userService = userService;
     }
 
-    public void startHandle(Long userId, String text) {
-        startHandle(userId, text, null);
+    public void handleStart(Long userId, String text) {
+        handleStart(userId, text, null);
     }
 
-    public void startHandle(Long userId, String text, Integer messageId) {
+    public void handleStart(Long userId, String text, Integer messageId) {
         if ("/start".equals(text)) {
             InlineKeyboardMarkup inlineKeyboardMarkup = inlineKeyboardService.getChooseShelterKeyboard();
             if (messageId == null) {
@@ -42,7 +42,7 @@ public class UserCommandHandler {
         }
     }
 
-    public void chooseShelterHandle(Long userId, Integer messageId, String data) {
+    public void handleChooseShelter(Long userId, Integer messageId, String data) {
 
         ShelterType shelterType = ShelterType.valueOf(data);
         InlineKeyboardMarkup inlineKeyboardMarkup = inlineKeyboardService.getMainMenuKeyboard();
@@ -53,21 +53,21 @@ public class UserCommandHandler {
         userService.setUserState(userId, UserState.MAIN_MENU);
     }
 
-    public void mainMenuHandle(Long userId, Integer messageId, String data) {
+    public void handleMainMenu(Long userId, Integer messageId, String data) {
         UserCommand userCommand = UserCommand.valueOf(data);
         switch (userCommand) {
             case BACK:
-                backCommandHandle(userId, messageId, data);
+                handleBackCommand(userId, messageId, data);
                 break;
         }
     }
 
-    private void backCommandHandle(Long userId, Integer messageId, String data) {
+    private void handleBackCommand(Long userId, Integer messageId, String data) {
         UserState userState = userService.getUserState(userId);
 
         switch (userState) {
             case MAIN_MENU:
-                startHandle(userId, "/start", messageId);
+                handleStart(userId, "/start", messageId);
                 break;
         }
     }
