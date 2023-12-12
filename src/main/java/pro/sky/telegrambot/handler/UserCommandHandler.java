@@ -31,6 +31,7 @@ public class UserCommandHandler {
     public void handleStart(Long userId, String text, Integer messageId) {
         if ("/start".equals(text)) {
             InlineKeyboardMarkup inlineKeyboardMarkup = inlineKeyboardService.getChooseShelterKeyboard();
+
             if (messageId == null) {
                 telegramBotService.sendInlineKeyboard(userId, "Выберите приют:", inlineKeyboardMarkup);
             } else {
@@ -43,7 +44,6 @@ public class UserCommandHandler {
     }
 
     public void handleChooseShelter(Long userId, Integer messageId, String data) {
-
         ShelterType shelterType = ShelterType.valueOf(data);
         InlineKeyboardMarkup inlineKeyboardMarkup = inlineKeyboardService.getMainMenuKeyboard();
         String textMessage = "С каким вопросом вы пришли?";

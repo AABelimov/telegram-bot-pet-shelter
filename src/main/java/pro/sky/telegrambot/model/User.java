@@ -15,14 +15,6 @@ public class User {
     private String selectedShelter;
     private String state;
 
-    public User() {
-    }
-
-    public User(Long id, String state) {
-        this.id = id;
-        this.state = state;
-    }
-
     public Long getId() {
         return id;
     }

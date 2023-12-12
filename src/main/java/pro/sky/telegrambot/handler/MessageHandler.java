@@ -4,7 +4,6 @@ import com.pengrad.telegrambot.model.Message;
 import org.springframework.stereotype.Component;
 import pro.sky.telegrambot.model.Volunteer;
 import pro.sky.telegrambot.service.TelegramBotService;
-import pro.sky.telegrambot.service.UserService;
 import pro.sky.telegrambot.service.VolunteerService;
 
 @Component
@@ -30,11 +29,13 @@ public class MessageHandler {
         Volunteer volunteer = volunteerService.getVolunteer(id);
 
         if ("/start".equals(message.text())) {
-            telegramBotService.start(id, volunteer);
-        } else if (volunteer != null) {
-            volunteerStateHandler.handleState(id, message);
-        } else {
+            telegramBotService.start(id, volunteer, message);
+        }
+
+        if (volunteer == null) {
             userStateHandler.handleState(id, null, message);
+        } else {
+            volunteerStateHandler.handleState(id, message);
         }
     }
 }

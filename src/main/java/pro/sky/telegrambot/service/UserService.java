@@ -15,17 +15,23 @@ public class UserService {
         this.userRepository = userRepository;
     }
 
+    public void createUser(Long userId, String userName) {
+        User user = new User();
+        user.setId(userId);
+        user.setName(userName);
+        user.setState(UserState.NEW_USER.name());
+        userRepository.save(user);
+    }
+
     public User getUser(Long userId) {
-        User user = userRepository.findById(userId).orElse(null);
-        if (user == null) {
-            user = new User(userId, UserState.NEW_USER.name());
-            userRepository.save(user);
-        }
-        return user;
+        return userRepository.findById(userId).orElse(null);
     }
 
     public UserState getUserState(Long userId) {
         User user = getUser(userId);
+        if (user == null) {
+            return null;
+        }
         return UserState.valueOf(user.getState());
     }
 
