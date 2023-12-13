@@ -6,6 +6,9 @@ import pro.sky.telegrambot.model.Volunteer;
 import pro.sky.telegrambot.service.TelegramBotService;
 import pro.sky.telegrambot.service.VolunteerService;
 
+/**
+ * This class handles the message object if it is not null
+ */
 @Component
 public class MessageHandler {
 
@@ -24,6 +27,10 @@ public class MessageHandler {
         this.userStateHandler = userStateHandler;
     }
 
+    /**
+     * This method determines whether the message came from a user or a volunteer and cals the appropriate handler
+     * @param message this object represents a message
+     */
     public void handleMessage(Message message) {
         Long id = message.chat().id();
         Volunteer volunteer = volunteerService.getVolunteer(id);

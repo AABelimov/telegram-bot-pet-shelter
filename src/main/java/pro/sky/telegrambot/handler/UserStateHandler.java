@@ -6,6 +6,9 @@ import org.springframework.stereotype.Component;
 import pro.sky.telegrambot.enums.UserState;
 import pro.sky.telegrambot.service.UserService;
 
+/**
+ * This class handles user states
+ */
 @Component
 public class UserStateHandler {
 
@@ -18,6 +21,12 @@ public class UserStateHandler {
         this.userCommandHandler = userCommandHandler;
     }
 
+    /**
+     * This method calls command handlers
+     * @param userId
+     * @param callbackQuery
+     * @param message
+     */
     public void handleState(Long userId, CallbackQuery callbackQuery, Message message) {
         UserState userState = userService.getUserState(userId);
 

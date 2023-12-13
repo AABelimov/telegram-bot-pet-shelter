@@ -9,6 +9,9 @@ import org.springframework.stereotype.Component;
 import pro.sky.telegrambot.model.Volunteer;
 import pro.sky.telegrambot.service.VolunteerService;
 
+/**
+ * If callbackQuery is not null then it is handling in this class
+ */
 @Component
 public class CallbackQueryHandler {
 
@@ -28,6 +31,10 @@ public class CallbackQueryHandler {
         this.userStateHandler = userStateHandler;
     }
 
+    /**
+     * This method determines whether the callback query came from a user or a volunteer and cals the appropriate handler
+     * @param callbackQuery this object represents an incoming callback query from a callback button in an inline keyboard
+     */
     public void handleCallbackQuery(CallbackQuery callbackQuery) {
         telegramBot.execute(new AnswerCallbackQuery(callbackQuery.id()));
         LOGGER.info(callbackQuery.data());

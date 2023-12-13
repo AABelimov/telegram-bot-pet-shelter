@@ -9,6 +9,9 @@ import pro.sky.telegrambot.service.InlineKeyboardService;
 import pro.sky.telegrambot.service.TelegramBotService;
 import pro.sky.telegrambot.service.UserService;
 
+/**
+ * This class handles commands coming from the user
+ */
 @Component
 public class UserCommandHandler {
 
@@ -24,10 +27,12 @@ public class UserCommandHandler {
         this.userService = userService;
     }
 
-    public void handleStart(Long userId, String text) {
-        handleStart(userId, text, null);
-    }
-
+    /**
+     * This method handles the start command
+     * @param userId ID of the user who sent the message
+     * @param text text from message
+     * @param messageId ID of the message sent by the user
+     */
     public void handleStart(Long userId, String text, Integer messageId) {
         if ("/start".equals(text)) {
             InlineKeyboardMarkup inlineKeyboardMarkup = inlineKeyboardService.getChooseShelterKeyboard();
@@ -43,6 +48,16 @@ public class UserCommandHandler {
         }
     }
 
+    public void handleStart(Long userId, String text) {
+        handleStart(userId, text, null);
+    }
+
+    /**
+     * This method handles commands from the choose shelter menu
+     * @param userId ID of the user who sent the message
+     * @param messageId ID of the message sent by the user
+     * @param data data from a callback query that belonged to a specific button
+     */
     public void handleChooseShelter(Long userId, Integer messageId, String data) {
         ShelterType shelterType = ShelterType.valueOf(data);
         InlineKeyboardMarkup inlineKeyboardMarkup = inlineKeyboardService.getMainMenuKeyboard();
@@ -53,6 +68,12 @@ public class UserCommandHandler {
         userService.setUserState(userId, UserState.MAIN_MENU);
     }
 
+    /**
+     * This method handles commands from the main menu
+     * @param userId
+     * @param messageId
+     * @param data
+     */
     public void handleMainMenu(Long userId, Integer messageId, String data) {
         UserCommand userCommand = UserCommand.valueOf(data);
         switch (userCommand) {
@@ -62,6 +83,12 @@ public class UserCommandHandler {
         }
     }
 
+    /**
+     * This method handles the back command
+     * @param userId
+     * @param messageId
+     * @param data
+     */
     private void handleBackCommand(Long userId, Integer messageId, String data) {
         UserState userState = userService.getUserState(userId);
 
