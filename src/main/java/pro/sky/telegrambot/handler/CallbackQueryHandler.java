@@ -42,7 +42,7 @@ public class CallbackQueryHandler {
         Volunteer volunteer = volunteerService.getVolunteer(id);
 
         if (volunteer != null) {
-            volunteerStateHandler.handleState(id, callbackQuery.message());
+            volunteerStateHandler.handleState(id, callbackQuery, null);
         } else {
             userStateHandler.handleState(id, callbackQuery, null);
         }

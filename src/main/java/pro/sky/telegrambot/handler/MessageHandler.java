@@ -39,10 +39,10 @@ public class MessageHandler {
             telegramBotService.start(id, volunteer, message);
         }
 
-        if (volunteer == null) {
-            userStateHandler.handleState(id, null, message);
+        if (volunteer != null) {
+            volunteerStateHandler.handleState(id, null, message);
         } else {
-            volunteerStateHandler.handleState(id, message);
+            userStateHandler.handleState(id, null, message);
         }
     }
 }

@@ -4,6 +4,7 @@ import com.pengrad.telegrambot.model.CallbackQuery;
 import com.pengrad.telegrambot.model.Message;
 import org.springframework.stereotype.Component;
 import pro.sky.telegrambot.enums.UserState;
+import pro.sky.telegrambot.service.TelegramBotService;
 import pro.sky.telegrambot.service.UserService;
 
 /**
@@ -14,11 +15,14 @@ public class UserStateHandler {
 
     private final UserService userService;
     private final UserCommandHandler userCommandHandler;
+    private final TelegramBotService telegramBotService;
 
     public UserStateHandler(UserService userService,
-                            UserCommandHandler userCommandHandler) {
+                            UserCommandHandler userCommandHandler,
+                            TelegramBotService telegramBotService) {
         this.userService = userService;
         this.userCommandHandler = userCommandHandler;
+        this.telegramBotService = telegramBotService;
     }
 
     /**
@@ -30,16 +34,7 @@ public class UserStateHandler {
     public void handleState(Long userId, CallbackQuery callbackQuery, Message message) {
         UserState userState = userService.getUserState(userId);
 
-        if (callbackQuery == null) {
-            String text = message.text();
-
-            switch (userState) {
-                case START:
-                    userCommandHandler.handleStart(userId, text);
-                    break;
-            }
-
-        } else {
+        if (callbackQuery != null) {
             Integer messageId = callbackQuery.message().messageId();
             String data = callbackQuery.data();
 
@@ -49,6 +44,18 @@ public class UserStateHandler {
                     break;
                 case MAIN_MENU:
                     userCommandHandler.handleMainMenu(userId, messageId, data);
+                    break;
+            }
+
+        } else {
+            String text = message.text();
+
+            switch (userState) {
+                case START:
+                    userCommandHandler.handleStart(userId, text);
+                    break;
+                case CONVERSATION:
+                    telegramBotService.sendMessageToVolunteer(userId, text);
                     break;
             }
         }

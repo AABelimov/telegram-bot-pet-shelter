@@ -5,4 +5,5 @@ public enum UserState {
     START,
     CHOOSE_SHELTER,
     MAIN_MENU,
+    CONVERSATION,
 }

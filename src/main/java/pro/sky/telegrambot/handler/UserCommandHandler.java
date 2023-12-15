@@ -77,6 +77,9 @@ public class UserCommandHandler {
     public void handleMainMenu(Long userId, Integer messageId, String data) {
         UserCommand userCommand = UserCommand.valueOf(data);
         switch (userCommand) {
+            case CALL_VOLUNTEER:
+                telegramBotService.startConversation(userId);
+                break;
             case BACK:
                 handleBackCommand(userId, messageId, data);
                 break;

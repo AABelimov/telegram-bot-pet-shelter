@@ -20,10 +20,12 @@ public class TelegramBotService {
     private static final Logger LOGGER = LoggerFactory.getLogger(TelegramBotService.class);
     private final TelegramBot telegramBot;
     private final UserService userService;
+    private final VolunteerService volunteerService;
 
-    public TelegramBotService(TelegramBot telegramBot, UserService userService) {
+    public TelegramBotService(TelegramBot telegramBot, UserService userService, VolunteerService volunteerService) {
         this.telegramBot = telegramBot;
         this.userService = userService;
+        this.volunteerService = volunteerService;
     }
 
     public void sendMessage(Long chatId, String text) {
@@ -54,7 +56,6 @@ public class TelegramBotService {
     }
 
     public void start(Long id, Volunteer volunteer, Message message) {
-
         if (volunteer == null) {
             User user = userService.getUser(id);
 
@@ -65,6 +66,39 @@ public class TelegramBotService {
                         "Это учебный бот из курса по java разработке школы skyPro.\n\n", userName));
             }
             userService.setUserState(id, UserState.START);
+        }
+    }
+
+    public void startConversation(Long userId) {
+        Volunteer volunteer = volunteerService.getFreeVolunteer();
+        User user = userService.getUser(userId);
+
+        volunteerService.startConversation(volunteer, user);
+        userService.startConversation(userId);
+    }
+
+    private void stopConversation(Long userId, Long volunteerId) {
+        userService.stopConversation(userId);
+        volunteerService.stopConversation(volunteerId);
+    }
+
+    public void sendMessageToVolunteer(Long userId, String text) {
+        Volunteer volunteer = volunteerService.getVolunteerByUserId(userId);
+
+        if ("/stop".equals(text)) {
+            stopConversation(userId, volunteer.getId());
+        } else {
+            sendMessage(volunteer.getId(), text);
+        }
+    }
+
+    public void sendMessageToUser(Long volunteerId, String text) {
+        Long userId = volunteerService.getUserIdByVolunteerId(volunteerId);
+
+        if ("/stop".equals(text)) {
+            stopConversation(userId, volunteerId);
+        } else {
+            sendMessage(userId, text);
         }
     }
 }

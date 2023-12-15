@@ -52,4 +52,12 @@ public class UserService {
         user.setSelectedShelter(shelterType.name());
         userRepository.save(user);
     }
+
+    public void startConversation(Long userId) {
+        setUserState(userId, UserState.CONVERSATION);
+    }
+
+    public void stopConversation(Long userId) {
+        setUserState(userId, UserState.MAIN_MENU);
+    }
 }
