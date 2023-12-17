@@ -45,6 +45,9 @@ public class UserStateHandler {
                 case MAIN_MENU:
                     userCommandHandler.handleMainMenu(userId, messageId, data);
                     break;
+                case INFO_ABOUT_SHELTER:
+                    userCommandHandler.handleInfoAboutShelter(userId, messageId, data);
+                    break;
             }
 
         } else {

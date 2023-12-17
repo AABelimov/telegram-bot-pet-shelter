@@ -47,4 +47,29 @@ public class InlineKeyboardService {
                 .addRow(callVolunteerButton)
                 .addRow(backButton);
     }
+
+    public InlineKeyboardMarkup getInfoAboutShelterKeyboard() {
+        InlineKeyboardButton aboutShelterButton = new InlineKeyboardButton("Информация о приюте")
+                .callbackData(UserCommand.ABOUT_SHELTER.name());
+        InlineKeyboardButton scheduleAndAddressButton = new InlineKeyboardButton("Расписание и адрес")
+                .callbackData(UserCommand.SCHEDULE_AND_ADDRESS.name());
+        InlineKeyboardButton drivingDirectionsButton = new InlineKeyboardButton("Схема проезда")
+                .callbackData(UserCommand.DRIVING_DIRECTIONS.name());
+        InlineKeyboardButton registrationPassButton = new InlineKeyboardButton("Контакты для оформления пропуска на машину")
+                .callbackData(UserCommand.REGISTRATION_PASS.name());
+        InlineKeyboardButton safetyPrecautions = new InlineKeyboardButton("Рекомендации по технике беопасности")
+                .callbackData(UserCommand.SAFETY_PRECAUTIONS.name());
+        InlineKeyboardButton userContactsButton = new InlineKeyboardButton("Оставить контакты для связи")
+                .callbackData(UserCommand.USER_CONTACTS.name());
+        InlineKeyboardButton backButton = new InlineKeyboardButton("Назад")
+                .callbackData(UserCommand.BACK.name());
+
+        return new InlineKeyboardMarkup(aboutShelterButton)
+                .addRow(scheduleAndAddressButton)
+                .addRow(drivingDirectionsButton)
+                .addRow(registrationPassButton)
+                .addRow(safetyPrecautions)
+                .addRow(userContactsButton)
+                .addRow(backButton);
+    }
 }

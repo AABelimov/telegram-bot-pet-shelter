@@ -23,4 +23,5 @@ public enum UserCommand {
     DOG_HANDLERS,
     REJECTION_REASON,
     BACK,
+    ABOUT_SHELTER,
 }

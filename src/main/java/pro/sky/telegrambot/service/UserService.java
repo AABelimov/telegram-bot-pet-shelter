@@ -30,7 +30,7 @@ public class UserService {
     public UserState getUserState(Long userId) {
         User user = getUser(userId);
         if (user == null) {
-            return null;
+            return UserState.START;
         }
         return UserState.valueOf(user.getState());
     }
@@ -59,5 +59,10 @@ public class UserService {
 
     public void stopConversation(Long userId) {
         setUserState(userId, UserState.MAIN_MENU);
+    }
+
+    public String getSelectedShelter(Long userId) {
+        User user = getUser(userId);
+        return user.getSelectedShelter();
     }
 }

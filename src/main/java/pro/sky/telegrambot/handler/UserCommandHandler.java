@@ -77,6 +77,9 @@ public class UserCommandHandler {
     public void handleMainMenu(Long userId, Integer messageId, String data) {
         UserCommand userCommand = UserCommand.valueOf(data);
         switch (userCommand) {
+            case INFO_ABOUT_SHELTER:
+                infoAboutShelterMenu(userId, messageId);
+                break;
             case CALL_VOLUNTEER:
                 telegramBotService.startConversation(userId);
                 break;
@@ -99,6 +102,29 @@ public class UserCommandHandler {
             case MAIN_MENU:
                 handleStart(userId, "/start", messageId);
                 break;
+            case INFO_ABOUT_SHELTER:
+                String selectedShelter = userService.getSelectedShelter(userId);
+                handleChooseShelter(userId, messageId, selectedShelter);
+                break;
         }
+    }
+
+    public void handleInfoAboutShelter(Long userId, Integer messageId, String data) {
+        UserCommand userCommand = UserCommand.valueOf(data);
+
+        switch (userCommand) {
+            case USER_CONTACTS:
+                break;
+            case BACK:
+                handleBackCommand(userId, messageId, data);
+                break;
+        }
+    }
+
+    public void infoAboutShelterMenu(Long userId, Integer messageId) {
+        InlineKeyboardMarkup inlineKeyboardMarkup = inlineKeyboardService.getInfoAboutShelterKeyboard();
+
+        telegramBotService.editInlineKeyboard(userId, messageId, "ashdgfasjdgfajsdf", inlineKeyboardMarkup);
+        userService.setUserState(userId, UserState.INFO_ABOUT_SHELTER);
     }
 }

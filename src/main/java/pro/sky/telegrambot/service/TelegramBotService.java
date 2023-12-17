@@ -21,11 +21,16 @@ public class TelegramBotService {
     private final TelegramBot telegramBot;
     private final UserService userService;
     private final VolunteerService volunteerService;
+    private final InlineKeyboardService inlineKeyboardService;
 
-    public TelegramBotService(TelegramBot telegramBot, UserService userService, VolunteerService volunteerService) {
+    public TelegramBotService(TelegramBot telegramBot,
+                              UserService userService,
+                              VolunteerService volunteerService,
+                              InlineKeyboardService inlineKeyboardService) {
         this.telegramBot = telegramBot;
         this.userService = userService;
         this.volunteerService = volunteerService;
+        this.inlineKeyboardService = inlineKeyboardService;
     }
 
     public void sendMessage(Long chatId, String text) {
