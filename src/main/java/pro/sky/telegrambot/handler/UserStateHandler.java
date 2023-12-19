@@ -45,6 +45,9 @@ public class UserStateHandler {
                 case MAIN_MENU:
                     userCommandHandler.handleMainMenu(userId, messageId, data);
                     break;
+                case INFO_ABOUT_SHELTER:
+                    userCommandHandler.handleInfoAboutShelter(userId, messageId, data);
+                    break;
             }
 
         } else {
@@ -55,7 +58,10 @@ public class UserStateHandler {
                     userCommandHandler.handleStart(userId, text);
                     break;
                 case CONVERSATION:
-                    telegramBotService.sendMessageToVolunteer(userId, text);
+                    userCommandHandler.sendMessageToVolunteer(userId, text);
+                    break;
+                case SHARE_CONTACTS:
+                    userCommandHandler.handleShareContacts(userId, text);
                     break;
             }
         }

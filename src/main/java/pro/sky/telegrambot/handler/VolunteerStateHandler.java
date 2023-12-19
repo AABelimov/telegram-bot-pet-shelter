@@ -12,30 +12,34 @@ public class VolunteerStateHandler {
 
     private final VolunteerService volunteerService;
     private final TelegramBotService telegramBotService;
+    private final VolunteerCommandHandler volunteerCommandHandler;
 
-    public VolunteerStateHandler(VolunteerService volunteerService, TelegramBotService telegramBotService) {
+    public VolunteerStateHandler(VolunteerService volunteerService,
+                                 TelegramBotService telegramBotService,
+                                 VolunteerCommandHandler volunteerCommandHandler) {
         this.volunteerService = volunteerService;
         this.telegramBotService = telegramBotService;
+        this.volunteerCommandHandler = volunteerCommandHandler;
     }
 
     public void handleState(Long volunteerId, CallbackQuery callbackQuery, Message message) {
         VolunteerState volunteerState = volunteerService.getVolunteerState(volunteerId);
 
-        if (callbackQuery == null) {
-            String text = message.text();
-
-            switch (volunteerState) {
-                case CONVERSATION:
-                    telegramBotService.sendMessageToUser(volunteerId, text);
-                    break;
-            }
-
-        } else {
+        if (callbackQuery != null) {
             Integer messageId = callbackQuery.message().messageId();
             String data = callbackQuery.data();
 
             switch (volunteerState) {
 
+            }
+
+        } else {
+            String text = message.text();
+
+            switch (volunteerState) {
+                case CONVERSATION:
+                    volunteerCommandHandler.sendMessageToUser(volunteerId, text);
+                    break;
             }
         }
     }

@@ -20,7 +20,7 @@ public class VolunteerService {
     }
 
     public Volunteer getFreeVolunteer() {
-        return volunteerRepository.findByUserIdAndState(null, VolunteerState.AT_WORK.name());
+        return volunteerRepository.findByUserIdAndState(null, VolunteerState.AT_WORK.name()); // TODO: Доделать
     }
 
     public void setVolunteerState(Long volunteerId, VolunteerState volunteerState) {
@@ -32,6 +32,13 @@ public class VolunteerService {
     public void startConversation(Volunteer volunteer, User user) {
         volunteer.setUser(user);
         volunteer.setState(VolunteerState.CONVERSATION.name());
+        volunteerRepository.save(volunteer);
+    }
+
+    public void stopConversation(Long volunteerId) {
+        Volunteer volunteer = getVolunteer(volunteerId);
+        volunteer.setUser(null);
+        volunteer.setState(VolunteerState.AT_WORK.name());
         volunteerRepository.save(volunteer);
     }
 
@@ -48,12 +55,5 @@ public class VolunteerService {
         Volunteer volunteer = getVolunteer(volunteerId);
         User user = volunteer.getUser();
         return user.getId();
-    }
-
-    public void stopConversation(Long volunteerId) {
-        Volunteer volunteer = getVolunteer(volunteerId);
-        volunteer.setUser(null);
-        volunteer.setState(VolunteerState.AT_WORK.name());
-        volunteerRepository.save(volunteer);
     }
 }
