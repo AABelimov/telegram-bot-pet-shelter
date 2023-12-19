@@ -19,7 +19,7 @@
             <column name="name" type="VARCHAR(255)">
                 <constraints nullable="true"/>
             </column>
-            <column name="phone_number" type="INT">
+            <column name="phone_number" type="VARCHAR(255)">
                 <constraints nullable="true"/>
             </column>
             <column name="selected_shelter" type="VARCHAR(255)">

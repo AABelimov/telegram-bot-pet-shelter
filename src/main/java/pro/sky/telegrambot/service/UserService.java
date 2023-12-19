@@ -41,10 +41,10 @@ public class UserService {
         userRepository.save(user);
     }
 
-    public void setUserState(Long userId, UserState userState) {
+    public User setUserState(Long userId, UserState userState) {
         User user = getUser(userId);
         user.setState(userState.name());
-        userRepository.save(user);
+        return userRepository.save(user);
     }
 
     public void setSelectedShelter(Long userId, ShelterType shelterType) {
@@ -64,5 +64,11 @@ public class UserService {
     public String getSelectedShelter(Long userId) {
         User user = getUser(userId);
         return user.getSelectedShelter();
+    }
+
+    public void setPhoneNumber(Long userId, String phoneNumber) {
+        User user = getUser(userId);
+        user.setPhoneNumber(phoneNumber);
+        userRepository.save(user);
     }
 }

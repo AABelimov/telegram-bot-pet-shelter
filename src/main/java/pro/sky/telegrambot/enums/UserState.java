@@ -6,5 +6,6 @@ public enum UserState {
     CHOOSE_SHELTER,
     MAIN_MENU,
     CONVERSATION,
-    INFO_ABOUT_SHELTER
+    INFO_ABOUT_SHELTER,
+    SHARE_CONTACTS,
 }

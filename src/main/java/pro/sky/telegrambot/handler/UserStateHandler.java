@@ -58,7 +58,10 @@ public class UserStateHandler {
                     userCommandHandler.handleStart(userId, text);
                     break;
                 case CONVERSATION:
-                    telegramBotService.sendMessageToVolunteer(userId, text);
+                    userCommandHandler.sendMessageToVolunteer(userId, text);
+                    break;
+                case SHARE_CONTACTS:
+                    userCommandHandler.handleShareContacts(userId, text);
                     break;
             }
         }
