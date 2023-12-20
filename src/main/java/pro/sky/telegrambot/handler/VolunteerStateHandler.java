@@ -4,21 +4,20 @@ import com.pengrad.telegrambot.model.CallbackQuery;
 import com.pengrad.telegrambot.model.Message;
 import org.springframework.stereotype.Component;
 import pro.sky.telegrambot.enums.VolunteerState;
-import pro.sky.telegrambot.service.TelegramBotService;
 import pro.sky.telegrambot.service.VolunteerService;
 
+/**
+ * This class handles volunteer states
+ */
 @Component
 public class VolunteerStateHandler {
 
     private final VolunteerService volunteerService;
-    private final TelegramBotService telegramBotService;
     private final VolunteerCommandHandler volunteerCommandHandler;
 
     public VolunteerStateHandler(VolunteerService volunteerService,
-                                 TelegramBotService telegramBotService,
                                  VolunteerCommandHandler volunteerCommandHandler) {
         this.volunteerService = volunteerService;
-        this.telegramBotService = telegramBotService;
         this.volunteerCommandHandler = volunteerCommandHandler;
     }
 

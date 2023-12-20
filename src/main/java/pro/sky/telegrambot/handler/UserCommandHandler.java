@@ -75,7 +75,13 @@ public class UserCommandHandler {
         handleStart(userId, text, null);
     }
 
-    public void handleShareContacts(Long userId, String text) {
+    /**
+     * This method handles the user's phone number
+     *
+     * @param userId
+     * @param text
+     */
+    public void handleUserPhoneNumber(Long userId, String text) {
         Matcher matcher = PATTERN_PHONE.matcher(text);
 
         if (matcher.matches()) {
@@ -102,6 +108,11 @@ public class UserCommandHandler {
         }
     }
 
+    /**
+     * This method sends a message to the volunteer while user chatting with him or ends the conversation
+     * @param userId
+     * @param text
+     */
     public void sendMessageToVolunteer(Long userId, String text) {
         Volunteer volunteer = volunteerService.getVolunteerByUserId(userId);
 
@@ -167,6 +178,12 @@ public class UserCommandHandler {
         }
     }
 
+    /**
+     * This method handles commands from about shelter menu
+     * @param userId
+     * @param messageId
+     * @param data
+     */
     public void handleInfoAboutShelter(Long userId, Integer messageId, String data) {
         UserCommand userCommand = UserCommand.valueOf(data);
         ShelterType shelterType = ShelterType.valueOf(userService.getSelectedShelter(userId));
@@ -220,6 +237,13 @@ public class UserCommandHandler {
         }
     }
 
+    /**
+     * This method prints info about shelter menu
+     * @param userId
+     * @param messageId
+     * @param userCommand
+     * @param shelterType
+     */
     public void infoAboutShelterMenu(Long userId, Integer messageId, UserCommand userCommand, ShelterType shelterType) {
         InlineKeyboardMarkup inlineKeyboardMarkup = inlineKeyboardService.getInfoAboutShelterMenuKeyboard(userCommand);
         String text = null;
@@ -237,6 +261,10 @@ public class UserCommandHandler {
         userService.setUserState(userId, UserState.INFO_ABOUT_SHELTER);
     }
 
+    /**
+     * This method starts a chat with the volunteer
+     * @param userId
+     */
     private void startConversation(Long userId) {
         Volunteer volunteer = volunteerService.getFreeVolunteer();
         User user = userService.getUser(userId);
@@ -248,6 +276,12 @@ public class UserCommandHandler {
         telegramBotService.sendMessage(volunteer.getId(), "Пользователь запросил связь, у вас с ним начался разговор");
     }
 
+    /**
+     * This method prints text about the shelter
+     * @param userId
+     * @param messageId
+     * @param shelterType
+     */
     private void aboutShelter(Long userId, Integer messageId, ShelterType shelterType) {
         InlineKeyboardMarkup inlineKeyboardMarkup = inlineKeyboardService.getInfoAboutShelterMenuKeyboard(UserCommand.ABOUT_SHELTER);
         String textMessage = null;
@@ -264,6 +298,12 @@ public class UserCommandHandler {
         telegramBotService.editInlineKeyboard(userId, messageId, textMessage, inlineKeyboardMarkup);
     }
 
+    /**
+     * This method prints text about the schedule and address of the shelter
+     * @param userId
+     * @param messageId
+     * @param shelterType
+     */
     private void scheduleAndAddress(Long userId, Integer messageId, ShelterType shelterType) {
         InlineKeyboardMarkup inlineKeyboardMarkup = inlineKeyboardService.getInfoAboutShelterMenuKeyboard(UserCommand.SCHEDULE_AND_ADDRESS);
         String textMessage = null;
@@ -280,6 +320,12 @@ public class UserCommandHandler {
         telegramBotService.editInlineKeyboard(userId, messageId, textMessage, inlineKeyboardMarkup);
     }
 
+    /**
+     * This method sends a photo with location map
+     * @param userId
+     * @param messageId
+     * @param shelterType
+     */
     private void locationMap(Long userId, Integer messageId, ShelterType shelterType) {
         InlineKeyboardMarkup inlineKeyboardMarkup = inlineKeyboardService.getInfoAboutShelterMenuKeyboard(UserCommand.LOCATION_MAP);
         String photoPath = null;
@@ -310,6 +356,12 @@ public class UserCommandHandler {
         telegramBotService.sendInlineKeyboard(userId, textMessage, inlineKeyboardMarkup);
     }
 
+    /**
+     * This method prints security contacts for issuing a pass to the pet shelter territory
+     * @param userId
+     * @param messageId
+     * @param shelterType
+     */
     private void registrationPass(Long userId, Integer messageId, ShelterType shelterType) {
         InlineKeyboardMarkup inlineKeyboardMarkup = inlineKeyboardService.getInfoAboutShelterMenuKeyboard(UserCommand.REGISTRATION_PASS);
         String textMessage = null;
@@ -326,6 +378,12 @@ public class UserCommandHandler {
         telegramBotService.editInlineKeyboard(userId, messageId, textMessage, inlineKeyboardMarkup);
     }
 
+    /**
+     * This method prints the safety rules for the pet shelter area
+     * @param userId
+     * @param messageId
+     * @param shelterType
+     */
     private void safetyPrecautions(Long userId, Integer messageId, ShelterType shelterType) {
         InlineKeyboardMarkup inlineKeyboardMarkup = inlineKeyboardService.getInfoAboutShelterMenuKeyboard(UserCommand.SAFETY_PRECAUTIONS);
         String textMessage = null;

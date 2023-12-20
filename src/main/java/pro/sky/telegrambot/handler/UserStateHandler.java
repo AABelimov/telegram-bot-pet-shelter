@@ -4,7 +4,6 @@ import com.pengrad.telegrambot.model.CallbackQuery;
 import com.pengrad.telegrambot.model.Message;
 import org.springframework.stereotype.Component;
 import pro.sky.telegrambot.enums.UserState;
-import pro.sky.telegrambot.service.TelegramBotService;
 import pro.sky.telegrambot.service.UserService;
 
 /**
@@ -15,14 +14,11 @@ public class UserStateHandler {
 
     private final UserService userService;
     private final UserCommandHandler userCommandHandler;
-    private final TelegramBotService telegramBotService;
 
     public UserStateHandler(UserService userService,
-                            UserCommandHandler userCommandHandler,
-                            TelegramBotService telegramBotService) {
+                            UserCommandHandler userCommandHandler) {
         this.userService = userService;
         this.userCommandHandler = userCommandHandler;
-        this.telegramBotService = telegramBotService;
     }
 
     /**
@@ -61,7 +57,7 @@ public class UserStateHandler {
                     userCommandHandler.sendMessageToVolunteer(userId, text);
                     break;
                 case SHARE_CONTACTS:
-                    userCommandHandler.handleShareContacts(userId, text);
+                    userCommandHandler.handleUserPhoneNumber(userId, text);
                     break;
             }
         }

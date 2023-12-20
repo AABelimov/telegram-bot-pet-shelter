@@ -41,10 +41,10 @@ public class UserService {
         userRepository.save(user);
     }
 
-    public User setUserState(Long userId, UserState userState) {
+    public void setUserState(Long userId, UserState userState) {
         User user = getUser(userId);
         user.setState(userState.name());
-        return userRepository.save(user);
+        userRepository.save(user);
     }
 
     public void setSelectedShelter(Long userId, ShelterType shelterType) {

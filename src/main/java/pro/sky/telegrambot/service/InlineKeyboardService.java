@@ -56,6 +56,10 @@ public class InlineKeyboardService {
                 .addRow(backButton);
     }
 
+    /**
+     * This method create inline keyboard for info about shelter menu
+     * @return
+     */
     public InlineKeyboardMarkup getInfoAboutShelterMenuKeyboard(UserCommand userCommand) {
         InlineKeyboardMarkup inlineKeyboardMarkup = new InlineKeyboardMarkup();
 
@@ -92,7 +96,6 @@ public class InlineKeyboardService {
                 userContactsButton,
                 backButton
         ));
-
 
         switch (userCommand) {
             case ABOUT_SHELTER:

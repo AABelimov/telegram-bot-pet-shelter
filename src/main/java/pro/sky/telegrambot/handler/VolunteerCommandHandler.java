@@ -5,6 +5,9 @@ import pro.sky.telegrambot.service.TelegramBotService;
 import pro.sky.telegrambot.service.UserService;
 import pro.sky.telegrambot.service.VolunteerService;
 
+/**
+ * This class handles commands coming from the volunteer
+ */
 @Component
 public class VolunteerCommandHandler {
 
