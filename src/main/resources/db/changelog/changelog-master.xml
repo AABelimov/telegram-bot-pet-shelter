@@ -7,5 +7,8 @@
 
     <include file="table/create-users-table.xml" relativeToChangelogFile="true"/>
     <include file="table/create-volunteers-table.xml" relativeToChangelogFile="true"/>
+    <include file="table/create-pets-table.xml" relativeToChangelogFile="true"/>
+    <include file="table/create-messages-table.xml" relativeToChangelogFile="true"/>
+    <include file="data/add-data-in-messages-table.xml" relativeToChangelogFile="true"/>
 
 </databaseChangeLog>

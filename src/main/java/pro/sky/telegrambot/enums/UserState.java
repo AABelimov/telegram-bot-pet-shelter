@@ -8,4 +8,5 @@ public enum UserState {
     CONVERSATION,
     INFO_ABOUT_SHELTER,
     SHARE_CONTACTS,
+    HOW_ADOPT_PET,
 }
