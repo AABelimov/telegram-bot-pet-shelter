@@ -2,6 +2,6 @@ package pro.sky.telegrambot.enums;
 
 public enum ShelterType {
 
-    CAT,
-    DOG,
+    CAT_SHELTER,
+    DOG_SHELTER,
 }

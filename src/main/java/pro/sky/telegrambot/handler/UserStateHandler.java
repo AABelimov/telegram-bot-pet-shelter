@@ -44,6 +44,9 @@ public class UserStateHandler {
                 case INFO_ABOUT_SHELTER:
                     userCommandHandler.handleInfoAboutShelter(userId, messageId, data);
                     break;
+                case HOW_ADOPT_PET:
+                    userCommandHandler.handleHowAdoptPet(userId, messageId, data);
+                    break;
             }
 
         } else {

@@ -5,6 +5,7 @@ import org.springframework.stereotype.Component;
 import pro.sky.telegrambot.enums.UserState;
 import pro.sky.telegrambot.model.User;
 import pro.sky.telegrambot.model.Volunteer;
+import pro.sky.telegrambot.service.MessageService;
 import pro.sky.telegrambot.service.TelegramBotService;
 import pro.sky.telegrambot.service.UserService;
 import pro.sky.telegrambot.service.VolunteerService;
@@ -20,17 +21,20 @@ public class MessageHandler {
     private final VolunteerStateHandler volunteerStateHandler;
     private final TelegramBotService telegramBotService;
     private final UserStateHandler userStateHandler;
+    private final MessageService messageService;
 
     public MessageHandler(VolunteerService volunteerService,
                           UserService userService,
                           VolunteerStateHandler volunteerStateHandler,
                           TelegramBotService telegramBotService,
-                          UserStateHandler userStateHandler) {
+                          UserStateHandler userStateHandler,
+                          MessageService messageService) {
         this.volunteerService = volunteerService;
         this.userService = userService;
         this.volunteerStateHandler = volunteerStateHandler;
         this.telegramBotService = telegramBotService;
         this.userStateHandler = userStateHandler;
+        this.messageService = messageService;
     }
 
     /**
@@ -67,7 +71,7 @@ public class MessageHandler {
         if (user == null) {
             String userName = message.chat().firstName();
             userService.createUser(id, userName);
-            telegramBotService.sendMessage(id, String.format("%s, приветствую новый пользователь", userName));
+            telegramBotService.sendMessage(id, String.format("%s, %s", userName, messageService.getMessage("GREETING_NEW_USER")));
         }
         userService.setUserState(id, UserState.START);
     }

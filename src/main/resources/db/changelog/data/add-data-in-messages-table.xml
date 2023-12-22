@@ -1,0 +1,184 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<databaseChangeLog
+        xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
+        http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-4.9.xsd">
+
+    <changeSet id="add-data-in-messages-table.xml" author="AABelimov">
+        <preConditions>
+            <tableExists tableName="messages"/>
+        </preConditions>
+
+        <insert tableName="messages">
+            <column name="title" value="GREETING_NEW_USER"/>
+            <column name="message" value="приветствую новый пользователь"/>
+        </insert>
+
+        <insert tableName="messages">
+            <column name="title" value="ABOUT_PET_SHELTER"/>
+            <column name="message" value="Рассказ о собачьем приюте"/>
+            <column name="shelter_type" value="DOG_SHELTER"/>
+        </insert>
+        <insert tableName="messages">
+            <column name="title" value="ABOUT_PET_SHELTER"/>
+            <column name="message" value="Рассказ о кошачьем приюте"/>
+            <column name="shelter_type" value="CAT_SHELTER"/>
+        </insert>
+
+        <insert tableName="messages">
+            <column name="title" value="SCHEDULE_AND_ADDRESS"/>
+            <column name="message" value="Расписание и адрес собачьего приюта"/>
+            <column name="shelter_type" value="DOG_SHELTER"/>
+        </insert>
+        <insert tableName="messages">
+            <column name="title" value="SCHEDULE_AND_ADDRESS"/>
+            <column name="message" value="Расписание и адрес кошачьего приюта"/>
+            <column name="shelter_type" value="CAT_SHELTER"/>
+        </insert>
+
+        <insert tableName="messages">
+            <column name="title" value="REGISTRATION_PASS"/>
+            <column name="message" value="Контакты для оформления пропуска в собачий приют"/>
+            <column name="shelter_type" value="DOG_SHELTER"/>
+        </insert>
+        <insert tableName="messages">
+            <column name="title" value="REGISTRATION_PASS"/>
+            <column name="message" value="Контакты для оформления пропуска в кошачий приют"/>
+            <column name="shelter_type" value="CAT_SHELTER"/>
+        </insert>
+
+        <insert tableName="messages">
+            <column name="title" value="SAFETY_PRECAUTIONS"/>
+            <column name="message" value="Рекомендации по технике безопасности в собачьем приюте"/>
+            <column name="shelter_type" value="DOG_SHELTER"/>
+        </insert>
+        <insert tableName="messages">
+            <column name="title" value="SAFETY_PRECAUTIONS"/>
+            <column name="message" value="Рекомендации по технике безопасности в кошачьем приюте"/>
+            <column name="shelter_type" value="CAT_SHELTER"/>
+        </insert>
+
+        <insert tableName="messages">
+            <column name="title" value="INFO_ABOUT_SHELTER"/>
+            <column name="message" value="Какую информацию о собачьем приюте вы хотите получить?"/>
+            <column name="shelter_type" value="DOG_SHELTER"/>
+        </insert>
+        <insert tableName="messages">
+            <column name="title" value="INFO_ABOUT_SHELTER"/>
+            <column name="message" value="Какую информацию о кошачьем приюте вы хотите получить?"/>
+            <column name="shelter_type" value="CAT_SHELTER"/>
+        </insert>
+
+        <insert tableName="messages">
+            <column name="title" value="HOW_ADOPT_PET"/>
+            <column name="message" value="Здесь вы можете узнать детали по усыновлению собаки"/>
+            <column name="shelter_type" value="DOG_SHELTER"/>
+        </insert>
+        <insert tableName="messages">
+            <column name="title" value="HOW_ADOPT_PET"/>
+            <column name="message" value="Здесь вы можете узнать детали по усыновлению кошки"/>
+            <column name="shelter_type" value="CAT_SHELTER"/>
+        </insert>
+
+        <insert tableName="messages">
+            <column name="title" value="START_CONVERSATION_USER"/>
+            <column name="message" value="Волонтер сейчас с вами свяжется"/>
+        </insert>
+        <insert tableName="messages">
+            <column name="title" value="START_CONVERSATION_VOLUNTEER"/>
+            <column name="message" value="Пользователь запросил связь, у вас с ним начался разговор"/>
+        </insert>
+
+        <insert tableName="messages">
+            <column name="title" value="RULES_FOR_MEETING"/>
+            <column name="message" value="Правила знакомства с животными до того, как забрать его из собачьего приюта"/>
+            <column name="shelter_type" value="DOG_SHELTER"/>
+        </insert>
+        <insert tableName="messages">
+            <column name="title" value="RULES_FOR_MEETING"/>
+            <column name="message" value="Правила знакомства с животными до того, как забрать его из кошачьего приюта"/>
+            <column name="shelter_type" value="CAT_SHELTER"/>
+        </insert>
+
+        <insert tableName="messages">
+            <column name="title" value="DOCUMENTS"/>
+            <column name="message" value="Список документов, необходимых для того, чтобы взять животное из собачьего приюта"/>
+            <column name="shelter_type" value="DOG_SHELTER"/>
+        </insert>
+        <insert tableName="messages">
+            <column name="title" value="DOCUMENTS"/>
+            <column name="message" value="Список документов, необходимых для того, чтобы взять животное из кошачьего приюта"/>
+            <column name="shelter_type" value="CAT_SHELTER"/>
+        </insert>
+
+        <insert tableName="messages">
+            <column name="title" value="TRANSPORTATION_RULES"/>
+            <column name="message" value="Рекомендации по транспортировке собаки"/>
+            <column name="shelter_type" value="DOG_SHELTER"/>
+        </insert>
+        <insert tableName="messages">
+            <column name="title" value="TRANSPORTATION_RULES"/>
+            <column name="message" value="Рекомендации по транспортировке кошки"/>
+            <column name="shelter_type" value="CAT_SHELTER"/>
+        </insert>
+
+        <insert tableName="messages">
+            <column name="title" value="HOME_IMPROVEMENT_FOR_SMALL_PET"/>
+            <column name="message" value="Рекомендации по обустройству дома для щенка"/>
+            <column name="shelter_type" value="DOG_SHELTER"/>
+        </insert>
+        <insert tableName="messages">
+            <column name="title" value="HOME_IMPROVEMENT_FOR_SMALL_PET"/>
+            <column name="message" value="Рекомендации по обустройству дома для котенка"/>
+            <column name="shelter_type" value="CAT_SHELTER"/>
+        </insert>
+
+        <insert tableName="messages">
+            <column name="title" value="HOME_IMPROVEMENT_FOR_BIG_PET"/>
+            <column name="message" value="Рекомендации по обустройству дома для взрослого пса"/>
+            <column name="shelter_type" value="DOG_SHELTER"/>
+        </insert>
+        <insert tableName="messages">
+            <column name="title" value="HOME_IMPROVEMENT_FOR_BIG_PET"/>
+            <column name="message" value="Рекомендации по обустройству дома для взрослого кота"/>
+            <column name="shelter_type" value="CAT_SHELTER"/>
+        </insert>
+
+        <insert tableName="messages">
+            <column name="title" value="HOME_IMPROVEMENT_FOR_PET_WITH_DISABILITIES"/>
+            <column name="message" value="Рекомендации по обустройству дома собаки с ограниченными возможностями"/>
+            <column name="shelter_type" value="DOG_SHELTER"/>
+        </insert>
+        <insert tableName="messages">
+            <column name="title" value="HOME_IMPROVEMENT_FOR_PET_WITH_DISABILITIES"/>
+            <column name="message" value="Рекомендации по обустройству дома кошки с ограниченными возможностями"/>
+            <column name="shelter_type" value="CAT_SHELTER"/>
+        </insert>
+
+        <insert tableName="messages">
+            <column name="title" value="ADVICE_FROM_DOG_HANDLERS"/>
+            <column name="message" value="Советы кинолога по первичному общению с собакой"/>
+            <column name="shelter_type" value="DOG_SHELTER"/>
+        </insert>
+
+        <insert tableName="messages">
+            <column name="title" value="DOG_HANDLERS"/>
+            <column name="message" value="Список проверенных кинологов"/>
+            <column name="shelter_type" value="DOG_SHELTER"/>
+        </insert>
+
+        <insert tableName="messages">
+            <column name="title" value="REJECTION_REASON"/>
+            <column name="message" value="Список причин по которым могут отказать и не дать забрать собаку из приюта"/>
+            <column name="shelter_type" value="DOG_SHELTER"/>
+        </insert>
+        <insert tableName="messages">
+            <column name="title" value="REJECTION_REASON"/>
+            <column name="message" value="Список причин по которым могут отказать и не дать забрать кошку из приюта"/>
+            <column name="shelter_type" value="CAT_SHELTER"/>
+        </insert>
+
+    </changeSet>
+
+</databaseChangeLog>
