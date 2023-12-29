@@ -69,9 +69,31 @@ public class TelegramBotService {
         }
     }
 
+    public void sendInlineKeyboard(Long chatId, File photo, String text, InlineKeyboardMarkup inlineKeyboardMarkup) {
+        SendPhoto sendPhoto = new SendPhoto(chatId, photo)
+                .caption(text)
+                .replyMarkup(inlineKeyboardMarkup)
+                .disableNotification(true);
+        SendResponse sendResponse = telegramBot.execute(sendPhoto);
+
+        if (!sendResponse.isOk()) {
+            LOGGER.error("Send inline keyboard was failed due to: " + sendResponse.description());
+        }
+    }
+
     public void editInlineKeyboard(Long chatId, Integer messageId, String text, InlineKeyboardMarkup inlineKeyboardMarkup) {
         EditMessageText editMessageText = new EditMessageText(chatId, messageId, text);
         BaseResponse baseResponse = telegramBot.execute(editMessageText.replyMarkup(inlineKeyboardMarkup));
+
+        if (!baseResponse.isOk()) {
+            LOGGER.error("Send inline keyboard was failed due to: " + baseResponse.description());
+        }
+    }
+
+    public void editInlineKeyboard(Long chatId, Integer messageId, File photo, String text, InlineKeyboardMarkup inlineKeyboardMarkup) {
+        InputMedia<?> inputMedia = new InputMediaPhoto(photo).caption(text);
+        EditMessageMedia editMessageMedia = new EditMessageMedia(chatId, messageId, inputMedia).replyMarkup(inlineKeyboardMarkup);
+        BaseResponse baseResponse = telegramBot.execute(editMessageMedia);
 
         if (!baseResponse.isOk()) {
             LOGGER.error("Send inline keyboard was failed due to: " + baseResponse.description());

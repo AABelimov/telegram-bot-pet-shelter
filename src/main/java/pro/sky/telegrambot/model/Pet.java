@@ -13,6 +13,7 @@ public class Pet {
     private String kindOfPet;
 
     private String name;
+    private String photoPath;
 
     private String aboutPet;
 
@@ -38,6 +39,14 @@ public class Pet {
 
     public void setName(String name) {
         this.name = name;
+    }
+
+    public String getPhotoPath() {
+        return photoPath;
+    }
+
+    public void setPhotoPath(String photoPath) {
+        this.photoPath = photoPath;
     }
 
     public String getAboutPet() {

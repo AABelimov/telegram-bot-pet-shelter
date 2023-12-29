@@ -179,6 +179,17 @@
             <column name="shelter_type" value="CAT_SHELTER"/>
         </insert>
 
+        <insert tableName="messages">
+            <column name="title" value="LIST_OF_ANIMALS_NULL"/>
+            <column name="message" value="Собак в приюте не осталось"/>
+            <column name="shelter_type" value="DOG_SHELTER"/>
+        </insert>
+        <insert tableName="messages">
+            <column name="title" value="LIST_OF_ANIMALS_NULL"/>
+            <column name="message" value="Кошек в приюте не осталось"/>
+            <column name="shelter_type" value="CAT_SHELTER"/>
+        </insert>
+
     </changeSet>
 
 </databaseChangeLog>

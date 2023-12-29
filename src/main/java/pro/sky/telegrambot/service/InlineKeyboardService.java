@@ -199,6 +199,9 @@ public class InlineKeyboardService {
         }
 
         switch (userCommand) {
+            case LIST_OF_ANIMALS:
+                inlineKeyboardButtons.remove(listOfAnimalsButton);
+                break;
             case RULES_FOR_MEETING:
                 inlineKeyboardButtons.remove(rulesForMeetingButton);
                 break;
@@ -234,6 +237,24 @@ public class InlineKeyboardService {
         }
 
         inlineKeyboardButtons.forEach(inlineKeyboardMarkup::addRow);
+
+        return inlineKeyboardMarkup;
+    }
+
+    public InlineKeyboardMarkup getListOfAnimalsKeyboard(int currentPage, int maxPage) {
+        InlineKeyboardMarkup inlineKeyboardMarkup = new InlineKeyboardMarkup();
+        InlineKeyboardButton nextButton = new InlineKeyboardButton("следующий").callbackData(Integer.toString(currentPage + 1));
+        InlineKeyboardButton prevButton = new InlineKeyboardButton("предыдущий").callbackData(Integer.toString(currentPage - 1));
+        InlineKeyboardButton mainMenuButton = new InlineKeyboardButton("Главное меню").callbackData("-1");
+
+        if (currentPage > 0 && currentPage < maxPage) {
+            inlineKeyboardMarkup.addRow(prevButton, nextButton);
+        } else if (currentPage == 0){
+            inlineKeyboardMarkup.addRow(nextButton);
+        } else {
+            inlineKeyboardMarkup.addRow(prevButton);
+        }
+        inlineKeyboardMarkup.addRow(mainMenuButton);
 
         return inlineKeyboardMarkup;
     }

@@ -4,10 +4,12 @@ import com.pengrad.telegrambot.model.request.InlineKeyboardMarkup;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Component;
 import pro.sky.telegrambot.enums.ShelterType;
 import pro.sky.telegrambot.enums.UserCommand;
 import pro.sky.telegrambot.enums.UserState;
+import pro.sky.telegrambot.model.Pet;
 import pro.sky.telegrambot.model.User;
 import pro.sky.telegrambot.model.Volunteer;
 import pro.sky.telegrambot.service.*;
@@ -32,6 +34,7 @@ public class UserCommandHandler {
     private final UserService userService;
     private final VolunteerService volunteerService;
     private final MessageService messageService;
+    private final PetService petService;
 
     public UserCommandHandler(@Value("${path.to.photo.with.location.map.for.dog.pet.shelter}") String locationMapDogPetShelter,
                               @Value("${path.to.photo.with.location.map.for.cat.pet.shelter}") String locationMapCatPetShelter,
@@ -39,7 +42,8 @@ public class UserCommandHandler {
                               TelegramBotService telegramBotService,
                               UserService userService,
                               VolunteerService volunteerService,
-                              MessageService messageService) {
+                              MessageService messageService,
+                              PetService petService) {
         this.locationMapDogPetShelter = locationMapDogPetShelter;
         this.locationMapCatPetShelter = locationMapCatPetShelter;
         this.inlineKeyboardService = inlineKeyboardService;
@@ -47,6 +51,7 @@ public class UserCommandHandler {
         this.userService = userService;
         this.volunteerService = volunteerService;
         this.messageService = messageService;
+        this.petService = petService;
     }
 
     /**
@@ -243,7 +248,7 @@ public class UserCommandHandler {
 
         switch (userCommand) {
             case LIST_OF_ANIMALS:
-                listOfAnimals(userId, messageId, shelterType);
+                listOfAnimals(userId, messageId, shelterType, 0);
                 break;
             case RULES_FOR_MEETING:
                 inlineKeyboardMarkup = inlineKeyboardService.getHowAdoptPetMenuKeyboard(userCommand, shelterType);
@@ -294,6 +299,23 @@ public class UserCommandHandler {
                 String selectedShelter = userService.getSelectedShelter(userId);
                 handleChooseShelter(userId, messageId, selectedShelter);
                 break;
+        }
+    }
+
+    // TODO: Доделать функцию
+    public void handleViewingAnimals(Long userId, Integer messageId, String data) {
+        ShelterType shelterType = ShelterType.valueOf(userService.getSelectedShelter(userId));
+        int page = Integer.parseInt(data);
+
+        if (page == -1) {
+            /*String selectedShelter = userService.getSelectedShelter(userId);
+            handleChooseShelter(userId, messageId, selectedShelter);*/
+            InlineKeyboardMarkup inlineKeyboardMarkup = inlineKeyboardService.getMainMenuKeyboard();
+            telegramBotService.deleteMessage(userId, messageId);
+            telegramBotService.sendInlineKeyboard(userId, "test", inlineKeyboardMarkup);
+            userService.setUserState(userId, UserState.MAIN_MENU);
+        } else {
+            listOfAnimals(userId, messageId, shelterType, page);
         }
     }
 
@@ -370,10 +392,14 @@ public class UserCommandHandler {
         path = Path.of(photoPath);
         photo = path.toFile();
 
-        telegramBotService.sendMessage(userId, aboutPhoto);
-        telegramBotService.sendPhoto(userId, photo);
-        telegramBotService.deleteMessage(userId, messageId);
-        telegramBotService.sendInlineKeyboard(userId, textMessage, inlineKeyboardMarkup);
+        if (photo.exists()) {
+            telegramBotService.sendMessage(userId, aboutPhoto);
+            telegramBotService.sendPhoto(userId, photo);
+            telegramBotService.deleteMessage(userId, messageId);
+            telegramBotService.sendInlineKeyboard(userId, textMessage, inlineKeyboardMarkup);
+        } else {
+            LOGGER.error("No photo for {}", shelterType.name());
+        }
     }
 
     private void shareContacts(Long userId, Integer messageId) {
@@ -383,7 +409,31 @@ public class UserCommandHandler {
         telegramBotService.editMessage(userId, messageId, text);
     }
 
-    private void listOfAnimals(Long userId, Integer messageId, ShelterType shelterType) {
+    private void listOfAnimals(Long userId, Integer messageId, ShelterType shelterType, int page) {
+        int countPets = (int) petService.countPetsByKindOfPet(shelterType);
 
+        if (countPets > 0) {
+            PageRequest pageRequest = PageRequest.of(page, 1);
+            Pet pet = petService.getListOfAnimals(shelterType, pageRequest).get(0);
+            String name = pet.getName();
+            Path photoPath = Path.of(pet.getPhotoPath());
+            File photo = photoPath.toFile();
+            String aboutPet = pet.getAboutPet();
+            InlineKeyboardMarkup inlineKeyboardMarkup = inlineKeyboardService.getListOfAnimalsKeyboard(page, countPets - 1);
+            String text = String.format("Имя: %s\nО себе: %s", name, aboutPet);
+            UserState userState = userService.getUserState(userId);
+
+            if (userState.equals(UserState.HOW_ADOPT_PET)) {
+                userService.setUserState(userId, UserState.VIEWING_ANIMALS);
+                telegramBotService.deleteMessage(userId, messageId);
+                telegramBotService.sendInlineKeyboard(userId, photo, text, inlineKeyboardMarkup);
+            } else {
+                telegramBotService.editInlineKeyboard(userId, messageId, photo, text, inlineKeyboardMarkup);
+            }
+        } else {
+            userService.setUserState(userId, UserState.HOW_ADOPT_PET);
+            InlineKeyboardMarkup inlineKeyboardMarkup = inlineKeyboardService.getHowAdoptPetMenuKeyboard(UserCommand.LIST_OF_ANIMALS, shelterType);
+            sendInlineKeyboard(userId, messageId, inlineKeyboardMarkup, shelterType, "LIST_OF_ANIMALS_NULL");
+        }
     }
 }

@@ -22,6 +22,9 @@
             <column name="name" type="VARCHAR(255)">
                 <constraints nullable="false"/>
             </column>
+            <column name="photo_path" type="VARCHAR(255)">
+                <constraints nullable="false"/>
+            </column>
             <column name="about_pet" type="VARCHAR(2048)">
                 <constraints nullable="false"/>
             </column>
