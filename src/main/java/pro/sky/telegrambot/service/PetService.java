@@ -2,6 +2,7 @@ package pro.sky.telegrambot.service;
 
 import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
+import pro.sky.telegrambot.enums.PetState;
 import pro.sky.telegrambot.enums.ShelterType;
 import pro.sky.telegrambot.model.Pet;
 import pro.sky.telegrambot.repository.PetRepository;
@@ -17,7 +18,7 @@ public class PetService {
         this.petRepository = petRepository;
     }
 
-    public List<Pet> getListOfAnimals(ShelterType shelterType, PageRequest pageRequest) {
+    public List<Pet> getListOfAnimals(ShelterType shelterType, PetState state, PageRequest pageRequest) {
         String kindOfPet = null;
 
         switch (shelterType) {
@@ -28,7 +29,7 @@ public class PetService {
                 kindOfPet = "CAT";
         }
 
-        return petRepository.findByKindOfPetOrderByName(kindOfPet, pageRequest);
+        return petRepository.findByKindOfPetAndStateOrderByName(kindOfPet, state.name(), pageRequest);
     }
 
     public long countPetsByKindOfPet(ShelterType shelterType) {

@@ -17,6 +17,8 @@ public class Pet {
 
     private String aboutPet;
 
+    private String state;
+
     public Long getId() {
         return id;
     }
@@ -55,5 +57,13 @@ public class Pet {
 
     public void setAboutPet(String aboutPet) {
         this.aboutPet = aboutPet;
+    }
+
+    public String getState() {
+        return state;
+    }
+
+    public void setState(String state) {
+        this.state = state;
     }
 }

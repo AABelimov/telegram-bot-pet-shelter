@@ -6,6 +6,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Component;
+import pro.sky.telegrambot.enums.PetState;
 import pro.sky.telegrambot.enums.ShelterType;
 import pro.sky.telegrambot.enums.UserCommand;
 import pro.sky.telegrambot.enums.UserState;
@@ -183,6 +184,9 @@ public class UserCommandHandler {
                 inlineKeyboardMarkup = inlineKeyboardService.getHowAdoptPetMenuKeyboard(userCommand, shelterType);
                 sendInlineKeyboard(userId, messageId, inlineKeyboardMarkup, shelterType, "HOW_ADOPT_PET");
                 userService.setUserState(userId, UserState.HOW_ADOPT_PET);
+                break;
+            case SEND_REPORT:
+
                 break;
             case CALL_VOLUNTEER:
                 startConversation(userId);
@@ -414,7 +418,7 @@ public class UserCommandHandler {
 
         if (countPets > 0) {
             PageRequest pageRequest = PageRequest.of(page, 1);
-            Pet pet = petService.getListOfAnimals(shelterType, pageRequest).get(0);
+            Pet pet = petService.getListOfAnimals(shelterType, PetState.WAITING_TO_BE_ADOPTED, pageRequest).get(0);
             String name = pet.getName();
             Path photoPath = Path.of(pet.getPhotoPath());
             File photo = photoPath.toFile();

@@ -5,7 +5,7 @@
         xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
         http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-4.9.xsd">
 
-    <changeSet id="add-data-in-messages-table.xml" author="AABelimov">
+    <changeSet id="add-data-in-messages-table.1" author="AABelimov">
         <preConditions>
             <tableExists tableName="messages"/>
         </preConditions>

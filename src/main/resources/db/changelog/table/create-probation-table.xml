@@ -1,0 +1,56 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<databaseChangeLog
+        xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
+        http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-4.9.xsd">
+
+    <changeSet id="create-probation-table.1" author="AABelimov">
+        <preConditions>
+            <not>
+                <tableExists tableName="probation"/>
+            </not>
+        </preConditions>
+
+        <createTable tableName="probation">
+            <column name="id" type="BIGINT" autoIncrement="true">
+                <constraints primaryKey="true"/>
+            </column>
+            <column name="user_id" type="BIGINT">
+                <constraints nullable="true"/>
+            </column>
+            <column name="pet_id" type="BIGINT">
+                <constraints nullable="true"/>
+            </column>
+            <column name="probation_end_date" type="DATETIME">
+                <constraints nullable="false"/>
+            </column>
+            <column name="last_report_date" type="DATETIME">
+                <constraints nullable="true"/>
+            </column>
+            <column name="volunteer_id" type="BIGINT">
+                <constraints nullable="true"/>
+            </column>
+            <column name="state" type="VARCHAR(255)">
+                <constraints nullable="false"/>
+            </column>
+        </createTable>
+
+        <addForeignKeyConstraint baseTableName="probation" baseColumnNames="user_id"
+                                 constraintName="fk_probation_user_id"
+                                 referencedTableName="users"
+                                 referencedColumnNames="id"/>
+
+        <addForeignKeyConstraint baseTableName="probation" baseColumnNames="pet_id"
+                                 constraintName="fk_probation_pet_id"
+                                 referencedTableName="pets"
+                                 referencedColumnNames="id"/>
+
+        <addForeignKeyConstraint baseTableName="probation" baseColumnNames="volunteer_id"
+                                 constraintName="fk_probation_volunteer_id"
+                                 referencedTableName="volunteers"
+                                 referencedColumnNames="id"/>
+
+    </changeSet>
+
+</databaseChangeLog>

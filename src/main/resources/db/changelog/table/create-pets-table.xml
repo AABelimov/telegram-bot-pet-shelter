@@ -5,7 +5,7 @@
         xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
         http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-4.9.xsd">
 
-    <changeSet id="create-pets-table.xml" author="AABelimov">
+    <changeSet id="create-pets-table.1" author="AABelimov">
         <preConditions>
             <not>
                 <tableExists tableName="pets"/>
@@ -26,6 +26,9 @@
                 <constraints nullable="false"/>
             </column>
             <column name="about_pet" type="VARCHAR(2048)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="state" type="VARCHAR(255)">
                 <constraints nullable="false"/>
             </column>
         </createTable>
