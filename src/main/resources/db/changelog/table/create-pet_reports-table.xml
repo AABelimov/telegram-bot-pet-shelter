@@ -19,11 +19,14 @@
             <column name="pet_id" type="BIGINT">
                 <constraints nullable="false"/>
             </column>
+            <column name="shelter_type" type="VARCHAR(255)">
+                <constraints nullable="false"/>
+            </column>
             <column name="user_id" type="BIGINT">
                 <constraints nullable="false"/>
             </column>
             <column name="time_sending_report" type="DATETIME">
-                <constraints nullable="false"/>
+                <constraints nullable="true"/>
             </column>
             <column name="photo_path" type="VARCHAR(255)">
                 <constraints nullable="true"/>

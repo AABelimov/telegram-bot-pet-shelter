@@ -27,4 +27,6 @@ public enum UserCommand {
     REJECTION_REASON,
     BACK,
     ABOUT_PET_SHELTER,
+    FILL_OUT_THE_REPORT,
+    SELECT_ANIMAL_TO_REPORT,
 }

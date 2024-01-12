@@ -190,6 +190,17 @@
             <column name="shelter_type" value="CAT_SHELTER"/>
         </insert>
 
+        <insert tableName="messages">
+            <column name="title" value="SEND_REPORT"/>
+            <column name="message" value="В отчете необходимо прислать фото собаки, его рацион, общее самочувствие, привыкание к новому месту и изменения в поведении"/>
+            <column name="shelter_type" value="DOG_SHELTER"/>
+        </insert>
+        <insert tableName="messages">
+            <column name="title" value="SEND_REPORT"/>
+            <column name="message" value="В отчете необходимо прислать фото кошки, ее рацион, общее самочувствие, привыкание к новому месту и изменения в поведении"/>
+            <column name="shelter_type" value="CAT_SHELTER"/>
+        </insert>
+
     </changeSet>
 
 </databaseChangeLog>

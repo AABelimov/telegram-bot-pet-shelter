@@ -15,6 +15,7 @@ public class Probation {
 
     @OneToOne
     private Pet pet;
+    private String shelterType;
     private LocalDateTime probationEndDate;
     private LocalDateTime lastReportDate;
 
@@ -44,6 +45,14 @@ public class Probation {
 
     public void setPet(Pet pet) {
         this.pet = pet;
+    }
+
+    public String getShelterType() {
+        return shelterType;
+    }
+
+    public void setShelterType(String shelterType) {
+        this.shelterType = shelterType;
     }
 
     public LocalDateTime getProbationEndDate() {

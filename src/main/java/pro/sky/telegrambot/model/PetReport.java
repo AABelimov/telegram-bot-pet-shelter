@@ -2,6 +2,7 @@ package pro.sky.telegrambot.model;
 
 import javax.persistence.*;
 import java.time.LocalDateTime;
+import java.util.Objects;
 
 @Entity
 @Table(name = "pet_reports")
@@ -13,6 +14,7 @@ public class PetReport {
 
     @ManyToOne
     private Pet pet;
+    private String shelterType;
 
     @ManyToOne
     private User user;
@@ -22,7 +24,7 @@ public class PetReport {
     private String diet;
     private String wellBeing;
     private String changeInBehavior;
-    private String State;
+    private String state;
 
     @ManyToOne
     private Volunteer volunteer;
@@ -41,6 +43,14 @@ public class PetReport {
 
     public void setPet(Pet pet) {
         this.pet = pet;
+    }
+
+    public String getShelterType() {
+        return shelterType;
+    }
+
+    public void setShelterType(String shelterType) {
+        this.shelterType = shelterType;
     }
 
     public User getUser() {
@@ -92,11 +102,11 @@ public class PetReport {
     }
 
     public String getState() {
-        return State;
+        return state;
     }
 
     public void setState(String state) {
-        State = state;
+        this.state = state;
     }
 
     public Volunteer getVolunteer() {
@@ -105,5 +115,18 @@ public class PetReport {
 
     public void setVolunteer(Volunteer volunteer) {
         this.volunteer = volunteer;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        PetReport petReport = (PetReport) o;
+        return Objects.equals(Id, petReport.Id);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(Id);
     }
 }

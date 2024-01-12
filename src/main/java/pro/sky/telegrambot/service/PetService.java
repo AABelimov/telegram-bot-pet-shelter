@@ -18,6 +18,10 @@ public class PetService {
         this.petRepository = petRepository;
     }
 
+    public Pet getPet(Long id) {
+        return petRepository.findById(id).orElseThrow(); // TODO: Добавить исключение
+    }
+
     public List<Pet> getListOfAnimals(ShelterType shelterType, PetState state, PageRequest pageRequest) {
         String kindOfPet = null;
 
@@ -43,6 +47,12 @@ public class PetService {
                 kindOfPet = "CAT";
         }
 
-        return petRepository.countByKindOfPet(kindOfPet);
+        return petRepository.countByKindOfPetAndState(kindOfPet, PetState.WAITING_TO_BE_ADOPTED.name());
+    }
+
+    public void setPetState(Long id, PetState state) {
+        Pet pet = petRepository.findById(id).orElseThrow(); // TODO: добавить исключение
+        pet.setState(state.name());
+        petRepository.save(pet);
     }
 }

@@ -22,6 +22,9 @@
             <column name="pet_id" type="BIGINT">
                 <constraints nullable="true"/>
             </column>
+            <column name="shelter_type" type="VARCHAR(255)">
+                <constraints nullable="false"/>
+            </column>
             <column name="probation_end_date" type="DATETIME">
                 <constraints nullable="false"/>
             </column>

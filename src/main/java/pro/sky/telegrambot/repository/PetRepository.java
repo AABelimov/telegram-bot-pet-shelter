@@ -9,5 +9,5 @@ import java.util.List;
 public interface PetRepository extends JpaRepository<Pet, Long> {
     List<Pet> findByKindOfPetAndStateOrderByName(String kindOfPet, String state, PageRequest pageRequest);
 
-    long countByKindOfPet(String kindOfPet);
+    long countByKindOfPetAndState(String kindOfPet, String state);
 }

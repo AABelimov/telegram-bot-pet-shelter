@@ -6,28 +6,22 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Component;
-import pro.sky.telegrambot.enums.PetState;
-import pro.sky.telegrambot.enums.ShelterType;
-import pro.sky.telegrambot.enums.UserCommand;
-import pro.sky.telegrambot.enums.UserState;
-import pro.sky.telegrambot.model.Pet;
-import pro.sky.telegrambot.model.User;
-import pro.sky.telegrambot.model.Volunteer;
+import pro.sky.telegrambot.enums.*;
+import pro.sky.telegrambot.model.*;
 import pro.sky.telegrambot.service.*;
 
 import java.io.File;
 import java.nio.file.Path;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
+import java.util.List;
+import java.util.stream.Collectors;
 
 /**
  * This class handles commands coming from the user
  */
 @Component
-public class UserCommandHandler {
+public class UserDataCallbackQueryHandler {
 
-    private static final Logger LOGGER = LoggerFactory.getLogger(UserCommandHandler.class);
-    private static final Pattern PATTERN_PHONE = Pattern.compile("(\\+7-9[0-9]{2}-[0-9]{3}-[0-9]{2}-[0-9]{2})");
+    private static final Logger LOGGER = LoggerFactory.getLogger(UserDataCallbackQueryHandler.class);
     private final String locationMapDogPetShelter;
     private final String locationMapCatPetShelter;
     private final InlineKeyboardService inlineKeyboardService;
@@ -36,15 +30,21 @@ public class UserCommandHandler {
     private final VolunteerService volunteerService;
     private final MessageService messageService;
     private final PetService petService;
+    private final PetReportService petReportService;
+    private final ProbationService probationService;
+    private final UserTextMessageHandler userTextMessageHandler;
 
-    public UserCommandHandler(@Value("${path.to.photo.with.location.map.for.dog.pet.shelter}") String locationMapDogPetShelter,
-                              @Value("${path.to.photo.with.location.map.for.cat.pet.shelter}") String locationMapCatPetShelter,
-                              InlineKeyboardService inlineKeyboardService,
-                              TelegramBotService telegramBotService,
-                              UserService userService,
-                              VolunteerService volunteerService,
-                              MessageService messageService,
-                              PetService petService) {
+    public UserDataCallbackQueryHandler(@Value("${path.to.photo.with.location.map.for.dog.pet.shelter}") String locationMapDogPetShelter,
+                                        @Value("${path.to.photo.with.location.map.for.cat.pet.shelter}") String locationMapCatPetShelter,
+                                        InlineKeyboardService inlineKeyboardService,
+                                        TelegramBotService telegramBotService,
+                                        UserService userService,
+                                        VolunteerService volunteerService,
+                                        MessageService messageService,
+                                        PetService petService,
+                                        PetReportService petReportService,
+                                        ProbationService probationService,
+                                        UserTextMessageHandler userTextMessageHandler) {
         this.locationMapDogPetShelter = locationMapDogPetShelter;
         this.locationMapCatPetShelter = locationMapCatPetShelter;
         this.inlineKeyboardService = inlineKeyboardService;
@@ -53,85 +53,9 @@ public class UserCommandHandler {
         this.volunteerService = volunteerService;
         this.messageService = messageService;
         this.petService = petService;
-    }
-
-    /**
-     * This method handles the start command
-     *
-     * @param userId    ID of the user who sent the message
-     * @param text      text from message
-     * @param messageId ID of the message sent by the user
-     */
-    public void handleStart(Long userId, String text, Integer messageId) {
-        if ("/start".equals(text)) {
-            InlineKeyboardMarkup inlineKeyboardMarkup = inlineKeyboardService.getChooseShelterKeyboard();
-            String textMessage = "Выберите приют:";
-
-            if (messageId == null) {
-                telegramBotService.sendInlineKeyboard(userId, textMessage, inlineKeyboardMarkup);
-            } else {
-                telegramBotService.editInlineKeyboard(userId, messageId, textMessage, inlineKeyboardMarkup);
-            }
-            userService.setUserState(userId, UserState.CHOOSE_SHELTER);
-        } else {
-            telegramBotService.sendMessage(userId, "Введите команду /start");
-        }
-    }
-
-    public void handleStart(Long userId, String text) {
-        handleStart(userId, text, null);
-    }
-
-    /**
-     * This method handles the user's phone number
-     *
-     * @param userId
-     * @param text
-     */
-    public void handleUserPhoneNumber(Long userId, String text) {
-        Matcher matcher = PATTERN_PHONE.matcher(text);
-
-        if (matcher.matches()) {
-            String phoneNumber = matcher.group(1);
-            String message = "Ваш телефон сохранен.\n\n";
-            InlineKeyboardMarkup inlineKeyboardMarkup = inlineKeyboardService.getInfoAboutShelterMenuKeyboard(UserCommand.INFO_ABOUT_SHELTER);
-            ShelterType shelterType = ShelterType.valueOf(userService.getSelectedShelter(userId));
-            LOGGER.info(phoneNumber);
-
-            switch (shelterType) {
-                case DOG_SHELTER:
-                    message = message + "Какую информацию о собачьем приюте вы хотите получить?";
-                    break;
-                case CAT_SHELTER:
-                    message = message + "Какую информацию о кошачьем приюте вы хотите получить?";
-                    break;
-            }
-
-            userService.setPhoneNumber(userId, phoneNumber);
-            userService.setUserState(userId, UserState.INFO_ABOUT_SHELTER);
-            telegramBotService.sendInlineKeyboard(userId, message, inlineKeyboardMarkup);
-        } else {
-            telegramBotService.sendMessage(userId, "Напишите свой номер телефона в формате: +7-9**-***-**-**");
-        }
-    }
-
-    /**
-     * This method sends a message to the volunteer while user chatting with him or ends the conversation
-     *
-     * @param userId
-     * @param text
-     */
-    public void sendMessageToVolunteer(Long userId, String text) {
-        Volunteer volunteer = volunteerService.getVolunteerByUserId(userId);
-
-        if ("/stop".equals(text)) {
-            userService.stopConversation(userId);
-            volunteerService.stopConversation(volunteer.getId());
-            telegramBotService.sendMessage(volunteer.getId(), "Пользователь завершил разговор");
-            handleStart(userId, "/start");
-        } else {
-            telegramBotService.sendMessage(volunteer.getId(), text);
-        }
+        this.petReportService = petReportService;
+        this.probationService = probationService;
+        this.userTextMessageHandler = userTextMessageHandler;
     }
 
     /**
@@ -143,7 +67,7 @@ public class UserCommandHandler {
      */
     public void handleChooseShelter(Long userId, Integer messageId, String data) {
         ShelterType shelterType = ShelterType.valueOf(data);
-        InlineKeyboardMarkup inlineKeyboardMarkup = inlineKeyboardService.getMainMenuKeyboard();
+        InlineKeyboardMarkup inlineKeyboardMarkup = inlineKeyboardService.getUserMainMenuKeyboard();
         String textMessage = null;
 
         switch (shelterType) {
@@ -176,17 +100,19 @@ public class UserCommandHandler {
 
         switch (userCommand) {
             case INFO_ABOUT_SHELTER:
-                inlineKeyboardMarkup = inlineKeyboardService.getInfoAboutShelterMenuKeyboard(userCommand);
+                inlineKeyboardMarkup = inlineKeyboardService.getInfoAboutShelterUserMenuKeyboard(userCommand);
                 sendInlineKeyboard(userId, messageId, inlineKeyboardMarkup, shelterType, "INFO_ABOUT_SHELTER");
                 userService.setUserState(userId, UserState.INFO_ABOUT_SHELTER);
                 break;
             case HOW_ADOPT_PET:
-                inlineKeyboardMarkup = inlineKeyboardService.getHowAdoptPetMenuKeyboard(userCommand, shelterType);
+                inlineKeyboardMarkup = inlineKeyboardService.getHowAdoptPetUserMenuKeyboard(userCommand, shelterType);
                 sendInlineKeyboard(userId, messageId, inlineKeyboardMarkup, shelterType, "HOW_ADOPT_PET");
                 userService.setUserState(userId, UserState.HOW_ADOPT_PET);
                 break;
             case SEND_REPORT:
-
+                inlineKeyboardMarkup = inlineKeyboardService.getSendReportUserMenuKeyboard();
+                sendInlineKeyboard(userId, messageId, inlineKeyboardMarkup, shelterType, "SEND_REPORT");
+                userService.setUserState(userId, UserState.SEND_REPORT);
                 break;
             case CALL_VOLUNTEER:
                 startConversation(userId);
@@ -211,22 +137,22 @@ public class UserCommandHandler {
 
         switch (userCommand) {
             case ABOUT_PET_SHELTER:
-                inlineKeyboardMarkup = inlineKeyboardService.getInfoAboutShelterMenuKeyboard(userCommand);
+                inlineKeyboardMarkup = inlineKeyboardService.getInfoAboutShelterUserMenuKeyboard(userCommand);
                 sendInlineKeyboard(userId, messageId, inlineKeyboardMarkup, shelterType, "ABOUT_PET_SHELTER");
                 break;
             case SCHEDULE_AND_ADDRESS:
-                inlineKeyboardMarkup = inlineKeyboardService.getInfoAboutShelterMenuKeyboard(userCommand);
+                inlineKeyboardMarkup = inlineKeyboardService.getInfoAboutShelterUserMenuKeyboard(userCommand);
                 sendInlineKeyboard(userId, messageId, inlineKeyboardMarkup, shelterType, "SCHEDULE_AND_ADDRESS");
                 break;
             case LOCATION_MAP:
                 locationMap(userId, messageId, shelterType);
                 break;
             case REGISTRATION_PASS:
-                inlineKeyboardMarkup = inlineKeyboardService.getInfoAboutShelterMenuKeyboard(userCommand);
+                inlineKeyboardMarkup = inlineKeyboardService.getInfoAboutShelterUserMenuKeyboard(userCommand);
                 sendInlineKeyboard(userId, messageId, inlineKeyboardMarkup, shelterType, "REGISTRATION_PASS");
                 break;
             case SAFETY_PRECAUTIONS:
-                inlineKeyboardMarkup = inlineKeyboardService.getInfoAboutShelterMenuKeyboard(userCommand);
+                inlineKeyboardMarkup = inlineKeyboardService.getInfoAboutShelterUserMenuKeyboard(userCommand);
                 sendInlineKeyboard(userId, messageId, inlineKeyboardMarkup, shelterType, "SAFETY_PRECAUTIONS");
                 break;
             case SHARE_CONTACTS:
@@ -255,39 +181,39 @@ public class UserCommandHandler {
                 listOfAnimals(userId, messageId, shelterType, 0);
                 break;
             case RULES_FOR_MEETING:
-                inlineKeyboardMarkup = inlineKeyboardService.getHowAdoptPetMenuKeyboard(userCommand, shelterType);
+                inlineKeyboardMarkup = inlineKeyboardService.getHowAdoptPetUserMenuKeyboard(userCommand, shelterType);
                 sendInlineKeyboard(userId, messageId, inlineKeyboardMarkup, shelterType, "RULES_FOR_MEETING");
                 break;
             case DOCUMENTS:
-                inlineKeyboardMarkup = inlineKeyboardService.getHowAdoptPetMenuKeyboard(userCommand, shelterType);
+                inlineKeyboardMarkup = inlineKeyboardService.getHowAdoptPetUserMenuKeyboard(userCommand, shelterType);
                 sendInlineKeyboard(userId, messageId, inlineKeyboardMarkup, shelterType, "DOCUMENTS");
                 break;
             case TRANSPORTATION_RULES:
-                inlineKeyboardMarkup = inlineKeyboardService.getHowAdoptPetMenuKeyboard(userCommand, shelterType);
+                inlineKeyboardMarkup = inlineKeyboardService.getHowAdoptPetUserMenuKeyboard(userCommand, shelterType);
                 sendInlineKeyboard(userId, messageId, inlineKeyboardMarkup, shelterType, "TRANSPORTATION_RULES");
                 break;
             case HOME_IMPROVEMENT_FOR_SMALL_PET:
-                inlineKeyboardMarkup = inlineKeyboardService.getHowAdoptPetMenuKeyboard(userCommand, shelterType);
+                inlineKeyboardMarkup = inlineKeyboardService.getHowAdoptPetUserMenuKeyboard(userCommand, shelterType);
                 sendInlineKeyboard(userId, messageId, inlineKeyboardMarkup, shelterType, "HOME_IMPROVEMENT_FOR_SMALL_PET");
                 break;
             case HOME_IMPROVEMENT_FOR_BIG_PET:
-                inlineKeyboardMarkup = inlineKeyboardService.getHowAdoptPetMenuKeyboard(userCommand, shelterType);
+                inlineKeyboardMarkup = inlineKeyboardService.getHowAdoptPetUserMenuKeyboard(userCommand, shelterType);
                 sendInlineKeyboard(userId, messageId, inlineKeyboardMarkup, shelterType, "HOME_IMPROVEMENT_FOR_BIG_PET");
                 break;
             case HOME_IMPROVEMENT_FOR_PET_WITH_DISABILITIES:
-                inlineKeyboardMarkup = inlineKeyboardService.getHowAdoptPetMenuKeyboard(userCommand, shelterType);
+                inlineKeyboardMarkup = inlineKeyboardService.getHowAdoptPetUserMenuKeyboard(userCommand, shelterType);
                 sendInlineKeyboard(userId, messageId, inlineKeyboardMarkup, shelterType, "HOME_IMPROVEMENT_FOR_PET_WITH_DISABILITIES");
                 break;
             case ADVICE_FROM_DOG_HANDLERS:
-                inlineKeyboardMarkup = inlineKeyboardService.getHowAdoptPetMenuKeyboard(userCommand, shelterType);
+                inlineKeyboardMarkup = inlineKeyboardService.getHowAdoptPetUserMenuKeyboard(userCommand, shelterType);
                 sendInlineKeyboard(userId, messageId, inlineKeyboardMarkup, shelterType, "ADVICE_FROM_DOG_HANDLERS");
                 break;
             case DOG_HANDLERS:
-                inlineKeyboardMarkup = inlineKeyboardService.getHowAdoptPetMenuKeyboard(userCommand, shelterType);
+                inlineKeyboardMarkup = inlineKeyboardService.getHowAdoptPetUserMenuKeyboard(userCommand, shelterType);
                 sendInlineKeyboard(userId, messageId, inlineKeyboardMarkup, shelterType, "DOG_HANDLERS");
                 break;
             case REJECTION_REASON:
-                inlineKeyboardMarkup = inlineKeyboardService.getHowAdoptPetMenuKeyboard(userCommand, shelterType);
+                inlineKeyboardMarkup = inlineKeyboardService.getHowAdoptPetUserMenuKeyboard(userCommand, shelterType);
                 sendInlineKeyboard(userId, messageId, inlineKeyboardMarkup, shelterType, "REJECTION_REASON");
                 break;
             case SHARE_CONTACTS:
@@ -306,15 +232,73 @@ public class UserCommandHandler {
         }
     }
 
+    public void handleSendReport(Long userId, Integer messageId, String data) {
+        UserCommand userCommand = UserCommand.valueOf(data);
+        ShelterType shelterType = ShelterType.valueOf(userService.getSelectedShelter(userId));
+
+        switch (userCommand) {
+            case SELECT_ANIMAL_TO_REPORT:
+                userService.setUserState(userId, UserState.SELECT_ANIMAL_TO_REPORT);
+                selectAnimalToReport(userId, messageId, shelterType);
+                break;
+            case CALL_VOLUNTEER:
+                startConversation(userId);
+                break;
+            case BACK:
+                handleBackCommand(userId, messageId);
+                break;
+            case MAIN_MENU:
+                String selectedShelter = userService.getSelectedShelter(userId);
+                handleChooseShelter(userId, messageId, selectedShelter);
+                break;
+        }
+    }
+
+    public void handleSelectAnimalToReport(Long userId, Integer messageId, String data) {
+        Long petId = Long.parseLong(data);
+        User user = userService.getUser(userId);
+        Pet pet;
+        ShelterType shelterType;
+        PetReport petReport;
+        Probation probation;
+        Volunteer volunteer;
+        InlineKeyboardMarkup inlineKeyboardMarkup;
+
+        if (petId == -1) {
+            handleMainMenu(userId, messageId, UserCommand.SEND_REPORT.name());
+        } else {
+            pet = petService.getPet(petId);
+            petReport = petReportService.getReportByPetIdAndState(petId, PetReportState.FILLING);
+            shelterType = pet.getKindOfPet().equals("CAT") ? ShelterType.CAT_SHELTER : ShelterType.DOG_SHELTER;
+            probation = probationService.getProbationByUserIdAndShelterTypeAndState(userId, shelterType, ProbationState.FILLING_REPORT);
+
+            if (probation != null && probation.getPet().getId().equals(petId)) {
+                petReportService.fillReport(userId, petReport);
+            }
+
+            if (probation != null && !probation.getPet().getId().equals(petId)) {
+                inlineKeyboardMarkup = inlineKeyboardService.getSendReportUserMenuKeyboard();
+                telegramBotService.editInlineKeyboard(userId, messageId, "сначала заполните до конца отчет для " + probation.getPet().getName(), inlineKeyboardMarkup);
+                userService.setUserState(userId, UserState.SEND_REPORT);
+            }
+
+            if (petReport == null && probation == null) {
+                probation = probationService.getProbationByPetId(petId);
+                volunteer = probation.getVolunteer();
+                petReport = petReportService.createPetReport(pet, user, volunteer, shelterType);
+                probationService.setProbationState(probation.getId(), ProbationState.FILLING_REPORT);
+                petReportService.fillReport(userId, petReport);
+            }
+        }
+    }
+
     // TODO: Доделать функцию
     public void handleViewingAnimals(Long userId, Integer messageId, String data) {
         ShelterType shelterType = ShelterType.valueOf(userService.getSelectedShelter(userId));
         int page = Integer.parseInt(data);
 
         if (page == -1) {
-            /*String selectedShelter = userService.getSelectedShelter(userId);
-            handleChooseShelter(userId, messageId, selectedShelter);*/
-            InlineKeyboardMarkup inlineKeyboardMarkup = inlineKeyboardService.getMainMenuKeyboard();
+            InlineKeyboardMarkup inlineKeyboardMarkup = inlineKeyboardService.getUserMainMenuKeyboard();
             telegramBotService.deleteMessage(userId, messageId);
             telegramBotService.sendInlineKeyboard(userId, "test", inlineKeyboardMarkup);
             userService.setUserState(userId, UserState.MAIN_MENU);
@@ -334,10 +318,11 @@ public class UserCommandHandler {
 
         switch (userState) {
             case MAIN_MENU:
-                handleStart(userId, "/start", messageId);
+                userTextMessageHandler.handleStart(userId, "/start", messageId);
                 break;
             case INFO_ABOUT_SHELTER:
             case HOW_ADOPT_PET:
+            case SEND_REPORT:
                 String selectedShelter = userService.getSelectedShelter(userId);
                 handleChooseShelter(userId, messageId, selectedShelter);
                 break;
@@ -373,7 +358,7 @@ public class UserCommandHandler {
      * @param shelterType
      */
     private void locationMap(Long userId, Integer messageId, ShelterType shelterType) {
-        InlineKeyboardMarkup inlineKeyboardMarkup = inlineKeyboardService.getInfoAboutShelterMenuKeyboard(UserCommand.LOCATION_MAP);
+        InlineKeyboardMarkup inlineKeyboardMarkup = inlineKeyboardService.getInfoAboutShelterUserMenuKeyboard(UserCommand.LOCATION_MAP);
         String photoPath = null;
         String textMessage = null;
         String aboutPhoto = null;
@@ -436,8 +421,28 @@ public class UserCommandHandler {
             }
         } else {
             userService.setUserState(userId, UserState.HOW_ADOPT_PET);
-            InlineKeyboardMarkup inlineKeyboardMarkup = inlineKeyboardService.getHowAdoptPetMenuKeyboard(UserCommand.LIST_OF_ANIMALS, shelterType);
+            InlineKeyboardMarkup inlineKeyboardMarkup = inlineKeyboardService.getHowAdoptPetUserMenuKeyboard(UserCommand.LIST_OF_ANIMALS, shelterType);
             sendInlineKeyboard(userId, messageId, inlineKeyboardMarkup, shelterType, "LIST_OF_ANIMALS_NULL");
         }
+    }
+
+    private void selectAnimalToReport(Long userId, Integer messageId, ShelterType shelterType) {
+        List<Probation> probationList = probationService.getProbationList(userId, shelterType, ProbationState.WAITING_FOR_A_NEW_REPORT);
+        List<Pet> pets = probationList.stream()
+                .map(Probation::getPet)
+                .collect(Collectors.toList());
+        InlineKeyboardMarkup inlineKeyboardMarkup = inlineKeyboardService.getSelectAnimalToReportUserMenuKeyboard(pets);
+        String text;
+        probationList = probationService.getProbationList(userId, shelterType);
+
+        if (probationList.size() == 0) {
+            text = "В этом приюте вы не брали животных";
+        } else if (pets.size() == 0) {
+            text = "В этом приюте за сегодня отчет сдавать не нужно";
+        } else {
+            text = "Выберете животное, для которого хотите составить отчет";
+        }
+
+        telegramBotService.editInlineKeyboard(userId, messageId, text, inlineKeyboardMarkup);
     }
 }

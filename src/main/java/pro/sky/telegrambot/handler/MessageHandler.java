@@ -3,6 +3,7 @@ package pro.sky.telegrambot.handler;
 import com.pengrad.telegrambot.model.Message;
 import org.springframework.stereotype.Component;
 import pro.sky.telegrambot.enums.UserState;
+import pro.sky.telegrambot.enums.VolunteerState;
 import pro.sky.telegrambot.model.User;
 import pro.sky.telegrambot.model.Volunteer;
 import pro.sky.telegrambot.service.MessageService;
@@ -62,7 +63,7 @@ public class MessageHandler {
     }
 
     private void volunteerStart(Long id, Message message) {
-
+        volunteerService.setVolunteerState(id, VolunteerState.START);
     }
 
     private void userStart(Long id, Message message) {
