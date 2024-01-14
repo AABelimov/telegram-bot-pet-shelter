@@ -10,6 +10,7 @@ import pro.sky.telegrambot.mapper.ProbationMapper;
 import pro.sky.telegrambot.model.Probation;
 import pro.sky.telegrambot.repository.ProbationRepository;
 
+import java.time.LocalDateTime;
 import java.util.List;
 
 @Service
@@ -60,6 +61,12 @@ public class ProbationService {
     public void setProbationState(Long id, ProbationState state) {
         Probation probation = getProbation(id);
         probation.setState(state.name());
+        probationRepository.save(probation);
+    }
+
+    public void setLastReportDate(Long id) {
+        Probation probation = getProbation(id);
+        probation.setLastReportDate(LocalDateTime.now());
         probationRepository.save(probation);
     }
 }

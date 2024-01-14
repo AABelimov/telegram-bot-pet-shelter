@@ -6,4 +6,5 @@ public enum ProbationState {
     WAITING_FOR_A_NEW_REPORT,
     FILLING_REPORT,
     REPORT_IN_VERIFICATION,
+    REPORT_ACCEPTED,
 }

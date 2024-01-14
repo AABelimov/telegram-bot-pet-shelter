@@ -35,6 +35,9 @@ public class VolunteerStateHandler {
                 case MAIN_MENU:
                     volunteerDataCallbackQueryHandler.handleMainMenu(volunteerId, messageId, data);
                     break;
+                case CHECK_REPORTS:
+                    volunteerDataCallbackQueryHandler.handleCheckReports(volunteerId, messageId, data);
+                    break;
             }
 
         } else {

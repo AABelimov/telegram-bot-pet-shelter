@@ -408,7 +408,7 @@ public class UserDataCallbackQueryHandler {
             Path photoPath = Path.of(pet.getPhotoPath());
             File photo = photoPath.toFile();
             String aboutPet = pet.getAboutPet();
-            InlineKeyboardMarkup inlineKeyboardMarkup = inlineKeyboardService.getListOfAnimalsKeyboard(page, countPets - 1);
+            InlineKeyboardMarkup inlineKeyboardMarkup = inlineKeyboardService.getListOfAnimalsUserMenuKeyboard(page, countPets - 1);
             String text = String.format("Имя: %s\nО себе: %s", name, aboutPet);
             UserState userState = userService.getUserState(userId);
 

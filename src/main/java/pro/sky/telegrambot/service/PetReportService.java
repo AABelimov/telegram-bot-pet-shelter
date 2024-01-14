@@ -99,4 +99,8 @@ public class PetReportService {
         petReport.setState(state.name());
         petReportRepository.save(petReport);
     }
+
+    public PetReport getReportByVolunteerIdAndState(Long volunteerId, PetReportState state) {
+        return petReportRepository.findFirstByVolunteerIdAndState(volunteerId, state.name());
+    }
 }

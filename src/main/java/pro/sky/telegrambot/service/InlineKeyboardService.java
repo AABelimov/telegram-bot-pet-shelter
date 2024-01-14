@@ -243,7 +243,7 @@ public class InlineKeyboardService {
         return inlineKeyboardMarkup;
     }
 
-    public InlineKeyboardMarkup getListOfAnimalsKeyboard(int currentPage, int maxPage) {
+    public InlineKeyboardMarkup getListOfAnimalsUserMenuKeyboard(int currentPage, int maxPage) {
         InlineKeyboardMarkup inlineKeyboardMarkup = new InlineKeyboardMarkup();
         InlineKeyboardButton nextButton = new InlineKeyboardButton("следующий").callbackData(Integer.toString(currentPage + 1));
         InlineKeyboardButton prevButton = new InlineKeyboardButton("предыдущий").callbackData(Integer.toString(currentPage - 1));
@@ -314,6 +314,25 @@ public class InlineKeyboardService {
         inlineKeyboardMarkup.addRow(decideOnProbationButton);
         inlineKeyboardMarkup.addRow(atWorkButton);
         inlineKeyboardMarkup.addRow(notAtWorkButton);
+
+        return inlineKeyboardMarkup;
+    }
+
+    public InlineKeyboardMarkup getShowReportVolunteerMenuKeyboard() {
+        InlineKeyboardMarkup inlineKeyboardMarkup = new InlineKeyboardMarkup();
+
+        InlineKeyboardButton acceptReportButton = new InlineKeyboardButton("Принять отчет")
+                .callbackData(VolunteerCommand.ACCEPT_REPORT.name());
+
+        InlineKeyboardButton denyReportButton = new InlineKeyboardButton("Забраковать отчет")
+                .callbackData(VolunteerCommand.DENY_REPORT.name());
+
+        InlineKeyboardButton finishViewingReportsButton = new InlineKeyboardButton("Закончить просмотр отчетов")
+                .callbackData(VolunteerCommand.FINISH_VIEWING_REPORTS.name());
+
+        inlineKeyboardMarkup.addRow(acceptReportButton);
+        inlineKeyboardMarkup.addRow(denyReportButton);
+        inlineKeyboardMarkup.addRow(finishViewingReportsButton);
 
         return inlineKeyboardMarkup;
     }
