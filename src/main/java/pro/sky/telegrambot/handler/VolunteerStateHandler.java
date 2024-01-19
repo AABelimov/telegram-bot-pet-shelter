@@ -32,11 +32,19 @@ public class VolunteerStateHandler {
             String data = callbackQuery.data();
 
             switch (volunteerState) {
+                case AT_WORK:
+                case NOT_AT_WORK:
                 case MAIN_MENU:
                     volunteerDataCallbackQueryHandler.handleMainMenu(volunteerId, messageId, data);
                     break;
                 case CHECK_REPORTS:
                     volunteerDataCallbackQueryHandler.handleCheckReports(volunteerId, messageId, data);
+                    break;
+                case OVERDUE_REPORTS:
+                    volunteerDataCallbackQueryHandler.handleOverdueReports(volunteerId, messageId, data);
+                    break;
+                case DECIDE_ON_PROBATION:
+                    volunteerDataCallbackQueryHandler.handleDecideOnProbation(volunteerId, messageId, data);
                     break;
             }
 
@@ -46,10 +54,13 @@ public class VolunteerStateHandler {
             if (text != null) {
                 switch (volunteerState) {
                     case START:
-                        volunteerTextMessageHandler.handleStart(volunteerId, text);
+                        volunteerTextMessageHandler.handleStart(volunteerId, text, null);
                         break;
                     case CONVERSATION:
                         volunteerTextMessageHandler.sendMessageToUser(volunteerId, text);
+                        break;
+                    case COMMENTARY_ON_THE_REPORT:
+                        volunteerTextMessageHandler.handleCommentaryOnTheReport(volunteerId, text);
                         break;
                 }
             }

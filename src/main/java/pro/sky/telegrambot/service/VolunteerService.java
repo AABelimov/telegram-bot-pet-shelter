@@ -6,6 +6,9 @@ import pro.sky.telegrambot.model.User;
 import pro.sky.telegrambot.model.Volunteer;
 import pro.sky.telegrambot.repository.VolunteerRepository;
 
+import java.util.List;
+import java.util.Random;
+
 @Service
 public class VolunteerService {
 
@@ -20,7 +23,13 @@ public class VolunteerService {
     }
 
     public Volunteer getFreeVolunteer() {
-        return volunteerRepository.findByUserIdAndState(null, VolunteerState.AT_WORK.name()); // TODO: Доделать
+        List<Volunteer> volunteers = volunteerRepository.findByUserIdAndState(null, VolunteerState.AT_WORK.name());
+
+        if (volunteers.size() < 1) {
+            return null;
+        } else {
+            return volunteers.get(new Random().nextInt(volunteers.size()));
+        }
     }
 
     public void setVolunteerState(Long volunteerId, VolunteerState volunteerState) {

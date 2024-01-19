@@ -16,6 +16,20 @@
         </insert>
 
         <insert tableName="messages">
+            <column name="title" value="PHONE_NUMBER_SAVED"/>
+            <column name="message" value="Ваш телефон сохранен"/>
+        </insert>
+
+        <insert tableName="messages">
+            <column name="title" value="START_CONVERSATION_USER"/>
+            <column name="message" value="Волонтер сейчас с вами свяжется.\nДля выхода из режима общения введите команду /stop"/>
+        </insert>
+        <insert tableName="messages">
+            <column name="title" value="START_CONVERSATION_VOLUNTEER"/>
+            <column name="message" value="Пользователь запросил связь, у вас с ним начался разговор. Для выхода из режима общения введите команду /stop"/>
+        </insert>
+
+        <insert tableName="messages">
             <column name="title" value="ABOUT_PET_SHELTER"/>
             <column name="message" value="Рассказ о собачьем приюте"/>
             <column name="shelter_type" value="DOG_SHELTER"/>
@@ -23,6 +37,17 @@
         <insert tableName="messages">
             <column name="title" value="ABOUT_PET_SHELTER"/>
             <column name="message" value="Рассказ о кошачьем приюте"/>
+            <column name="shelter_type" value="CAT_SHELTER"/>
+        </insert>
+
+        <insert tableName="messages">
+            <column name="title" value="USER_MAIN_MENU"/>
+            <column name="message" value="С каким вопросом вы пришли в собачий приют?"/>
+            <column name="shelter_type" value="DOG_SHELTER"/>
+        </insert>
+        <insert tableName="messages">
+            <column name="title" value="USER_MAIN_MENU"/>
+            <column name="message" value="С каким вопросом вы пришли в кошачий приют?"/>
             <column name="shelter_type" value="CAT_SHELTER"/>
         </insert>
 
@@ -79,15 +104,6 @@
             <column name="title" value="HOW_ADOPT_PET"/>
             <column name="message" value="Здесь вы можете узнать детали по усыновлению кошки"/>
             <column name="shelter_type" value="CAT_SHELTER"/>
-        </insert>
-
-        <insert tableName="messages">
-            <column name="title" value="START_CONVERSATION_USER"/>
-            <column name="message" value="Волонтер сейчас с вами свяжется"/>
-        </insert>
-        <insert tableName="messages">
-            <column name="title" value="START_CONVERSATION_VOLUNTEER"/>
-            <column name="message" value="Пользователь запросил связь, у вас с ним начался разговор"/>
         </insert>
 
         <insert tableName="messages">
@@ -198,6 +214,17 @@
         <insert tableName="messages">
             <column name="title" value="SEND_REPORT"/>
             <column name="message" value="В отчете необходимо прислать фото кошки, ее рацион, общее самочувствие, привыкание к новому месту и изменения в поведении"/>
+            <column name="shelter_type" value="CAT_SHELTER"/>
+        </insert>
+
+        <insert tableName="messages">
+            <column name="title" value="LOCATION_SCHEMA"/>
+            <column name="message" value="Схема проезда до собачьего приюта:"/>
+            <column name="shelter_type" value="DOG_SHELTER"/>
+        </insert>
+        <insert tableName="messages">
+            <column name="title" value="LOCATION_SCHEMA"/>
+            <column name="message" value="Схема проезда до кошачьего приюта:"/>
             <column name="shelter_type" value="CAT_SHELTER"/>
         </insert>
 

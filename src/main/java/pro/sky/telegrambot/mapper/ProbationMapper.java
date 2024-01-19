@@ -5,6 +5,8 @@ import pro.sky.telegrambot.dto.ProbationDtoIn;
 import pro.sky.telegrambot.dto.ProbationDtoOut;
 import pro.sky.telegrambot.enums.ProbationState;
 import pro.sky.telegrambot.enums.ShelterType;
+import pro.sky.telegrambot.exception.UserNotFoundException;
+import pro.sky.telegrambot.exception.VolunteerNotFoundException;
 import pro.sky.telegrambot.model.Pet;
 import pro.sky.telegrambot.model.Probation;
 import pro.sky.telegrambot.model.User;
@@ -41,12 +43,20 @@ public class ProbationMapper {
 
     public Probation toEntity(ProbationDtoIn probationDtoIn) {
         Probation probation = new Probation();
-        User user = userService.getUser(probationDtoIn.getUserId()); // TODO: проверить на ноль
+        User user = userService.getUser(probationDtoIn.getUserId());
         Pet pet = petService.getPet(probationDtoIn.getPetId());
-        Volunteer volunteer = volunteerService.getVolunteer(probationDtoIn.getVolunteerId()); // TODO: проверить на ноль
+        Volunteer volunteer = volunteerService.getVolunteer(probationDtoIn.getVolunteerId());
         ShelterType shelterType;
-        String kindOfPet = pet.getKindOfPet();
+        String kindOfPet;
 
+        if (user == null) {
+            throw new UserNotFoundException(probationDtoIn.getUserId());
+        }
+        if (volunteer == null) {
+            throw new VolunteerNotFoundException(probationDtoIn.getVolunteerId());
+        }
+
+        kindOfPet = pet.getKindOfPet();
         shelterType = kindOfPet.equals("CAT") ? ShelterType.CAT_SHELTER : ShelterType.DOG_SHELTER;
 
         probation.setUser(user);

@@ -68,18 +68,7 @@ public class UserDataCallbackQueryHandler {
     public void handleChooseShelter(Long userId, Integer messageId, String data) {
         ShelterType shelterType = ShelterType.valueOf(data);
         InlineKeyboardMarkup inlineKeyboardMarkup = inlineKeyboardService.getUserMainMenuKeyboard();
-        String textMessage = null;
-
-        switch (shelterType) {
-            case CAT_SHELTER:
-                textMessage = "С каким вопросом вы пришли в кошачий приют?";
-                break;
-            case DOG_SHELTER:
-                textMessage = "С каким вопросом вы пришли в собачий приют?";
-                break;
-            default:
-                LOGGER.debug("handleChooseShelter некорректный shelterType - " + shelterType);
-        }
+        String textMessage = messageService.getMessage("USER_MAIN_MENU", shelterType);
 
         telegramBotService.editInlineKeyboard(userId, messageId, textMessage, inlineKeyboardMarkup);
         userService.setSelectedShelter(userId, shelterType);
@@ -115,7 +104,7 @@ public class UserDataCallbackQueryHandler {
                 userService.setUserState(userId, UserState.SEND_REPORT);
                 break;
             case CALL_VOLUNTEER:
-                startConversation(userId);
+                startConversation(userId, messageId);
                 break;
             case BACK:
                 handleBackCommand(userId, messageId);
@@ -159,7 +148,7 @@ public class UserDataCallbackQueryHandler {
                 shareContacts(userId, messageId);
                 break;
             case CALL_VOLUNTEER:
-                startConversation(userId);
+                startConversation(userId, messageId);
                 break;
             case BACK:
                 handleBackCommand(userId, messageId);
@@ -220,7 +209,7 @@ public class UserDataCallbackQueryHandler {
                 shareContacts(userId, messageId);
                 break;
             case CALL_VOLUNTEER:
-                startConversation(userId);
+                startConversation(userId, messageId);
                 break;
             case BACK:
                 handleBackCommand(userId, messageId);
@@ -242,7 +231,7 @@ public class UserDataCallbackQueryHandler {
                 selectAnimalToReport(userId, messageId, shelterType);
                 break;
             case CALL_VOLUNTEER:
-                startConversation(userId);
+                startConversation(userId, messageId);
                 break;
             case BACK:
                 handleBackCommand(userId, messageId);
@@ -292,15 +281,15 @@ public class UserDataCallbackQueryHandler {
         }
     }
 
-    // TODO: Доделать функцию
     public void handleViewingAnimals(Long userId, Integer messageId, String data) {
         ShelterType shelterType = ShelterType.valueOf(userService.getSelectedShelter(userId));
         int page = Integer.parseInt(data);
+        String text = messageService.getMessage("USER_MAIN_MENU", shelterType);
 
         if (page == -1) {
             InlineKeyboardMarkup inlineKeyboardMarkup = inlineKeyboardService.getUserMainMenuKeyboard();
             telegramBotService.deleteMessage(userId, messageId);
-            telegramBotService.sendInlineKeyboard(userId, "test", inlineKeyboardMarkup);
+            telegramBotService.sendInlineKeyboard(userId, text, inlineKeyboardMarkup);
             userService.setUserState(userId, UserState.MAIN_MENU);
         } else {
             listOfAnimals(userId, messageId, shelterType, page);
@@ -339,15 +328,38 @@ public class UserDataCallbackQueryHandler {
      *
      * @param userId
      */
-    private void startConversation(Long userId) {
+    private void startConversation(Long userId, Integer messageId) {
         Volunteer volunteer = volunteerService.getFreeVolunteer();
         User user = userService.getUser(userId);
+        UserState userState = UserState.valueOf(user.getState());
+        InlineKeyboardMarkup inlineKeyboardMarkup = new InlineKeyboardMarkup();
+        ShelterType shelterType;
 
-        volunteerService.startConversation(volunteer, user);
-        userService.startConversation(userId);
+        if (volunteer == null) {
+            switch (userState) {
+                case MAIN_MENU:
+                    inlineKeyboardMarkup = inlineKeyboardService.getUserMainMenuKeyboard();
+                    break;
+                case INFO_ABOUT_SHELTER:
+                    inlineKeyboardMarkup = inlineKeyboardService.getInfoAboutShelterUserMenuKeyboard(UserCommand.CALL_VOLUNTEER);
+                    break;
+                case HOW_ADOPT_PET:
+                    shelterType = ShelterType.valueOf(user.getSelectedShelter());
+                    inlineKeyboardMarkup = inlineKeyboardService.getHowAdoptPetUserMenuKeyboard(UserCommand.CALL_VOLUNTEER, shelterType);
+                    break;
+                case SEND_REPORT:
+                    inlineKeyboardMarkup = inlineKeyboardService.getSendReportUserMenuKeyboard();
+                    break;
+            }
 
-        telegramBotService.sendMessage(userId, messageService.getMessage("START_CONVERSATION_USER"));
-        telegramBotService.sendMessage(volunteer.getId(), messageService.getMessage("START_CONVERSATION_VOLUNTEER"));
+            telegramBotService.editInlineKeyboard(userId, messageId, "Нет  свободных волонтеров, готовых вам сейчас помоч", inlineKeyboardMarkup);
+        } else {
+            volunteerService.startConversation(volunteer, user);
+            userService.startConversation(userId);
+
+            telegramBotService.sendMessage(userId, messageService.getMessage("START_CONVERSATION_USER"));
+            telegramBotService.sendMessage(volunteer.getId(), messageService.getMessage("START_CONVERSATION_VOLUNTEER"));
+        }
     }
 
     /**
@@ -359,35 +371,20 @@ public class UserDataCallbackQueryHandler {
      */
     private void locationMap(Long userId, Integer messageId, ShelterType shelterType) {
         InlineKeyboardMarkup inlineKeyboardMarkup = inlineKeyboardService.getInfoAboutShelterUserMenuKeyboard(UserCommand.LOCATION_MAP);
-        String photoPath = null;
-        String textMessage = null;
-        String aboutPhoto = null;
-        Path path;
-        File photo;
-
-        switch (shelterType) {
-            case DOG_SHELTER:
-                photoPath = locationMapDogPetShelter;
-                textMessage = "Какую информацию о собачьем приюте вы хотите получить?";
-                aboutPhoto = "Схема проезда до собачьего приюта:";
-                break;
-            case CAT_SHELTER:
-                photoPath = locationMapCatPetShelter;
-                textMessage = "Какую информацию о кошачьем приюте вы хотите получить?";
-                aboutPhoto = "Схема проезда до кошачьего приюта:";
-                break;
-        }
-
-        path = Path.of(photoPath);
-        photo = path.toFile();
+        String photoPath = shelterType.equals(ShelterType.DOG_SHELTER) ? locationMapDogPetShelter : locationMapCatPetShelter;
+        String textMessage = messageService.getMessage("INFO_ABOUT_SHELTER", shelterType);
+        String aboutPhoto = messageService.getMessage("LOCATION_SCHEMA", shelterType);
+        Path path = Path.of(photoPath);
+        File photo = path.toFile();
 
         if (photo.exists()) {
+            telegramBotService.deleteMessage(userId, messageId);
             telegramBotService.sendMessage(userId, aboutPhoto);
             telegramBotService.sendPhoto(userId, photo);
-            telegramBotService.deleteMessage(userId, messageId);
             telegramBotService.sendInlineKeyboard(userId, textMessage, inlineKeyboardMarkup);
         } else {
-            LOGGER.error("No photo for {}", shelterType.name());
+            telegramBotService.editInlineKeyboard(userId, messageId, "Фото со схемой проезда нет", inlineKeyboardMarkup);
+            LOGGER.error("No location map for {}", shelterType.name());
         }
     }
 
@@ -427,11 +424,19 @@ public class UserDataCallbackQueryHandler {
     }
 
     private void selectAnimalToReport(Long userId, Integer messageId, ShelterType shelterType) {
+        Probation probation = probationService.getProbationByUserIdAndShelterTypeAndState(userId, shelterType, ProbationState.FILLING_REPORT);
         List<Probation> probationList = probationService.getProbationList(userId, shelterType, ProbationState.WAITING_FOR_A_NEW_REPORT);
-        List<Pet> pets = probationList.stream()
+        List<Pet> pets;
+        InlineKeyboardMarkup inlineKeyboardMarkup;
+
+        if (probation != null) {
+            probationList.add(probation);
+        }
+
+        pets = probationList.stream()
                 .map(Probation::getPet)
                 .collect(Collectors.toList());
-        InlineKeyboardMarkup inlineKeyboardMarkup = inlineKeyboardService.getSelectAnimalToReportUserMenuKeyboard(pets);
+        inlineKeyboardMarkup = inlineKeyboardService.getSelectAnimalToReportUserMenuKeyboard(pets);
         String text;
         probationList = probationService.getProbationList(userId, shelterType);
 

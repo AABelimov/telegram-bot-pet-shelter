@@ -4,14 +4,14 @@ import com.pengrad.telegrambot.TelegramBot;
 import com.pengrad.telegrambot.model.PhotoSize;
 import com.pengrad.telegrambot.request.GetFile;
 import com.pengrad.telegrambot.response.GetFileResponse;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 import org.springframework.util.StringUtils;
 import pro.sky.telegrambot.enums.PetReportState;
-import pro.sky.telegrambot.enums.ShelterType;
 import pro.sky.telegrambot.enums.UserState;
 import pro.sky.telegrambot.model.PetReport;
-import pro.sky.telegrambot.model.User;
 import pro.sky.telegrambot.service.PetReportService;
 import pro.sky.telegrambot.service.TelegramBotService;
 import pro.sky.telegrambot.service.UserService;
@@ -25,6 +25,7 @@ import static java.nio.file.StandardOpenOption.CREATE_NEW;
 @Component
 public class UserPhotoMessageHandler {
 
+    private static final Logger LOGGER = LoggerFactory.getLogger(UserPhotoMessageHandler.class);
     private final TelegramBot telegramBot;
     private final PetReportService petReportService;
     private final UserService userService;
@@ -52,7 +53,7 @@ public class UserPhotoMessageHandler {
             byte[] data = telegramBot.getFileContent(getFileResponse.file());
             savePhotoToReport(userId, petReport, data, extension);
         } catch (IOException e) {
-            throw new RuntimeException(e); // TODO: доделать
+            LOGGER.error(e.getMessage(), e);
         }
     }
 

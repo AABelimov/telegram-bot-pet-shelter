@@ -4,4 +4,5 @@ public enum PetState {
 
     WAITING_TO_BE_ADOPTED,
     ON_PROBATION,
+    ADOPTED
 }

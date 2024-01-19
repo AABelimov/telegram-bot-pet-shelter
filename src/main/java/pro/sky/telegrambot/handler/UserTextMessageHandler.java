@@ -22,19 +22,22 @@ public class UserTextMessageHandler {
     private final VolunteerService volunteerService;
     private final PetReportService petReportService;
     private final ProbationService probationService;
+    private final MessageService messageService;
 
     public UserTextMessageHandler(InlineKeyboardService inlineKeyboardService,
                                   TelegramBotService telegramBotService,
                                   UserService userService,
                                   VolunteerService volunteerService,
                                   PetReportService petReportService,
-                                  ProbationService probationService) {
+                                  ProbationService probationService,
+                                  MessageService messageService) {
         this.inlineKeyboardService = inlineKeyboardService;
         this.telegramBotService = telegramBotService;
         this.userService = userService;
         this.volunteerService = volunteerService;
         this.petReportService = petReportService;
         this.probationService = probationService;
+        this.messageService = messageService;
     }
 
     /**
@@ -94,19 +97,10 @@ public class UserTextMessageHandler {
 
         if (matcher.matches()) {
             String phoneNumber = matcher.group(1);
-            String message = "Ваш телефон сохранен.\n\n";
             InlineKeyboardMarkup inlineKeyboardMarkup = inlineKeyboardService.getInfoAboutShelterUserMenuKeyboard(UserCommand.INFO_ABOUT_SHELTER);
             ShelterType shelterType = ShelterType.valueOf(userService.getSelectedShelter(userId));
-            LOGGER.info(phoneNumber);
-
-            switch (shelterType) {
-                case DOG_SHELTER:
-                    message = message + "Какую информацию о собачьем приюте вы хотите получить?";
-                    break;
-                case CAT_SHELTER:
-                    message = message + "Какую информацию о кошачьем приюте вы хотите получить?";
-                    break;
-            }
+            String message = messageService.getMessage("PHONE_NUMBER_SAVED") + "\n\n" + messageService.getMessage("INFO_ABOUT_SHELTER", shelterType);
+            LOGGER.debug(phoneNumber);
 
             userService.setPhoneNumber(userId, phoneNumber);
             userService.setUserState(userId, UserState.INFO_ABOUT_SHELTER);
@@ -138,12 +132,12 @@ public class UserTextMessageHandler {
         ShelterType shelterType = pet.getKindOfPet().equals("CAT") ? ShelterType.CAT_SHELTER : ShelterType.DOG_SHELTER;
         Probation probation = probationService.getProbationByUserIdAndShelterTypeAndState(userId, shelterType, ProbationState.FILLING_REPORT);
         InlineKeyboardMarkup inlineKeyboardMarkup = inlineKeyboardService.getUserMainMenuKeyboard();
+        String textMessage = messageService.getMessage("USER_MAIN_MENU", shelterType);
 
         petReportService.setChangeInBehavior(petReport.getId(), text);
-        petReportService.setTimeSendingReport(petReport.getId());
         petReportService.setReportState(petReport.getId(), PetReportState.WAITING_FOR_VERIFICATION);
         probationService.setProbationState(probation.getId(), ProbationState.REPORT_IN_VERIFICATION);
-        telegramBotService.sendInlineKeyboard(userId, "text", inlineKeyboardMarkup); // TODO: текст сделать
+        telegramBotService.sendInlineKeyboard(userId, textMessage, inlineKeyboardMarkup);
         userService.setUserState(userId, UserState.MAIN_MENU);
     }
 }

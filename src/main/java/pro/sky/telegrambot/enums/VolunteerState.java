@@ -8,4 +8,7 @@ public enum VolunteerState {
     CONVERSATION,
     AT_WORK,
     NOT_AT_WORK,
+    DECIDE_ON_PROBATION,
+    COMMENTARY_ON_THE_REPORT,
+    OVERDUE_REPORTS,
 }

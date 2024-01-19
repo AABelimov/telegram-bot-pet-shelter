@@ -4,6 +4,7 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
 import pro.sky.telegrambot.enums.PetState;
 import pro.sky.telegrambot.enums.ShelterType;
+import pro.sky.telegrambot.exception.PetNotFoundException;
 import pro.sky.telegrambot.model.Pet;
 import pro.sky.telegrambot.repository.PetRepository;
 
@@ -19,39 +20,23 @@ public class PetService {
     }
 
     public Pet getPet(Long id) {
-        return petRepository.findById(id).orElseThrow(); // TODO: Добавить исключение
+        return petRepository.findById(id).orElseThrow(() -> new PetNotFoundException(id));
     }
 
     public List<Pet> getListOfAnimals(ShelterType shelterType, PetState state, PageRequest pageRequest) {
-        String kindOfPet = null;
-
-        switch (shelterType) {
-            case DOG_SHELTER:
-                kindOfPet = "DOG";
-                break;
-            case CAT_SHELTER:
-                kindOfPet = "CAT";
-        }
+        String kindOfPet = shelterType.equals(ShelterType.DOG_SHELTER) ? "DOG" : "CAT";
 
         return petRepository.findByKindOfPetAndStateOrderByName(kindOfPet, state.name(), pageRequest);
     }
 
     public long countPetsByKindOfPet(ShelterType shelterType) {
-        String kindOfPet = null;
-
-        switch (shelterType) {
-            case DOG_SHELTER:
-                kindOfPet = "DOG";
-                break;
-            case CAT_SHELTER:
-                kindOfPet = "CAT";
-        }
+        String kindOfPet = shelterType.equals(ShelterType.DOG_SHELTER) ? "DOG" : "CAT";
 
         return petRepository.countByKindOfPetAndState(kindOfPet, PetState.WAITING_TO_BE_ADOPTED.name());
     }
 
     public void setPetState(Long id, PetState state) {
-        Pet pet = petRepository.findById(id).orElseThrow(); // TODO: добавить исключение
+        Pet pet = getPet(id);
         pet.setState(state.name());
         petRepository.save(pet);
     }

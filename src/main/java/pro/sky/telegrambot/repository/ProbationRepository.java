@@ -11,4 +11,8 @@ public interface ProbationRepository extends JpaRepository<Probation, Long> {
     List<Probation> findByUserIdAndShelterType(Long userId, String shelterType);
 
     Probation findByPetId(Long petId);
+
+    Probation findFirstByVolunteerIdAndState(Long volunteerId, String state);
+
+    List<Probation> findAllByVolunteerIdAndState(Long volunteerId, String state);
 }

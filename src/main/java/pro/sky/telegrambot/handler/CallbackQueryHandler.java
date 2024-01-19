@@ -38,7 +38,7 @@ public class CallbackQueryHandler {
      */
     public void handleCallbackQuery(CallbackQuery callbackQuery) {
         telegramBot.execute(new AnswerCallbackQuery(callbackQuery.id()));
-        LOGGER.info(callbackQuery.data());
+        LOGGER.debug(callbackQuery.data());
         Long id = callbackQuery.message().chat().id();
         Volunteer volunteer = volunteerService.getVolunteer(id);
 

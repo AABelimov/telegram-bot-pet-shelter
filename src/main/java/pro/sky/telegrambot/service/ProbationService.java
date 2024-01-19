@@ -6,6 +6,7 @@ import pro.sky.telegrambot.dto.ProbationDtoOut;
 import pro.sky.telegrambot.enums.PetState;
 import pro.sky.telegrambot.enums.ProbationState;
 import pro.sky.telegrambot.enums.ShelterType;
+import pro.sky.telegrambot.exception.ProbationNotFoundException;
 import pro.sky.telegrambot.mapper.ProbationMapper;
 import pro.sky.telegrambot.model.Probation;
 import pro.sky.telegrambot.repository.ProbationRepository;
@@ -34,7 +35,7 @@ public class ProbationService {
     }
 
     public Probation getProbation(Long id) {
-        return probationRepository.findById(id).orElseThrow(); // TODO: todo
+        return probationRepository.findById(id).orElseThrow(() -> new ProbationNotFoundException(id));
     }
 
     public List<Probation> getProbationList(Long userId, ShelterType shelterType, ProbationState state) {
@@ -69,4 +70,27 @@ public class ProbationService {
         probation.setLastReportDate(LocalDateTime.now());
         probationRepository.save(probation);
     }
+
+    public Probation getProbationByVolunteerIdAndState(Long volunteerId, ProbationState state) {
+        return probationRepository.findFirstByVolunteerIdAndState(volunteerId, state.name());
+    }
+
+    public void deleteProbation(Probation probation) {
+        probationRepository.delete(probation);
+    }
+
+    public void extendProbation(Long id, int days) {
+        Probation probation = getProbation(id);
+        probation.setProbationEndDate(probation.getProbationEndDate().plusDays(days));
+        probationRepository.save(probation);
+    }
+
+    public List<Probation> getAll() {
+        return probationRepository.findAll();
+    }
+
+    public List<Probation> getProbationListByVolunteerIdAndState(Long volunteerId, ProbationState state) {
+        return probationRepository.findAllByVolunteerIdAndState(volunteerId, state.name());
+    }
+
 }
