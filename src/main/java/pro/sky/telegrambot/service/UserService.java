@@ -35,12 +35,6 @@ public class UserService {
         return UserState.valueOf(user.getState());
     }
 
-    public void setUserName(Long userId, String name) {
-        User user = getUser(userId);
-        user.setName(name);
-        userRepository.save(user);
-    }
-
     public void setUserState(Long userId, UserState userState) {
         User user = getUser(userId);
         user.setState(userState.name());

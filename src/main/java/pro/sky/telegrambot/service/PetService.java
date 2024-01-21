@@ -2,7 +2,9 @@ package pro.sky.telegrambot.service;
 
 import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
+import pro.sky.telegrambot.enums.PetState;
 import pro.sky.telegrambot.enums.ShelterType;
+import pro.sky.telegrambot.exception.PetNotFoundException;
 import pro.sky.telegrambot.model.Pet;
 import pro.sky.telegrambot.repository.PetRepository;
 
@@ -17,31 +19,25 @@ public class PetService {
         this.petRepository = petRepository;
     }
 
-    public List<Pet> getListOfAnimals(ShelterType shelterType, PageRequest pageRequest) {
-        String kindOfPet = null;
+    public Pet getPet(Long id) {
+        return petRepository.findById(id).orElseThrow(() -> new PetNotFoundException(id));
+    }
 
-        switch (shelterType) {
-            case DOG_SHELTER:
-                kindOfPet = "DOG";
-                break;
-            case CAT_SHELTER:
-                kindOfPet = "CAT";
-        }
+    public List<Pet> getListOfAnimals(ShelterType shelterType, PetState state, PageRequest pageRequest) {
+        String kindOfPet = shelterType.equals(ShelterType.DOG_SHELTER) ? "DOG" : "CAT";
 
-        return petRepository.findByKindOfPetOrderByName(kindOfPet, pageRequest);
+        return petRepository.findByKindOfPetAndStateOrderByName(kindOfPet, state.name(), pageRequest);
     }
 
     public long countPetsByKindOfPet(ShelterType shelterType) {
-        String kindOfPet = null;
+        String kindOfPet = shelterType.equals(ShelterType.DOG_SHELTER) ? "DOG" : "CAT";
 
-        switch (shelterType) {
-            case DOG_SHELTER:
-                kindOfPet = "DOG";
-                break;
-            case CAT_SHELTER:
-                kindOfPet = "CAT";
-        }
+        return petRepository.countByKindOfPetAndState(kindOfPet, PetState.WAITING_TO_BE_ADOPTED.name());
+    }
 
-        return petRepository.countByKindOfPet(kindOfPet);
+    public void setPetState(Long id, PetState state) {
+        Pet pet = getPet(id);
+        pet.setState(state.name());
+        petRepository.save(pet);
     }
 }

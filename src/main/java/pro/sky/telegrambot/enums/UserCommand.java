@@ -2,9 +2,6 @@ package pro.sky.telegrambot.enums;
 
 public enum UserCommand {
 
-    START,
-    CAT,
-    DOG,
     MAIN_MENU,
     INFO_ABOUT_SHELTER,
     HOW_ADOPT_PET,
@@ -27,4 +24,5 @@ public enum UserCommand {
     REJECTION_REASON,
     BACK,
     ABOUT_PET_SHELTER,
+    SELECT_ANIMAL_TO_REPORT,
 }

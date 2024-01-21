@@ -9,6 +9,10 @@
     <include file="table/create-volunteers-table.xml" relativeToChangelogFile="true"/>
     <include file="table/create-pets-table.xml" relativeToChangelogFile="true"/>
     <include file="table/create-messages-table.xml" relativeToChangelogFile="true"/>
+    <include file="table/create-pet_reports-table.xml" relativeToChangelogFile="true"/>
+    <include file="table/create-probation-table.xml" relativeToChangelogFile="true"/>
+    <include file="table/create-adopted-table.xml" relativeToChangelogFile="true"/>
+    <include file="table/create-overdue_reports-table.xml" relativeToChangelogFile="true"/>
     <include file="data/add-data-in-messages-table.xml" relativeToChangelogFile="true"/>
 
 </databaseChangeLog>

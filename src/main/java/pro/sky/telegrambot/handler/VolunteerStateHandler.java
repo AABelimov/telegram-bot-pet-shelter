@@ -13,12 +13,15 @@ import pro.sky.telegrambot.service.VolunteerService;
 public class VolunteerStateHandler {
 
     private final VolunteerService volunteerService;
-    private final VolunteerCommandHandler volunteerCommandHandler;
+    private final VolunteerTextMessageHandler volunteerTextMessageHandler;
+    private final VolunteerDataCallbackQueryHandler volunteerDataCallbackQueryHandler;
 
     public VolunteerStateHandler(VolunteerService volunteerService,
-                                 VolunteerCommandHandler volunteerCommandHandler) {
+                                 VolunteerTextMessageHandler volunteerTextMessageHandler,
+                                 VolunteerDataCallbackQueryHandler volunteerDataCallbackQueryHandler) {
         this.volunteerService = volunteerService;
-        this.volunteerCommandHandler = volunteerCommandHandler;
+        this.volunteerTextMessageHandler = volunteerTextMessageHandler;
+        this.volunteerDataCallbackQueryHandler = volunteerDataCallbackQueryHandler;
     }
 
     public void handleState(Long volunteerId, CallbackQuery callbackQuery, Message message) {
@@ -29,16 +32,37 @@ public class VolunteerStateHandler {
             String data = callbackQuery.data();
 
             switch (volunteerState) {
-
+                case AT_WORK:
+                case NOT_AT_WORK:
+                case MAIN_MENU:
+                    volunteerDataCallbackQueryHandler.handleMainMenu(volunteerId, messageId, data);
+                    break;
+                case CHECK_REPORTS:
+                    volunteerDataCallbackQueryHandler.handleCheckReports(volunteerId, messageId, data);
+                    break;
+                case OVERDUE_REPORTS:
+                    volunteerDataCallbackQueryHandler.handleOverdueReports(volunteerId, messageId, data);
+                    break;
+                case DECIDE_ON_PROBATION:
+                    volunteerDataCallbackQueryHandler.handleDecideOnProbation(volunteerId, messageId, data);
+                    break;
             }
 
         } else {
             String text = message.text();
 
-            switch (volunteerState) {
-                case CONVERSATION:
-                    volunteerCommandHandler.sendMessageToUser(volunteerId, text);
-                    break;
+            if (text != null) {
+                switch (volunteerState) {
+                    case START:
+                        volunteerTextMessageHandler.handleStart(volunteerId, text, null);
+                        break;
+                    case CONVERSATION:
+                        volunteerTextMessageHandler.sendMessageToUser(volunteerId, text);
+                        break;
+                    case COMMENTARY_ON_THE_REPORT:
+                        volunteerTextMessageHandler.handleCommentaryOnTheReport(volunteerId, text);
+                        break;
+                }
             }
         }
     }

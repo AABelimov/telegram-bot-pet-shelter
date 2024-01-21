@@ -5,6 +5,8 @@ import com.pengrad.telegrambot.model.request.InlineKeyboardMarkup;
 import org.springframework.stereotype.Service;
 import pro.sky.telegrambot.enums.ShelterType;
 import pro.sky.telegrambot.enums.UserCommand;
+import pro.sky.telegrambot.enums.VolunteerCommand;
+import pro.sky.telegrambot.model.Pet;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -20,7 +22,7 @@ public class InlineKeyboardService {
      *
      * @return
      */
-    public InlineKeyboardMarkup getChooseShelterKeyboard() {
+    public InlineKeyboardMarkup getChooseShelterUserMenuKeyboard() {
         InlineKeyboardButton catButton = new InlineKeyboardButton("Приют с кошками")
                 .callbackData(ShelterType.CAT_SHELTER.name());
 
@@ -35,7 +37,7 @@ public class InlineKeyboardService {
      *
      * @return
      */
-    public InlineKeyboardMarkup getMainMenuKeyboard() {
+    public InlineKeyboardMarkup getUserMainMenuKeyboard() {
         InlineKeyboardButton infoAboutShelterButton = new InlineKeyboardButton("Информация о приюте")
                 .callbackData(UserCommand.INFO_ABOUT_SHELTER.name());
 
@@ -63,7 +65,7 @@ public class InlineKeyboardService {
      *
      * @return
      */
-    public InlineKeyboardMarkup getInfoAboutShelterMenuKeyboard(UserCommand userCommand) {
+    public InlineKeyboardMarkup getInfoAboutShelterUserMenuKeyboard(UserCommand userCommand) {
         InlineKeyboardMarkup inlineKeyboardMarkup = new InlineKeyboardMarkup();
 
         InlineKeyboardButton aboutShelterButton = new InlineKeyboardButton("Расскажи о приюте")
@@ -86,9 +88,6 @@ public class InlineKeyboardService {
 
         InlineKeyboardButton backButton = new InlineKeyboardButton("Назад")
                 .callbackData(UserCommand.BACK.name());
-
-        InlineKeyboardButton mainMenuButton = new InlineKeyboardButton("Главное меню")
-                .callbackData(UserCommand.MAIN_MENU.name());
 
         InlineKeyboardButton callVolunteerButton = new InlineKeyboardButton("Позвать волонтера")
                 .callbackData(UserCommand.CALL_VOLUNTEER.name());
@@ -120,11 +119,9 @@ public class InlineKeyboardService {
             case SAFETY_PRECAUTIONS:
                 inlineKeyboardButtons.remove(safetyPrecautions);
                 break;
-        }
-
-        if (!userCommand.equals(UserCommand.INFO_ABOUT_SHELTER)) {
-            inlineKeyboardButtons.remove(backButton);
-            inlineKeyboardButtons.add(mainMenuButton);
+            case CALL_VOLUNTEER:
+                inlineKeyboardButtons.remove(callVolunteerButton);
+                break;
         }
 
         inlineKeyboardButtons.forEach(inlineKeyboardMarkup::addRow);
@@ -132,7 +129,7 @@ public class InlineKeyboardService {
         return inlineKeyboardMarkup;
     }
 
-    public InlineKeyboardMarkup getHowAdoptPetMenuKeyboard(UserCommand userCommand, ShelterType shelterType) {
+    public InlineKeyboardMarkup getHowAdoptPetUserMenuKeyboard(UserCommand userCommand, ShelterType shelterType) {
         InlineKeyboardMarkup inlineKeyboardMarkup = new InlineKeyboardMarkup();
 
         InlineKeyboardButton listOfAnimalsButton = new InlineKeyboardButton("Список животных")
@@ -173,9 +170,6 @@ public class InlineKeyboardService {
 
         InlineKeyboardButton backButton = new InlineKeyboardButton("Назад")
                 .callbackData(UserCommand.BACK.name());
-
-        InlineKeyboardButton mainMenuButton = new InlineKeyboardButton("Главное меню")
-                .callbackData(UserCommand.MAIN_MENU.name());
 
         List<InlineKeyboardButton> inlineKeyboardButtons = new ArrayList<>(List.of(
                 listOfAnimalsButton,
@@ -229,11 +223,9 @@ public class InlineKeyboardService {
             case REJECTION_REASON:
                 inlineKeyboardButtons.remove(rejectionReasonButton);
                 break;
-        }
-
-        if (!userCommand.equals(UserCommand.HOW_ADOPT_PET)) {
-            inlineKeyboardButtons.remove(backButton);
-            inlineKeyboardButtons.add(mainMenuButton);
+            case CALL_VOLUNTEER:
+                inlineKeyboardButtons.remove(callVolunteerButton);
+                break;
         }
 
         inlineKeyboardButtons.forEach(inlineKeyboardMarkup::addRow);
@@ -241,7 +233,7 @@ public class InlineKeyboardService {
         return inlineKeyboardMarkup;
     }
 
-    public InlineKeyboardMarkup getListOfAnimalsKeyboard(int currentPage, int maxPage) {
+    public InlineKeyboardMarkup getListOfAnimalsUserMenuKeyboard(int currentPage, int maxPage) {
         InlineKeyboardMarkup inlineKeyboardMarkup = new InlineKeyboardMarkup();
         InlineKeyboardButton nextButton = new InlineKeyboardButton("следующий").callbackData(Integer.toString(currentPage + 1));
         InlineKeyboardButton prevButton = new InlineKeyboardButton("предыдущий").callbackData(Integer.toString(currentPage - 1));
@@ -249,13 +241,126 @@ public class InlineKeyboardService {
 
         if (currentPage > 0 && currentPage < maxPage) {
             inlineKeyboardMarkup.addRow(prevButton, nextButton);
-        } else if (currentPage == 0){
+        } else if (currentPage == 0 && currentPage < maxPage){
             inlineKeyboardMarkup.addRow(nextButton);
-        } else {
+        } else if (currentPage == maxPage && currentPage != 0){
             inlineKeyboardMarkup.addRow(prevButton);
         }
         inlineKeyboardMarkup.addRow(mainMenuButton);
 
         return inlineKeyboardMarkup;
+    }
+
+    public InlineKeyboardMarkup getSendReportUserMenuKeyboard() {
+        InlineKeyboardMarkup inlineKeyboardMarkup = new InlineKeyboardMarkup();
+
+        InlineKeyboardButton selectAnimalToReportButton = new InlineKeyboardButton("Выбрать животное для отчета")
+                .callbackData(UserCommand.SELECT_ANIMAL_TO_REPORT.name());
+
+        InlineKeyboardButton callVolunteerButton = new InlineKeyboardButton("Позвать волонтера")
+                .callbackData(UserCommand.CALL_VOLUNTEER.name());
+
+        InlineKeyboardButton backButton = new InlineKeyboardButton("Назад")
+                .callbackData(UserCommand.BACK.name());
+
+
+        inlineKeyboardMarkup.addRow(selectAnimalToReportButton);
+        inlineKeyboardMarkup.addRow(callVolunteerButton);
+        inlineKeyboardMarkup.addRow(backButton);
+
+        return inlineKeyboardMarkup;
+    }
+
+    public InlineKeyboardMarkup getSelectAnimalToReportUserMenuKeyboard(List<Pet> pets) {
+        InlineKeyboardMarkup inlineKeyboardMarkup = new InlineKeyboardMarkup();
+        InlineKeyboardButton backButton = new InlineKeyboardButton("Назад")
+                .callbackData("-1");
+
+        pets.forEach(pet -> inlineKeyboardMarkup.addRow(new InlineKeyboardButton(pet.getName()).callbackData(pet.getId().toString())));
+        inlineKeyboardMarkup.addRow(backButton);
+
+        return inlineKeyboardMarkup;
+    }
+
+    public InlineKeyboardMarkup getVolunteerMainMenu() {
+        InlineKeyboardMarkup inlineKeyboardMarkup = new InlineKeyboardMarkup();
+
+        InlineKeyboardButton checkReportsButton = new InlineKeyboardButton("Проверить отчеты")
+                .callbackData(VolunteerCommand.CHECK_REPORTS.name());
+
+        InlineKeyboardButton overdueReportButton = new InlineKeyboardButton("Посмотреть должников по отчетам")
+                .callbackData(VolunteerCommand.OVERDUE_REPORTS.name());
+
+        InlineKeyboardButton decideOnProbationButton = new InlineKeyboardButton("Принять решение по усыновлению")
+                .callbackData(VolunteerCommand.DECIDE_ON_PROBATION.name());
+
+        InlineKeyboardButton atWorkButton = new InlineKeyboardButton("На работе")
+                .callbackData(VolunteerCommand.AT_WORK.name());
+
+        InlineKeyboardButton notAtWorkButton = new InlineKeyboardButton("Не на работе")
+                .callbackData(VolunteerCommand.NOT_AT_WORK.name());
+
+        inlineKeyboardMarkup.addRow(checkReportsButton);
+        inlineKeyboardMarkup.addRow(overdueReportButton);
+        inlineKeyboardMarkup.addRow(decideOnProbationButton);
+        inlineKeyboardMarkup.addRow(atWorkButton);
+        inlineKeyboardMarkup.addRow(notAtWorkButton);
+
+        return inlineKeyboardMarkup;
+    }
+
+    public InlineKeyboardMarkup getShowReportVolunteerMenuKeyboard() {
+        InlineKeyboardMarkup inlineKeyboardMarkup = new InlineKeyboardMarkup();
+
+        InlineKeyboardButton acceptReportButton = new InlineKeyboardButton("Принять отчет")
+                .callbackData(VolunteerCommand.ACCEPT_REPORT.name());
+
+        InlineKeyboardButton denyReportButton = new InlineKeyboardButton("Забраковать отчет")
+                .callbackData(VolunteerCommand.DENY_REPORT.name());
+
+        InlineKeyboardButton finishViewingReportsButton = new InlineKeyboardButton("Закончить просмотр отчетов")
+                .callbackData(VolunteerCommand.FINISH_VIEWING_REPORTS.name());
+
+        inlineKeyboardMarkup.addRow(acceptReportButton);
+        inlineKeyboardMarkup.addRow(denyReportButton);
+        inlineKeyboardMarkup.addRow(finishViewingReportsButton);
+
+        return inlineKeyboardMarkup;
+    }
+
+    public InlineKeyboardMarkup getShowProbationVolunteerMenuKeyboard() {
+        InlineKeyboardMarkup inlineKeyboardMarkup = new InlineKeyboardMarkup();
+
+        InlineKeyboardButton allowAdoptionButton = new InlineKeyboardButton("Разрешить усыновление")
+                .callbackData(VolunteerCommand.ALLOW_ADOPTION.name());
+
+        InlineKeyboardButton refuseAdoptionButton = new InlineKeyboardButton("Отказать в усыновлении")
+                .callbackData(VolunteerCommand.REFUSE_ADOPTION.name());
+
+        InlineKeyboardButton extendForFourteenDaysButton = new InlineKeyboardButton("Продлить на 14 дней")
+                .callbackData(VolunteerCommand.EXTEND_FOR_FOURTEEN_DAYS.name());
+
+        InlineKeyboardButton extendForThirtyDaysButton = new InlineKeyboardButton("Продлить на 30 дней")
+                .callbackData(VolunteerCommand.EXTEND_FOR_THIRTY_DAYS.name());
+
+        InlineKeyboardButton finishViewingButton = new InlineKeyboardButton("Закончить просмотр")
+                .callbackData(VolunteerCommand.FINISH_VIEWING_DECIDE_ON_PROBATION.name());
+
+        inlineKeyboardMarkup.addRow(allowAdoptionButton);
+        inlineKeyboardMarkup.addRow(refuseAdoptionButton);
+        inlineKeyboardMarkup.addRow(extendForFourteenDaysButton);
+        inlineKeyboardMarkup.addRow(extendForThirtyDaysButton);
+        inlineKeyboardMarkup.addRow(finishViewingButton);
+
+        return inlineKeyboardMarkup;
+    }
+
+    public InlineKeyboardMarkup getVolunteerOverdueReportsMenu() {
+        InlineKeyboardMarkup inlineKeyboardMarkup = new InlineKeyboardMarkup();
+
+        InlineKeyboardButton backButton = new InlineKeyboardButton("Назад")
+                .callbackData(VolunteerCommand.BACK.name());
+
+        return inlineKeyboardMarkup.addRow(backButton);
     }
 }

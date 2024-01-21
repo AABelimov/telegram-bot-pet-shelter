@@ -2,6 +2,7 @@ package pro.sky.telegrambot.handler;
 
 import com.pengrad.telegrambot.model.CallbackQuery;
 import com.pengrad.telegrambot.model.Message;
+import com.pengrad.telegrambot.model.PhotoSize;
 import org.springframework.stereotype.Component;
 import pro.sky.telegrambot.enums.UserState;
 import pro.sky.telegrambot.service.UserService;
@@ -13,12 +14,18 @@ import pro.sky.telegrambot.service.UserService;
 public class UserStateHandler {
 
     private final UserService userService;
-    private final UserCommandHandler userCommandHandler;
+    private final UserDataCallbackQueryHandler userDataCallbackQueryHandler;
+    private final UserTextMessageHandler userTextMessageHandler;
+    private final UserPhotoMessageHandler userPhotoMessageHandler;
 
     public UserStateHandler(UserService userService,
-                            UserCommandHandler userCommandHandler) {
+                            UserDataCallbackQueryHandler userDataCallbackQueryHandler,
+                            UserTextMessageHandler userTextMessageHandler,
+                            UserPhotoMessageHandler userPhotoMessageHandler) {
         this.userService = userService;
-        this.userCommandHandler = userCommandHandler;
+        this.userDataCallbackQueryHandler = userDataCallbackQueryHandler;
+        this.userTextMessageHandler = userTextMessageHandler;
+        this.userPhotoMessageHandler = userPhotoMessageHandler;
     }
 
     /**
@@ -36,35 +43,59 @@ public class UserStateHandler {
 
             switch (userState) {
                 case CHOOSE_SHELTER:
-                    userCommandHandler.handleChooseShelter(userId, messageId, data);
+                    userDataCallbackQueryHandler.handleChooseShelter(userId, messageId, data);
                     break;
                 case MAIN_MENU:
-                    userCommandHandler.handleMainMenu(userId, messageId, data);
+                    userDataCallbackQueryHandler.handleMainMenu(userId, messageId, data);
                     break;
                 case INFO_ABOUT_SHELTER:
-                    userCommandHandler.handleInfoAboutShelter(userId, messageId, data);
+                    userDataCallbackQueryHandler.handleInfoAboutShelter(userId, messageId, data);
                     break;
                 case HOW_ADOPT_PET:
-                    userCommandHandler.handleHowAdoptPet(userId, messageId, data);
+                    userDataCallbackQueryHandler.handleHowAdoptPet(userId, messageId, data);
                     break;
                 case VIEWING_ANIMALS:
-                    userCommandHandler.handleViewingAnimals(userId, messageId, data);
+                    userDataCallbackQueryHandler.handleViewingAnimals(userId, messageId, data);
+                    break;
+                case SEND_REPORT:
+                    userDataCallbackQueryHandler.handleSendReport(userId, messageId, data);
+                    break;
+                case SELECT_ANIMAL_TO_REPORT:
+                    userDataCallbackQueryHandler.handleSelectAnimalToReport(userId, messageId, data);
                     break;
             }
 
         } else {
             String text = message.text();
+            PhotoSize[] photoSizes = message.photo();
 
-            switch (userState) {
-                case START:
-                    userCommandHandler.handleStart(userId, text);
-                    break;
-                case CONVERSATION:
-                    userCommandHandler.sendMessageToVolunteer(userId, text);
-                    break;
-                case SHARE_CONTACTS:
-                    userCommandHandler.handleUserPhoneNumber(userId, text);
-                    break;
+            if (text != null) {
+                switch (userState) {
+                    case START:
+                        userTextMessageHandler.handleStart(userId, text);
+                        break;
+                    case CONVERSATION:
+                        userTextMessageHandler.sendMessageToVolunteer(userId, text);
+                        break;
+                    case SHARE_CONTACTS:
+                        userTextMessageHandler.handleUserPhoneNumber(userId, text);
+                        break;
+                    case FILL_OUT_THE_REPORT_DIET:
+                        userTextMessageHandler.handleDiet(userId, text);
+                        break;
+                    case FILL_OUT_THE_REPORT_WELL_BEING:
+                        userTextMessageHandler.handleWellBeing(userId, text);
+                        break;
+                    case FILL_OUT_THE_REPORT_CHANGE_IN_BEHAVIOR:
+                        userTextMessageHandler.handleChangeInBehavior(userId, text);
+                        break;
+                }
+            } else if (photoSizes != null) {
+                switch (userState) {
+                    case FILL_OUT_THE_REPORT_PHOTO:
+                        userPhotoMessageHandler.handlePhoto(userId, photoSizes[photoSizes.length - 1]);
+                        break;
+                }
             }
         }
     }
