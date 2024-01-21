@@ -49,7 +49,7 @@ public class MessageHandler {
 
         if ("/start".equals(message.text())) {
             if (volunteer != null) {
-                volunteerStart(id, message);
+                volunteerStart(id);
             } else {
                 userStart(id, message);
             }
@@ -62,7 +62,7 @@ public class MessageHandler {
         }
     }
 
-    private void volunteerStart(Long id, Message message) {
+    private void volunteerStart(Long id) {
         volunteerService.setVolunteerState(id, VolunteerState.START);
     }
 

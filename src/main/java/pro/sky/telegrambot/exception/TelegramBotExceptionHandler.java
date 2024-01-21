@@ -23,4 +23,10 @@ public class TelegramBotExceptionHandler {
         LOGGER.error(e.getMessage(), e);
         return ResponseEntity.status(HttpStatus.NOT_FOUND).body(e.getMessage());
     }
+
+    @ExceptionHandler({PetIsAlreadyOnProbationException.class})
+    public ResponseEntity<?> handleBadRequest(PetIsAlreadyOnProbationException e) {
+        LOGGER.error(e.getMessage(), e);
+        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(e.getMessage());
+    }
 }

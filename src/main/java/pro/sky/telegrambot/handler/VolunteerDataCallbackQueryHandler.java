@@ -256,7 +256,6 @@ public class VolunteerDataCallbackQueryHandler {
         User user = probation.getUser();
         Pet pet = probation.getPet();
         String text = String.format("Вы не прошли испытательный срок, %s должен вернуться к нам", pet.getName());
-        InlineKeyboardMarkup inlineKeyboardMarkup;
 
         probationService.deleteProbation(probation);
         petService.setPetState(pet.getId(), PetState.WAITING_TO_BE_ADOPTED);
@@ -266,10 +265,7 @@ public class VolunteerDataCallbackQueryHandler {
 
         if (probation == null) {
             telegramBotService.deleteMessage(volunteerId, messageId);
-            text = "Заканчивающихся сегодня испытательных сроков нет";
-            inlineKeyboardMarkup = inlineKeyboardService.getVolunteerMainMenu();
-            telegramBotService.sendInlineKeyboard(volunteerId, text, inlineKeyboardMarkup);
-            volunteerService.setVolunteerState(volunteerId, VolunteerState.MAIN_MENU);
+            volunteerTextMessageHandler.handleStart(volunteerId, "/start", null);
         } else {
             showProbation(volunteerId, messageId, probation);
         }
@@ -279,8 +275,6 @@ public class VolunteerDataCallbackQueryHandler {
         Probation probation = probationService.getProbationByVolunteerIdAndState(volunteerId, ProbationState.WAITING_FOR_A_DECISION);
         User user = probation.getUser();
         Pet pet = probation.getPet();
-        String text;
-        InlineKeyboardMarkup inlineKeyboardMarkup;
 
         probationService.extendProbation(probation.getId(), days);
         probationService.setProbationState(probation.getId(), ProbationState.WAITING_FOR_A_NEW_REPORT);
@@ -290,10 +284,7 @@ public class VolunteerDataCallbackQueryHandler {
 
         if (probation == null) {
             telegramBotService.deleteMessage(volunteerId, messageId);
-            text = "Заканчивающихся сегодня испытательных сроков нет";
-            inlineKeyboardMarkup = inlineKeyboardService.getVolunteerMainMenu();
-            telegramBotService.sendInlineKeyboard(volunteerId, text, inlineKeyboardMarkup);
-            volunteerService.setVolunteerState(volunteerId, VolunteerState.MAIN_MENU);
+            volunteerTextMessageHandler.handleStart(volunteerId, "/start", null);
         } else {
             showProbation(volunteerId, messageId, probation);
         }

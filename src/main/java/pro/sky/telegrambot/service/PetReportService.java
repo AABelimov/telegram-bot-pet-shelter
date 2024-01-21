@@ -86,7 +86,7 @@ public class PetReportService {
         petReportRepository.save(petReport);
     }
 
-    public PetReport getReportByUserIdAndState(Long userId, PetReportState petReportState) {
+    public PetReport getReportByUserIdAndState(Long userId) {
         User user = userService.getUser(userId);
         ShelterType shelterType = ShelterType.valueOf(user.getSelectedShelter());
         return getReportByUserIdAndShelterTypeAndState(userId, shelterType, PetReportState.FILLING);

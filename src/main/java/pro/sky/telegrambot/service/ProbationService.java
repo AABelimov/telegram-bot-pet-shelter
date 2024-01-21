@@ -6,6 +6,7 @@ import pro.sky.telegrambot.dto.ProbationDtoOut;
 import pro.sky.telegrambot.enums.PetState;
 import pro.sky.telegrambot.enums.ProbationState;
 import pro.sky.telegrambot.enums.ShelterType;
+import pro.sky.telegrambot.exception.PetIsAlreadyOnProbationException;
 import pro.sky.telegrambot.exception.ProbationNotFoundException;
 import pro.sky.telegrambot.mapper.ProbationMapper;
 import pro.sky.telegrambot.model.Probation;
@@ -20,16 +21,25 @@ public class ProbationService {
     private final ProbationRepository probationRepository;
     private final ProbationMapper probationMapper;
     private final PetService petService;
+    private final ProbationService probationService;
 
     public ProbationService(ProbationRepository probationRepository,
                             ProbationMapper probationMapper,
-                            PetService petService) {
+                            PetService petService,
+                            ProbationService probationService) {
         this.probationRepository = probationRepository;
         this.probationMapper = probationMapper;
         this.petService = petService;
+        this.probationService = probationService;
     }
 
     public ProbationDtoOut createProbation(ProbationDtoIn probationDtoIn) {
+        Probation probation = probationService.getProbationByPetId(probationDtoIn.getPetId());
+
+        if (probation != null) {
+            throw new PetIsAlreadyOnProbationException(probationDtoIn.getPetId());
+        }
+
         petService.setPetState(probationDtoIn.getPetId(), PetState.ON_PROBATION);
         return probationMapper.toDto(probationRepository.save(probationMapper.toEntity(probationDtoIn)));
     }
