@@ -6,6 +6,16 @@ public class ProbationDtoIn {
     private Long petId;
     private Long volunteerId;
 
+    public ProbationDtoIn() {
+
+    }
+
+    public ProbationDtoIn(Long userId, Long petId, Long volunteerId) {
+        this.userId = userId;
+        this.petId = petId;
+        this.volunteerId = volunteerId;
+    }
+
     public Long getUserId() {
         return userId;
     }

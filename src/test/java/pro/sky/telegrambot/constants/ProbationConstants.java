@@ -1,5 +1,6 @@
 package pro.sky.telegrambot.constants;
 
+import pro.sky.telegrambot.dto.ProbationDtoIn;
 import pro.sky.telegrambot.model.Pet;
 import pro.sky.telegrambot.model.Probation;
 import pro.sky.telegrambot.model.User;
@@ -23,4 +24,6 @@ public class ProbationConstants {
     public static final String PROBATION_STATE_1 = "";
     public static final Probation PROBATION_1 = new Probation(PROBATION_ID_1, PROBATION_USER_1, PROBATION_PET_1
             , PROBATION_SHELTER_TYPE_1, PROBATION_END_DATE_1, LAST_REPORT_DATE_1, PROBATION_VOLUNTEER_1, PROBATION_STATE_1);
+    public static final ProbationDtoIn PROBATION_DTO_IN_1 = new ProbationDtoIn(PROBATION_USER_1.getId(), PROBATION_PET_1.getId(),
+            PROBATION_VOLUNTEER_1.getId());
 }

@@ -21,20 +21,17 @@ public class ProbationService {
     private final ProbationRepository probationRepository;
     private final ProbationMapper probationMapper;
     private final PetService petService;
-    private final ProbationService probationService;
 
     public ProbationService(ProbationRepository probationRepository,
                             ProbationMapper probationMapper,
-                            PetService petService,
-                            ProbationService probationService) {
+                            PetService petService) {
         this.probationRepository = probationRepository;
         this.probationMapper = probationMapper;
         this.petService = petService;
-        this.probationService = probationService;
     }
 
     public ProbationDtoOut createProbation(ProbationDtoIn probationDtoIn) {
-        Probation probation = probationService.getProbationByPetId(probationDtoIn.getPetId());
+        Probation probation = getProbationByPetId(probationDtoIn.getPetId());
 
         if (probation != null) {
             throw new PetIsAlreadyOnProbationException(probationDtoIn.getPetId());

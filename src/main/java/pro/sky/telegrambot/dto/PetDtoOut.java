@@ -6,6 +6,16 @@ public class PetDtoOut {
     private String kindOfPet;
     private String name;
 
+    public PetDtoOut() {
+
+    }
+
+    public PetDtoOut(Long id, String kindOfPet, String name) {
+        this.id = id;
+        this.kindOfPet = kindOfPet;
+        this.name = name;
+    }
+
     public Long getId() {
         return id;
     }

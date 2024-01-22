@@ -1,5 +1,6 @@
 package pro.sky.telegrambot.constants;
 
+import pro.sky.telegrambot.dto.PetReportDtoOut;
 import pro.sky.telegrambot.model.Pet;
 import pro.sky.telegrambot.model.PetReport;
 import pro.sky.telegrambot.model.User;
@@ -26,4 +27,7 @@ public class PetReportConstants {
     public static final PetReport PET_REPORT_1 = new PetReport(PET_REPORT_ID_1, PET_REPORT_PET_1, PET_REPORT_SHELTER_TYPE_1,
             PET_REPORT_USER_1, PET_REPORT_TIME_SENDING_REPORT_1, PET_REPORT_PHOTO_PATH_1, PET_REPORT_DIET_1, PET_REPORT_WELL_BEING_1,
             PET_REPORT_CHANGE_IN_BEHAVIOR_1, PET_REPORT_STATE_1, PET_REPORT_VOLUNTEER_1);
+    public static final PetReportDtoOut PET_REPORT_DTO_OUT_1 = new PetReportDtoOut(PET_REPORT_ID_1, USER_DTO_OUT_1,
+            PET_DTO_OUT_1, VOLUNTEER_DTO_OUT_1, PET_REPORT_TIME_SENDING_REPORT_1, PET_REPORT_DIET_1,
+            PET_REPORT_WELL_BEING_1, PET_REPORT_CHANGE_IN_BEHAVIOR_1);
 }

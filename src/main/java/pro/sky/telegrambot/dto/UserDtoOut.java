@@ -6,6 +6,16 @@ public class UserDtoOut {
     private String name;
     private String phoneNumber;
 
+    public UserDtoOut() {
+
+    }
+
+    public UserDtoOut(Long id, String name, String phoneNumber) {
+        this.id = id;
+        this.name = name;
+        this.phoneNumber = phoneNumber;
+    }
+
     public Long getId() {
         return id;
     }
