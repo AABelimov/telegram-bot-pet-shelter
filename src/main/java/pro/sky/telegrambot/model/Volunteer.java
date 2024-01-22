@@ -34,6 +34,17 @@ public class Volunteer {
      */
     private String state;
 
+    public Volunteer() {
+
+    }
+
+    public Volunteer(Long id, String name, User user, String state) {
+        this.id = id;
+        this.name = name;
+        this.user = user;
+        this.state = state;
+    }
+
     public Long getId() {
         return id;
     }

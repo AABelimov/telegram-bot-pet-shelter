@@ -23,6 +23,27 @@ public class Probation {
     private Volunteer volunteer;
     private String state;
 
+    public Probation() {
+
+    }
+
+    public Probation(Long id, User user,
+                     Pet pet,
+                     String shelterType,
+                     LocalDateTime probationEndDate,
+                     LocalDateTime lastReportDate,
+                     Volunteer volunteer,
+                     String state) {
+        this.id = id;
+        this.user = user;
+        this.pet = pet;
+        this.shelterType = shelterType;
+        this.probationEndDate = probationEndDate;
+        this.lastReportDate = lastReportDate;
+        this.volunteer = volunteer;
+        this.state = state;
+    }
+
     public Long getId() {
         return id;
     }

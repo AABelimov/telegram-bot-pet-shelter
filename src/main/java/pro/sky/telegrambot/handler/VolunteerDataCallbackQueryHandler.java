@@ -221,22 +221,30 @@ public class VolunteerDataCallbackQueryHandler {
 
     private void allowAdoption(Long volunteerId, Integer messageId) {
         Probation probation = probationService.getProbationByVolunteerIdAndState(volunteerId, ProbationState.WAITING_FOR_A_DECISION);
-        User user = probation.getUser();
-        Pet pet = probation.getPet();
-        String text = String.format("Вы прошли испытательный срок, поздравляем!\n%s теперь ваш", pet.getName());
-
-        adoptionService.createAdoption(user, pet);
-        probationService.deleteProbation(probation);
-        petService.setPetState(pet.getId(), PetState.ADOPTED);
-        telegramBotService.sendMessage(user.getId(), text);
-
-        probation = probationService.getProbationByVolunteerIdAndState(volunteerId, ProbationState.ON_THE_DECISION);
+        User user;
+        Pet pet;
+        String text;
 
         if (probation == null) {
-            telegramBotService.deleteMessage(volunteerId, messageId);
-            volunteerTextMessageHandler.handleStart(volunteerId, "/start", null);
+
         } else {
-            showProbation(volunteerId, messageId, probation);
+            user = probation.getUser();
+            pet = probation.getPet();
+            text = String.format("Вы прошли испытательный срок, поздравляем!\n%s теперь ваш", pet.getName());
+
+            adoptionService.createAdoption(user, pet);
+            probationService.deleteProbation(probation);
+            petService.setPetState(pet.getId(), PetState.ADOPTED);
+            telegramBotService.sendMessage(user.getId(), text);
+
+            probation = probationService.getProbationByVolunteerIdAndState(volunteerId, ProbationState.ON_THE_DECISION);
+
+            if (probation == null) {
+                telegramBotService.deleteMessage(volunteerId, messageId);
+                volunteerTextMessageHandler.handleStart(volunteerId, "/start", null);
+            } else {
+                showProbation(volunteerId, messageId, probation);
+            }
         }
     }
 

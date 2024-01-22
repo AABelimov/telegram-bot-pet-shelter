@@ -19,6 +19,19 @@ public class Pet {
 
     private String state;
 
+    public Pet() {
+
+    }
+
+    public Pet(Long id, String kindOfPet, String name, String photoPath, String aboutPet, String state) {
+        this.id = id;
+        this.kindOfPet = kindOfPet;
+        this.name = name;
+        this.photoPath = photoPath;
+        this.aboutPet = aboutPet;
+        this.state = state;
+    }
+
     public Long getId() {
         return id;
     }
