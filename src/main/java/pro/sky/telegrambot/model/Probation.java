@@ -2,6 +2,7 @@ package pro.sky.telegrambot.model;
 
 import javax.persistence.*;
 import java.time.LocalDateTime;
+import java.util.Objects;
 
 @Entity
 public class Probation {
@@ -106,5 +107,18 @@ public class Probation {
 
     public void setState(String state) {
         this.state = state;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        Probation probation = (Probation) o;
+        return Objects.equals(id, probation.id);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(id);
     }
 }

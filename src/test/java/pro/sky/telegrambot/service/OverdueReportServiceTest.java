@@ -4,7 +4,6 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.junit.jupiter.MockitoExtension;
-import pro.sky.telegrambot.model.User;
 import pro.sky.telegrambot.repository.OverdueReportRepository;
 
 import static org.junit.jupiter.api.Assertions.*;
