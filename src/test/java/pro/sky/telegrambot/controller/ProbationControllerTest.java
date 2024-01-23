@@ -2,8 +2,6 @@ package pro.sky.telegrambot.controller;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.junit.jupiter.api.Test;
-import org.mockito.MockedStatic;
-import org.mockito.Mockito;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
@@ -25,7 +23,6 @@ import pro.sky.telegrambot.service.ProbationService;
 import pro.sky.telegrambot.service.UserService;
 import pro.sky.telegrambot.service.VolunteerService;
 
-import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.Optional;
 
@@ -84,9 +81,6 @@ class ProbationControllerTest {
         when(petRepository.findById(PET_ID_1)).thenReturn(Optional.of(PET_1));
         when(userRepository.findById(USER_ID_1)).thenReturn(Optional.of(USER_1));
         when(volunteerRepository.findById(VOLUNTEER_ID_1)).thenReturn(Optional.of(VOLUNTEER_1));
-        /*try (MockedStatic<LocalDateTime> mockedStatic = Mockito.mockStatic(LocalDateTime.class)) {
-            mockedStatic.when(LocalDateTime::now).thenReturn(LocalDateTime.MIN);
-        }*/
 
         mockMvc.perform(
                 MockMvcRequestBuilders

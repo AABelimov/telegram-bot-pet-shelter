@@ -1,5 +1,7 @@
 package pro.sky.telegrambot.dto;
 
+import java.util.Objects;
+
 public class UserDtoOut {
 
     private Long id;
@@ -38,5 +40,18 @@ public class UserDtoOut {
 
     public void setPhoneNumber(String phoneNumber) {
         this.phoneNumber = phoneNumber;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        UserDtoOut that = (UserDtoOut) o;
+        return Objects.equals(id, that.id) && Objects.equals(name, that.name) && Objects.equals(phoneNumber, that.phoneNumber);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(id, name, phoneNumber);
     }
 }

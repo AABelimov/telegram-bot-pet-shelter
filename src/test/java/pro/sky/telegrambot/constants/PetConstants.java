@@ -11,7 +11,7 @@ public class PetConstants {
     public static final Long NOT_FOUND_PET_ID = 100L;
     public static final String KIND_OF_PET_1 = "CAT";
     public static final String KIND_OF_PET_2 = "CAT";
-    public static final String KIND_OF_PET_3 = "CAT";
+    public static final String KIND_OF_PET_3 = "DOG";
     public static final String PET_NAME_1 = "PET_NAME_1";
     public static final String PET_NAME_2 = "PET_NAME_2";
     public static final String PET_NAME_3 = "PET_NAME_3";

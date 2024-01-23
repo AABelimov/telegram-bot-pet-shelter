@@ -1,5 +1,7 @@
 package pro.sky.telegrambot.dto;
 
+import java.util.Objects;
+
 public class PetDtoOut {
 
     private Long id;
@@ -38,5 +40,18 @@ public class PetDtoOut {
 
     public void setName(String name) {
         this.name = name;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        PetDtoOut petDtoOut = (PetDtoOut) o;
+        return Objects.equals(id, petDtoOut.id) && Objects.equals(kindOfPet, petDtoOut.kindOfPet) && Objects.equals(name, petDtoOut.name);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(id, kindOfPet, name);
     }
 }
