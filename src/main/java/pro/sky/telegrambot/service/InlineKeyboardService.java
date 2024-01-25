@@ -19,8 +19,6 @@ public class InlineKeyboardService {
 
     /**
      * This method create inline keyboard for choose shelter menu
-     *
-     * @return
      */
     public InlineKeyboardMarkup getChooseShelterUserMenuKeyboard() {
         InlineKeyboardButton catButton = new InlineKeyboardButton("Приют с кошками")
@@ -34,8 +32,6 @@ public class InlineKeyboardService {
 
     /**
      * This method create inline keyboard for main menu
-     *
-     * @return
      */
     public InlineKeyboardMarkup getUserMainMenuKeyboard() {
         InlineKeyboardButton infoAboutShelterButton = new InlineKeyboardButton("Информация о приюте")
@@ -62,8 +58,6 @@ public class InlineKeyboardService {
 
     /**
      * This method create inline keyboard for info about shelter menu
-     *
-     * @return
      */
     public InlineKeyboardMarkup getInfoAboutShelterUserMenuKeyboard(UserCommand userCommand) {
         InlineKeyboardMarkup inlineKeyboardMarkup = new InlineKeyboardMarkup();

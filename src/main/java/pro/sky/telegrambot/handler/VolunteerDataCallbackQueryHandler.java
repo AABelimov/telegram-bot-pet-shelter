@@ -10,6 +10,9 @@ import java.io.File;
 import java.nio.file.Path;
 import java.util.List;
 
+/**
+ * This class handles the data coming from the volunteer in the callback query
+ */
 @Component
 public class VolunteerDataCallbackQueryHandler {
 

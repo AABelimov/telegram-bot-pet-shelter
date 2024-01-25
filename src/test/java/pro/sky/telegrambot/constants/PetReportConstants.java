@@ -1,6 +1,7 @@
 package pro.sky.telegrambot.constants;
 
 import pro.sky.telegrambot.dto.PetReportDtoOut;
+import pro.sky.telegrambot.enums.PetReportState;
 import pro.sky.telegrambot.model.Pet;
 import pro.sky.telegrambot.model.PetReport;
 import pro.sky.telegrambot.model.User;
@@ -42,7 +43,7 @@ public class PetReportConstants {
     public static final String PET_REPORT_CHANGE_IN_BEHAVIOR_1 = "";
     public static final String PET_REPORT_CHANGE_IN_BEHAVIOR_2 = "";
     public static final String PET_REPORT_CHANGE_IN_BEHAVIOR_3 = "";
-    public static final String PET_REPORT_STATE_1 = "";
+    public static final String PET_REPORT_STATE_1 = PetReportState.FILLING.name();
     public static final String PET_REPORT_STATE_2 = "";
     public static final String PET_REPORT_STATE_3 = "";
     public static final Volunteer PET_REPORT_VOLUNTEER_1 = VOLUNTEER_1;

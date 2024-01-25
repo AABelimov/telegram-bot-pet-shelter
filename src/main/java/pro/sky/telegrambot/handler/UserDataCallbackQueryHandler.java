@@ -16,7 +16,7 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 /**
- * This class handles commands coming from the user
+ * This class handles the data coming from the user in the callback query
  */
 @Component
 public class UserDataCallbackQueryHandler {
@@ -62,7 +62,7 @@ public class UserDataCallbackQueryHandler {
      * This method handles commands from the choose shelter menu
      *
      * @param userId    ID of the user who sent the message
-     * @param messageId ID of the message sent by the user
+     * @param messageId ID of the message to which the inline keyboard belongs
      * @param data      data from a callback query that belonged to a specific button
      */
     public void handleChooseShelter(Long userId, Integer messageId, String data) {
@@ -78,9 +78,9 @@ public class UserDataCallbackQueryHandler {
     /**
      * This method handles commands from the main menu
      *
-     * @param userId
-     * @param messageId
-     * @param data
+     * @param userId    ID of the user who interacts with the bot
+     * @param messageId ID of the message to which the inline keyboard belongs
+     * @param data      data associated with the callback button
      */
     public void handleMainMenu(Long userId, Integer messageId, String data) {
         UserCommand userCommand = UserCommand.valueOf(data);
@@ -115,9 +115,9 @@ public class UserDataCallbackQueryHandler {
     /**
      * This method handles commands from about shelter menu
      *
-     * @param userId
-     * @param messageId
-     * @param data
+     * @param userId    ID of the user who interacts with the bot
+     * @param messageId ID of the message to which the inline keyboard belongs
+     * @param data      data associated with the callback button
      */
     public void handleInfoAboutShelter(Long userId, Integer messageId, String data) {
         UserCommand userCommand = UserCommand.valueOf(data);
@@ -299,8 +299,8 @@ public class UserDataCallbackQueryHandler {
     /**
      * This method handles the back command
      *
-     * @param userId
-     * @param messageId
+     * @param userId    ID of the user who interacts with the bot
+     * @param messageId ID of the message to which the inline keyboard belongs
      */
     private void handleBackCommand(Long userId, Integer messageId) {
         UserState userState = userService.getUserState(userId);
@@ -326,7 +326,7 @@ public class UserDataCallbackQueryHandler {
     /**
      * This method starts a chat with the volunteer
      *
-     * @param userId
+     * @param userId ID of the user who interacts with the bot
      */
     private void startConversation(Long userId, Integer messageId) {
         Volunteer volunteer = volunteerService.getFreeVolunteer();
@@ -365,9 +365,9 @@ public class UserDataCallbackQueryHandler {
     /**
      * This method sends a photo with location map
      *
-     * @param userId
-     * @param messageId
-     * @param shelterType
+     * @param userId      ID of the user who interacts with the bot
+     * @param messageId   ID of the message to which the inline keyboard belongs
+     * @param shelterType user selected pet shelter type
      */
     private void locationMap(Long userId, Integer messageId, ShelterType shelterType) {
         InlineKeyboardMarkup inlineKeyboardMarkup = inlineKeyboardService.getInfoAboutShelterUserMenuKeyboard(UserCommand.LOCATION_MAP);

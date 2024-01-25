@@ -3,6 +3,9 @@ package pro.sky.telegrambot.constants;
 import pro.sky.telegrambot.dto.PetDtoOut;
 import pro.sky.telegrambot.model.Pet;
 
+import java.util.ArrayList;
+import java.util.List;
+
 public class PetConstants {
 
     public static final Long PET_ID_1 = 1L;
@@ -30,4 +33,9 @@ public class PetConstants {
     public static final PetDtoOut PET_DTO_OUT_1 = new PetDtoOut(PET_ID_1, KIND_OF_PET_1, PET_NAME_1);
     public static final PetDtoOut PET_DTO_OUT_2 = new PetDtoOut(PET_ID_2, KIND_OF_PET_2, PET_NAME_2);
     public static final PetDtoOut PET_DTO_OUT_3 = new PetDtoOut(PET_ID_3, KIND_OF_PET_3, PET_NAME_3);
+    public static final List<Pet> PET_LIST = new ArrayList<>(List.of(
+            PET_1,
+            PET_2,
+            PET_3
+    ));
 }
