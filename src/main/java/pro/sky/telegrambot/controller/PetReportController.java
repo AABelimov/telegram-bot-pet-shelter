@@ -9,7 +9,6 @@ import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.*;
 import pro.sky.telegrambot.dto.PetReportDtoOut;
-import pro.sky.telegrambot.dto.ProbationDtoOut;
 import pro.sky.telegrambot.service.PetReportService;
 
 import java.util.List;

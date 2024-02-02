@@ -30,11 +30,12 @@ class ProbationMapperTest {
     private PetService petService;
     @Mock
     private VolunteerService volunteerService;
+    @Mock
+    private PetMapper petMapper;
 
     @Spy
     private UserMapper userMapper;
-    @Spy
-    private PetMapper petMapper;
+
     @Spy
     private VolunteerMapper volunteerMapper;
 
@@ -43,28 +44,30 @@ class ProbationMapperTest {
 
     @Test
     void shouldReturnProbationDtoOut() {
+        when(petMapper.toDto(eq(PET_1))).thenReturn(PET_DTO_OUT_1);
+
         assertEquals(PROBATION_DTO_OUT_1, out.toDto(PROBATION_1));
     }
 
     @Test
     void shouldReturnProbation() {
         Probation acatualProbation;
-        when(userService.getUser(eq(USER_ID_1))).thenReturn(USER_1);
-        when(petService.getPet(eq(PET_ID_1))).thenReturn(PET_1);
-        when(volunteerService.getVolunteer(eq(VOLUNTEER_ID_1))).thenReturn(VOLUNTEER_1);
+        when(userService.getUser(eq(USER_ID_2))).thenReturn(USER_2);
+        when(petService.getPet(eq(PET_ID_2))).thenReturn(PET_2);
+        when(volunteerService.getVolunteer(eq(VOLUNTEER_ID_2))).thenReturn(VOLUNTEER_2);
 
         try (MockedStatic<LocalDateTime> mockedStatic = Mockito.mockStatic(LocalDateTime.class)) {
-            mockedStatic.when(LocalDateTime::now).thenReturn(LocalDateTime.MIN);
-            acatualProbation = out.toEntity(PROBATION_DTO_IN_1);
+            mockedStatic.when(LocalDateTime::now).thenReturn(PROBATION_LAST_REPORT_DATE_2);
+            acatualProbation = out.toEntity(PROBATION_DTO_IN_2);
         }
 
-        assertEquals(PROBATION_1.getUser(), acatualProbation.getUser());
-        assertEquals(PROBATION_1.getPet(), acatualProbation.getPet());
-        assertEquals(PROBATION_1.getShelterType(), acatualProbation.getShelterType());
-        assertEquals(PROBATION_1.getProbationEndDate(), acatualProbation.getProbationEndDate());
-        assertEquals(PROBATION_1.getLastReportDate(), acatualProbation.getLastReportDate());
-        assertEquals(PROBATION_1.getVolunteer(), acatualProbation.getVolunteer());
-        assertEquals(PROBATION_1.getState(), acatualProbation.getState());
+        assertEquals(PROBATION_2.getUser(), acatualProbation.getUser());
+        assertEquals(PROBATION_2.getPet(), acatualProbation.getPet());
+        assertEquals(PROBATION_2.getShelterType(), acatualProbation.getShelterType());
+        assertEquals(PROBATION_2.getProbationEndDate(), acatualProbation.getProbationEndDate());
+        assertEquals(PROBATION_2.getLastReportDate(), acatualProbation.getLastReportDate());
+        assertEquals(PROBATION_2.getVolunteer(), acatualProbation.getVolunteer());
+        assertEquals(PROBATION_2.getState(), acatualProbation.getState());
     }
 
     @Test

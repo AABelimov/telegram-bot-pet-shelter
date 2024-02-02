@@ -130,7 +130,7 @@ class PetReportControllerTest {
         when(probationRepository.findById(eq(PROBATION_ID_1))).thenReturn(Optional.of(PROBATION_1));
 
         try (MockedStatic<LocalDateTime> mockedStatic = Mockito.mockStatic(LocalDateTime.class)) {
-            mockedStatic.when(LocalDateTime::now).thenReturn(LocalDateTime.MAX);
+            mockedStatic.when(LocalDateTime::now).thenReturn(PET_REPORT_TIME_SENDING_REPORT_1);
 
             mockMvc.perform(
                             MockMvcRequestBuilders
@@ -175,7 +175,7 @@ class PetReportControllerTest {
         when(petReportRepository.findById(eq(PET_REPORT_ID_1))).thenReturn(Optional.of(PET_REPORT_1));
 
         try (MockedStatic<LocalDateTime> mockedStatic = Mockito.mockStatic(LocalDateTime.class)) {
-            mockedStatic.when(LocalDateTime::now).thenReturn(LocalDateTime.MAX);
+            mockedStatic.when(LocalDateTime::now).thenReturn(LocalDateTime.MIN);
 
             mockMvc.perform(
                             MockMvcRequestBuilders

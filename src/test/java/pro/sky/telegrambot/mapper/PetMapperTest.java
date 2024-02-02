@@ -8,7 +8,8 @@ import static pro.sky.telegrambot.constants.PetConstants.*;
 
 class PetMapperTest {
 
-    private final PetMapper out = new PetMapper();
+
+    private final PetMapper out = new PetMapper(null);
 
     @Test
     void shouldReturnPetDtoOut() {

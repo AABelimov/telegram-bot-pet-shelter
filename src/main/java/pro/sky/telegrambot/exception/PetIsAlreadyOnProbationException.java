@@ -1,6 +1,6 @@
 package pro.sky.telegrambot.exception;
 
-public class PetIsAlreadyOnProbationException extends RuntimeException {
+public class PetIsAlreadyOnProbationException extends BadRequestException {
 
     private final Long id;
 

@@ -10,14 +10,10 @@ public class Pet {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
-
     private String kindOfPet;
-
     private String name;
     private String photoPath;
-
     private String aboutPet;
-
     private String state;
 
     public Pet() {
