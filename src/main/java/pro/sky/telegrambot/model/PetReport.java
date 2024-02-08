@@ -18,7 +18,6 @@ public class PetReport {
 
     @ManyToOne
     private User user;
-
     private LocalDateTime timeSendingReport;
     private String photoPath;
     private String diet;
@@ -28,6 +27,34 @@ public class PetReport {
 
     @ManyToOne
     private Volunteer volunteer;
+
+    public PetReport() {
+
+    }
+
+    public PetReport(Long id,
+                     Pet pet,
+                     String shelterType,
+                     User user,
+                     LocalDateTime timeSendingReport,
+                     String photoPath,
+                     String diet,
+                     String wellBeing,
+                     String changeInBehavior,
+                     String state,
+                     Volunteer volunteer) {
+        Id = id;
+        this.pet = pet;
+        this.shelterType = shelterType;
+        this.user = user;
+        this.timeSendingReport = timeSendingReport;
+        this.photoPath = photoPath;
+        this.diet = diet;
+        this.wellBeing = wellBeing;
+        this.changeInBehavior = changeInBehavior;
+        this.state = state;
+        this.volunteer = volunteer;
+    }
 
     public Long getId() {
         return Id;

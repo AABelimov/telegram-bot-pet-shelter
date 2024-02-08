@@ -1,6 +1,7 @@
 package pro.sky.telegrambot.service;
 
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import pro.sky.telegrambot.dto.ProbationDtoIn;
 import pro.sky.telegrambot.dto.ProbationDtoOut;
 import pro.sky.telegrambot.enums.PetState;
@@ -21,20 +22,18 @@ public class ProbationService {
     private final ProbationRepository probationRepository;
     private final ProbationMapper probationMapper;
     private final PetService petService;
-    private final ProbationService probationService;
 
     public ProbationService(ProbationRepository probationRepository,
                             ProbationMapper probationMapper,
-                            PetService petService,
-                            ProbationService probationService) {
+                            PetService petService) {
         this.probationRepository = probationRepository;
         this.probationMapper = probationMapper;
         this.petService = petService;
-        this.probationService = probationService;
     }
 
+    @Transactional
     public ProbationDtoOut createProbation(ProbationDtoIn probationDtoIn) {
-        Probation probation = probationService.getProbationByPetId(probationDtoIn.getPetId());
+        Probation probation = getProbationByPetId(probationDtoIn.getPetId());
 
         if (probation != null) {
             throw new PetIsAlreadyOnProbationException(probationDtoIn.getPetId());
@@ -69,12 +68,14 @@ public class ProbationService {
         }
     }
 
+    @Transactional
     public void setProbationState(Long id, ProbationState state) {
         Probation probation = getProbation(id);
         probation.setState(state.name());
         probationRepository.save(probation);
     }
 
+    @Transactional
     public void setLastReportDate(Long id) {
         Probation probation = getProbation(id);
         probation.setLastReportDate(LocalDateTime.now());
@@ -89,6 +90,7 @@ public class ProbationService {
         probationRepository.delete(probation);
     }
 
+    @Transactional
     public void extendProbation(Long id, int days) {
         Probation probation = getProbation(id);
         probation.setProbationEndDate(probation.getProbationEndDate().plusDays(days));

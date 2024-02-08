@@ -2,6 +2,7 @@ package pro.sky.telegrambot.handler;
 
 import com.pengrad.telegrambot.model.request.InlineKeyboardMarkup;
 import org.springframework.stereotype.Component;
+import org.springframework.transaction.annotation.Transactional;
 import pro.sky.telegrambot.enums.PetReportState;
 import pro.sky.telegrambot.enums.ProbationState;
 import pro.sky.telegrambot.enums.VolunteerState;
@@ -38,6 +39,7 @@ public class VolunteerTextMessageHandler {
         this.overdueReportService = overdueReportService;
     }
 
+    @Transactional
     public void sendMessageToUser(Long volunteerId, String text) {
         Long userId = volunteerService.getUserIdByVolunteerId(volunteerId);
 
@@ -51,6 +53,7 @@ public class VolunteerTextMessageHandler {
         }
     }
 
+    @Transactional
     public void handleStart(Long volunteerId, String text, Integer messageId) {
         if ("/start".equals(text)) {
             int countReports = petReportService.getReportsByVolunteerIdAndState(volunteerId, PetReportState.WAITING_FOR_VERIFICATION).size();
@@ -71,6 +74,7 @@ public class VolunteerTextMessageHandler {
         }
     }
 
+    @Transactional
     public void handleCommentaryOnTheReport(Long volunteerId, String text) {
         PetReport petReport = petReportService.getReportByVolunteerIdAndState(volunteerId, PetReportState.WAITING_FOR_COMMENT);
         User user = petReport.getUser();

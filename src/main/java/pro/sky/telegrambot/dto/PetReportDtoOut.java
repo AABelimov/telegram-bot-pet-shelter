@@ -13,6 +13,28 @@ public class PetReportDtoOut {
     private String wellBeing;
     private String changeInBehavior;
 
+    public PetReportDtoOut() {
+
+    }
+
+    public PetReportDtoOut(Long id,
+                           UserDtoOut user,
+                           PetDtoOut pet,
+                           VolunteerDtoOut volunteer,
+                           LocalDateTime timeSendingReport,
+                           String diet,
+                           String wellBeing,
+                           String changeInBehavior) {
+        this.id = id;
+        this.user = user;
+        this.pet = pet;
+        this.volunteer = volunteer;
+        this.timeSendingReport = timeSendingReport;
+        this.diet = diet;
+        this.wellBeing = wellBeing;
+        this.changeInBehavior = changeInBehavior;
+    }
+
     public Long getId() {
         return id;
     }

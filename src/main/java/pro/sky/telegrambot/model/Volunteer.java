@@ -4,6 +4,7 @@ import javax.persistence.Entity;
 import javax.persistence.Id;
 import javax.persistence.OneToOne;
 import javax.persistence.Table;
+import java.util.Objects;
 
 /**
  * Volunteers will be stored in the volunteers table
@@ -33,6 +34,17 @@ public class Volunteer {
      * Indicator by which the bot determines what stage the volunteer is currently at
      */
     private String state;
+
+    public Volunteer() {
+
+    }
+
+    public Volunteer(Long id, String name, User user, String state) {
+        this.id = id;
+        this.name = name;
+        this.user = user;
+        this.state = state;
+    }
 
     public Long getId() {
         return id;
@@ -64,5 +76,18 @@ public class Volunteer {
 
     public void setState(String state) {
         this.state = state;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        Volunteer volunteer = (Volunteer) o;
+        return Objects.equals(id, volunteer.id);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(id);
     }
 }

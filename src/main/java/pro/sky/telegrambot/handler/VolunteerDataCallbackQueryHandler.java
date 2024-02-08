@@ -2,6 +2,7 @@ package pro.sky.telegrambot.handler;
 
 import com.pengrad.telegrambot.model.request.InlineKeyboardMarkup;
 import org.springframework.stereotype.Component;
+import org.springframework.transaction.annotation.Transactional;
 import pro.sky.telegrambot.enums.*;
 import pro.sky.telegrambot.model.*;
 import pro.sky.telegrambot.service.*;
@@ -10,6 +11,9 @@ import java.io.File;
 import java.nio.file.Path;
 import java.util.List;
 
+/**
+ * This class handles the data coming from the volunteer in the callback query
+ */
 @Component
 public class VolunteerDataCallbackQueryHandler {
 
@@ -116,6 +120,7 @@ public class VolunteerDataCallbackQueryHandler {
         }
     }
 
+    @Transactional
     private void overdueReports(Long volunteerId, Integer messageId) {
         List<OverdueReport> overdueReports = overdueReportService.getOverdueReportsByVolunteerId(volunteerId);
         StringBuilder text = new StringBuilder();
@@ -134,6 +139,7 @@ public class VolunteerDataCallbackQueryHandler {
         volunteerService.setVolunteerState(volunteerId, VolunteerState.OVERDUE_REPORTS);
     }
 
+    @Transactional
     private void checkReports(Long volunteerId, Integer messageId) {
         PetReport petReport = petReportService.getReportByVolunteerIdAndState(volunteerId, PetReportState.WAITING_FOR_VERIFICATION);
         InlineKeyboardMarkup inlineKeyboardMarkup;
@@ -150,6 +156,7 @@ public class VolunteerDataCallbackQueryHandler {
         }
     }
 
+    @Transactional
     private void decideOnProbation(Long volunteerId, Integer messageId) {
         Probation probation = probationService.getProbationByVolunteerIdAndState(volunteerId, ProbationState.ON_THE_DECISION);
         InlineKeyboardMarkup inlineKeyboardMarkup;
@@ -166,6 +173,7 @@ public class VolunteerDataCallbackQueryHandler {
         }
     }
 
+    @Transactional
     private void showReport(Long volunteerId, Integer messageId, PetReport petReport) {
         User user = petReport.getUser();
         Pet pet = petReport.getPet();
@@ -187,6 +195,7 @@ public class VolunteerDataCallbackQueryHandler {
         }
     }
 
+    @Transactional
     private void showProbation(Long volunteerId, Integer messageId, Probation probation) {
         Pet pet = probation.getPet();
         User user = probation.getUser();
@@ -204,6 +213,7 @@ public class VolunteerDataCallbackQueryHandler {
         }
     }
 
+    @Transactional
     private void acceptReport(Long volunteerId, Integer messageId) {
         PetReport petReport = petReportService.getReportByVolunteerIdAndState(volunteerId, PetReportState.WAITING_FOR_A_DECISION);
 
@@ -219,6 +229,7 @@ public class VolunteerDataCallbackQueryHandler {
         }
     }
 
+    @Transactional
     private void allowAdoption(Long volunteerId, Integer messageId) {
         Probation probation = probationService.getProbationByVolunteerIdAndState(volunteerId, ProbationState.WAITING_FOR_A_DECISION);
         User user = probation.getUser();
@@ -240,6 +251,7 @@ public class VolunteerDataCallbackQueryHandler {
         }
     }
 
+    @Transactional
     private void denyReport(Long volunteerId, Integer messageId) {
         PetReport petReport = petReportService.getReportByVolunteerIdAndState(volunteerId, PetReportState.WAITING_FOR_A_DECISION);
         Probation probation = probationService.getProbationByPetId(petReport.getPet().getId());
@@ -251,6 +263,7 @@ public class VolunteerDataCallbackQueryHandler {
         telegramBotService.sendMessage(volunteerId, "Опишите проблему в отчете");
     }
 
+    @Transactional
     private void refuseAdoption(Long volunteerId, Integer messageId) {
         Probation probation = probationService.getProbationByVolunteerIdAndState(volunteerId, ProbationState.WAITING_FOR_A_DECISION);
         User user = probation.getUser();
@@ -271,6 +284,7 @@ public class VolunteerDataCallbackQueryHandler {
         }
     }
 
+    @Transactional
     private void extendProbation(Long volunteerId, Integer messageId, int days) {
         Probation probation = probationService.getProbationByVolunteerIdAndState(volunteerId, ProbationState.WAITING_FOR_A_DECISION);
         User user = probation.getUser();
@@ -290,6 +304,7 @@ public class VolunteerDataCallbackQueryHandler {
         }
     }
 
+    @Transactional
     private void finishViewingReports(Long volunteerId, Integer messageId) {
         PetReport petReport = petReportService.getReportByVolunteerIdAndState(volunteerId, PetReportState.WAITING_FOR_A_DECISION);
         petReportService.setReportState(petReport.getId(), PetReportState.WAITING_FOR_VERIFICATION);
@@ -297,6 +312,7 @@ public class VolunteerDataCallbackQueryHandler {
         volunteerTextMessageHandler.handleStart(volunteerId, "/start", null);
     }
 
+    @Transactional
     private void finishViewingDecideOnProbation(Long volunteerId, Integer messageId) {
         Probation probation = probationService.getProbationByVolunteerIdAndState(volunteerId, ProbationState.WAITING_FOR_A_DECISION);
         probationService.setProbationState(probation.getId(), ProbationState.ON_THE_DECISION);

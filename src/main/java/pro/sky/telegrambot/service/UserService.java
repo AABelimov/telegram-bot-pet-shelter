@@ -1,6 +1,7 @@
 package pro.sky.telegrambot.service;
 
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import pro.sky.telegrambot.enums.ShelterType;
 import pro.sky.telegrambot.enums.UserState;
 import pro.sky.telegrambot.model.User;
@@ -35,12 +36,14 @@ public class UserService {
         return UserState.valueOf(user.getState());
     }
 
+    @Transactional
     public void setUserState(Long userId, UserState userState) {
         User user = getUser(userId);
         user.setState(userState.name());
         userRepository.save(user);
     }
 
+    @Transactional
     public void setSelectedShelter(Long userId, ShelterType shelterType) {
         User user = getUser(userId);
         user.setSelectedShelter(shelterType.name());
@@ -60,6 +63,7 @@ public class UserService {
         return user.getSelectedShelter();
     }
 
+    @Transactional
     public void setPhoneNumber(Long userId, String phoneNumber) {
         User user = getUser(userId);
         user.setPhoneNumber(phoneNumber);

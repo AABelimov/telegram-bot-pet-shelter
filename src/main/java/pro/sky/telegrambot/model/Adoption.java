@@ -2,6 +2,7 @@ package pro.sky.telegrambot.model;
 
 import javax.persistence.*;
 import java.time.LocalDateTime;
+import java.util.Objects;
 
 @Entity
 @Table(name = "adopted")
@@ -17,6 +18,17 @@ public class Adoption {
     @OneToOne
     private Pet pet;
     private LocalDateTime adoptionTime;
+
+    public Adoption() {
+
+    }
+
+    public Adoption(Long id, User user, Pet pet, LocalDateTime adoptionTime) {
+        this.id = id;
+        this.user = user;
+        this.pet = pet;
+        this.adoptionTime = adoptionTime;
+    }
 
     public Long getId() {
         return id;
@@ -48,5 +60,18 @@ public class Adoption {
 
     public void setAdoptionTime(LocalDateTime adoptionTime) {
         this.adoptionTime = adoptionTime;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        Adoption adoption = (Adoption) o;
+        return Objects.equals(id, adoption.id);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(id);
     }
 }

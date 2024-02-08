@@ -1,6 +1,7 @@
 package pro.sky.telegrambot.service;
 
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import pro.sky.telegrambot.enums.VolunteerState;
 import pro.sky.telegrambot.model.User;
 import pro.sky.telegrambot.model.Volunteer;
@@ -32,6 +33,7 @@ public class VolunteerService {
         }
     }
 
+    @Transactional
     public void setVolunteerState(Long volunteerId, VolunteerState volunteerState) {
         Volunteer volunteer = getVolunteer(volunteerId);
         volunteer.setState(volunteerState.name());
@@ -44,6 +46,7 @@ public class VolunteerService {
         volunteerRepository.save(volunteer);
     }
 
+    @Transactional
     public void stopConversation(Long volunteerId) {
         Volunteer volunteer = getVolunteer(volunteerId);
         volunteer.setUser(null);

@@ -19,8 +19,6 @@ public class InlineKeyboardService {
 
     /**
      * This method create inline keyboard for choose shelter menu
-     *
-     * @return
      */
     public InlineKeyboardMarkup getChooseShelterUserMenuKeyboard() {
         InlineKeyboardButton catButton = new InlineKeyboardButton("Приют с кошками")
@@ -34,8 +32,6 @@ public class InlineKeyboardService {
 
     /**
      * This method create inline keyboard for main menu
-     *
-     * @return
      */
     public InlineKeyboardMarkup getUserMainMenuKeyboard() {
         InlineKeyboardButton infoAboutShelterButton = new InlineKeyboardButton("Информация о приюте")
@@ -62,8 +58,6 @@ public class InlineKeyboardService {
 
     /**
      * This method create inline keyboard for info about shelter menu
-     *
-     * @return
      */
     public InlineKeyboardMarkup getInfoAboutShelterUserMenuKeyboard(UserCommand userCommand) {
         InlineKeyboardMarkup inlineKeyboardMarkup = new InlineKeyboardMarkup();
@@ -77,7 +71,7 @@ public class InlineKeyboardService {
         InlineKeyboardButton locationMapButton = new InlineKeyboardButton("Схема проезда")
                 .callbackData(UserCommand.LOCATION_MAP.name());
 
-        InlineKeyboardButton registrationPassButton = new InlineKeyboardButton("Контакты для оформления пропуска на машину")
+        InlineKeyboardButton registrationPassButton = new InlineKeyboardButton("Контакты для оформления пропуска")
                 .callbackData(UserCommand.REGISTRATION_PASS.name());
 
         InlineKeyboardButton safetyPrecautions = new InlineKeyboardButton("Рекомендации по технике беопасности")
@@ -144,13 +138,13 @@ public class InlineKeyboardService {
         InlineKeyboardButton transportationRulesButton = new InlineKeyboardButton("Рекомендации по транспортировке")
                 .callbackData(UserCommand.TRANSPORTATION_RULES.name());
 
-        InlineKeyboardButton homeImprovementForSmallPetButton = new InlineKeyboardButton("Рекомендации по обустойству дома для щенка")
+        InlineKeyboardButton homeImprovementForSmallPetButton = new InlineKeyboardButton("Обустойство дома для молодого животного")
                 .callbackData(UserCommand.HOME_IMPROVEMENT_FOR_SMALL_PET.name());
 
-        InlineKeyboardButton homeImprovementForBigPetButton = new InlineKeyboardButton("Рекомендации по обустойству дома для взрослого животного")
+        InlineKeyboardButton homeImprovementForBigPetButton = new InlineKeyboardButton("Обустойство дома для взрослого животного")
                 .callbackData(UserCommand.HOME_IMPROVEMENT_FOR_BIG_PET.name());
 
-        InlineKeyboardButton homeImprovementForPetWithDisabilitiesButton = new InlineKeyboardButton("Рекомендации по обустойству дома для животного с ограниченными возможностями")
+        InlineKeyboardButton homeImprovementForPetWithDisabilitiesButton = new InlineKeyboardButton("Обустойство дома для животного инвалида")
                 .callbackData(UserCommand.HOME_IMPROVEMENT_FOR_PET_WITH_DISABILITIES.name());
 
         InlineKeyboardButton adviceFromDogHandlersButton = new InlineKeyboardButton("Советы от кинолога")

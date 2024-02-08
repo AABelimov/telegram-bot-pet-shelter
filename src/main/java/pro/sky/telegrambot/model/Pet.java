@@ -1,6 +1,7 @@
 package pro.sky.telegrambot.model;
 
 import javax.persistence.*;
+import java.util.Objects;
 
 @Entity
 @Table(name = "pets")
@@ -9,15 +10,33 @@ public class Pet {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
-
     private String kindOfPet;
-
     private String name;
     private String photoPath;
-
     private String aboutPet;
-
     private String state;
+
+    public Pet() {
+
+    }
+
+    public Pet(Long id, String kindOfPet, String name, String photoPath, String aboutPet, String state) {
+        this.id = id;
+        this.kindOfPet = kindOfPet;
+        this.name = name;
+        this.photoPath = photoPath;
+        this.aboutPet = aboutPet;
+        this.state = state;
+    }
+
+    public Pet(Pet original) {
+        this.id = original.getId();
+        this.kindOfPet = original.getKindOfPet();
+        this.name = original.getName();
+        this.photoPath = original.getPhotoPath();
+        this.aboutPet = original.getAboutPet();
+        this.state = original.getState();
+    }
 
     public Long getId() {
         return id;
@@ -65,5 +84,18 @@ public class Pet {
 
     public void setState(String state) {
         this.state = state;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        Pet pet = (Pet) o;
+        return Objects.equals(id, pet.id);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(id);
     }
 }

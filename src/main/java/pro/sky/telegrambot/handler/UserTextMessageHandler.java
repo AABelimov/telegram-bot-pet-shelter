@@ -4,6 +4,7 @@ import com.pengrad.telegrambot.model.request.InlineKeyboardMarkup;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Component;
+import org.springframework.transaction.annotation.Transactional;
 import pro.sky.telegrambot.enums.*;
 import pro.sky.telegrambot.model.*;
 import pro.sky.telegrambot.service.*;
@@ -45,7 +46,7 @@ public class UserTextMessageHandler {
      *
      * @param userId    ID of the user who sent the message
      * @param text      text from message
-     * @param messageId ID of the message sent by the user
+     * @param messageId ID of the message to which the inline keyboard belongs
      */
     public void handleStart(Long userId, String text, Integer messageId) {
         if ("/start".equals(text)) {
@@ -70,9 +71,10 @@ public class UserTextMessageHandler {
     /**
      * This method sends a message to the volunteer while user chatting with him or ends the conversation
      *
-     * @param userId
-     * @param text
+     * @param userId ID of the user who sent the message
+     * @param text   text from message
      */
+    @Transactional
     public void sendMessageToVolunteer(Long userId, String text) {
         Volunteer volunteer = volunteerService.getVolunteerByUserId(userId);
 
@@ -89,9 +91,10 @@ public class UserTextMessageHandler {
     /**
      * This method handles the user's phone number
      *
-     * @param userId
-     * @param text
+     * @param userId ID of the user who sent the message
+     * @param text   text from message
      */
+    @Transactional
     public void handleUserPhoneNumber(Long userId, String text) {
         Matcher matcher = PATTERN_PHONE.matcher(text);
 
@@ -110,6 +113,7 @@ public class UserTextMessageHandler {
         }
     }
 
+    @Transactional
     public void handleDiet(Long userId, String text) {
         PetReport petReport = petReportService.getReportByUserIdAndState(userId);
 
@@ -118,6 +122,7 @@ public class UserTextMessageHandler {
         telegramBotService.sendMessage(userId, "Опишите общее самочувствие животного и привыкание к новому месту");
     }
 
+    @Transactional
     public void handleWellBeing(Long userId, String text) {
         PetReport petReport = petReportService.getReportByUserIdAndState(userId);
 
@@ -126,6 +131,7 @@ public class UserTextMessageHandler {
         telegramBotService.sendMessage(userId, "Опишите изменения в поведении");
     }
 
+    @Transactional
     public void handleChangeInBehavior(Long userId, String text) {
         PetReport petReport = petReportService.getReportByUserIdAndState(userId);
         Pet pet = petReport.getPet();

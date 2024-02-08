@@ -8,7 +8,6 @@ public class OverdueReport {
 
     @Id
     private Long id;
-
     private int days;
 
     @ManyToOne
@@ -19,6 +18,18 @@ public class OverdueReport {
 
     @ManyToOne
     private Volunteer volunteer;
+
+    public OverdueReport() {
+
+    }
+
+    public OverdueReport(Long id, int days, User user, Pet pet, Volunteer volunteer) {
+        this.id = id;
+        this.days = days;
+        this.user = user;
+        this.pet = pet;
+        this.volunteer = volunteer;
+    }
 
     public Long getId() {
         return id;

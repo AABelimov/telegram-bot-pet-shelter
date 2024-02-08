@@ -2,6 +2,7 @@ package pro.sky.telegrambot.model;
 
 import javax.persistence.*;
 import java.time.LocalDateTime;
+import java.util.Objects;
 
 @Entity
 public class Probation {
@@ -22,6 +23,38 @@ public class Probation {
     @ManyToOne
     private Volunteer volunteer;
     private String state;
+
+    public Probation() {
+
+    }
+
+    public Probation(Long id, User user,
+                     Pet pet,
+                     String shelterType,
+                     LocalDateTime probationEndDate,
+                     LocalDateTime lastReportDate,
+                     Volunteer volunteer,
+                     String state) {
+        this.id = id;
+        this.user = user;
+        this.pet = pet;
+        this.shelterType = shelterType;
+        this.probationEndDate = probationEndDate;
+        this.lastReportDate = lastReportDate;
+        this.volunteer = volunteer;
+        this.state = state;
+    }
+
+    public Probation(Probation original) {
+        this.id = original.getId();
+        this.user = original.getUser();
+        this.pet = original.getPet();
+        this.shelterType = original.getShelterType();
+        this.probationEndDate = original.getProbationEndDate();
+        this.lastReportDate = original.getLastReportDate();
+        this.volunteer = original.getVolunteer();
+        this.state = original.getState();
+    }
 
     public Long getId() {
         return id;
@@ -85,5 +118,18 @@ public class Probation {
 
     public void setState(String state) {
         this.state = state;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        Probation probation = (Probation) o;
+        return Objects.equals(id, probation.id);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(id);
     }
 }
