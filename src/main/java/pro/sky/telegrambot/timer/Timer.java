@@ -2,6 +2,7 @@ package pro.sky.telegrambot.timer;
 
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Component;
+import org.springframework.transaction.annotation.Transactional;
 import pro.sky.telegrambot.enums.ProbationState;
 import pro.sky.telegrambot.model.OverdueReport;
 import pro.sky.telegrambot.model.Probation;
@@ -29,6 +30,7 @@ public class Timer {
         this.overdueReportService = overdueReportService;
     }
 
+    @Transactional
     @Scheduled(cron = "00 50 23 * * *")
     public void checkLastReport() {
         List<Probation> probationList = probationService.getAll();
@@ -50,6 +52,7 @@ public class Timer {
         });
     }
 
+    @Transactional
     @Scheduled(cron = "00 00 01 * * *")
     public void checkEndProbation() {
         List<Probation> probationList = probationService.getAll();
@@ -63,6 +66,7 @@ public class Timer {
         });
     }
 
+    @Transactional
     @Scheduled(cron = "00 00 07 * * *")
     public void sendNotificationAboutReport() {
         List<OverdueReport> overdueReports = overdueReportService.getAll();

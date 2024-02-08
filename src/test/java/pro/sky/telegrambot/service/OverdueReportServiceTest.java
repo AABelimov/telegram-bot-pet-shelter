@@ -28,7 +28,7 @@ class OverdueReportServiceTest {
     }
 
     @Test
-    void shouldCallMethodToSaveOverdueReport() {
+    void testCreateOverdueReport() {
         out.createOverdueReport(PROBATION_1, OVERDUE_REPORT_DAYS_1);
         verify(overdueReportRepositoryMock).save(argThat(x -> {
             assertEquals(OVERDUE_REPORT_ID_1, x.getId());

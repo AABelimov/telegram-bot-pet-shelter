@@ -3,6 +3,7 @@ package pro.sky.telegrambot.service;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.StringUtils;
 import org.springframework.web.multipart.MultipartFile;
 import pro.sky.telegrambot.dto.PetDtoIn;
@@ -44,6 +45,7 @@ public class PetService {
         return petMapper.toDto(petRepository.save(pet));
     }
 
+    @Transactional
     public PetDtoOut uploadAvatar(Long id, MultipartFile file) throws IOException {
         Pet pet = getPet(id);
         ShelterType shelterType = pet.getKindOfPet().equals("CAT") ? ShelterType.CAT_SHELTER : ShelterType.DOG_SHELTER;
@@ -81,6 +83,7 @@ public class PetService {
         return petRepository.countByKindOfPetAndState(kindOfPet, PetState.WAITING_TO_BE_ADOPTED.name());
     }
 
+    @Transactional
     public void setPetState(Long id, PetState state) {
         Pet pet = getPet(id);
         pet.setState(state.name());

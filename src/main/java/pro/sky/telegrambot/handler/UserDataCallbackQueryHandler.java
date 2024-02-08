@@ -6,6 +6,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Component;
+import org.springframework.transaction.annotation.Transactional;
 import pro.sky.telegrambot.enums.*;
 import pro.sky.telegrambot.model.*;
 import pro.sky.telegrambot.service.*;
@@ -65,6 +66,7 @@ public class UserDataCallbackQueryHandler {
      * @param messageId ID of the message to which the inline keyboard belongs
      * @param data      data from a callback query that belonged to a specific button
      */
+    @Transactional
     public void handleChooseShelter(Long userId, Integer messageId, String data) {
         ShelterType shelterType = ShelterType.valueOf(data);
         InlineKeyboardMarkup inlineKeyboardMarkup = inlineKeyboardService.getUserMainMenuKeyboard();
@@ -82,6 +84,7 @@ public class UserDataCallbackQueryHandler {
      * @param messageId ID of the message to which the inline keyboard belongs
      * @param data      data associated with the callback button
      */
+    @Transactional
     public void handleMainMenu(Long userId, Integer messageId, String data) {
         UserCommand userCommand = UserCommand.valueOf(data);
         ShelterType shelterType = ShelterType.valueOf(userService.getSelectedShelter(userId));
@@ -104,10 +107,10 @@ public class UserDataCallbackQueryHandler {
                 userService.setUserState(userId, UserState.SEND_REPORT);
                 break;
             case CALL_VOLUNTEER:
-                startConversation(userId, messageId);
+                startConversation(userId, messageId, shelterType);
                 break;
             case BACK:
-                handleBackCommand(userId, messageId);
+                handleBackCommand(userId, messageId, shelterType);
                 break;
         }
     }
@@ -119,6 +122,7 @@ public class UserDataCallbackQueryHandler {
      * @param messageId ID of the message to which the inline keyboard belongs
      * @param data      data associated with the callback button
      */
+    @Transactional
     public void handleInfoAboutShelter(Long userId, Integer messageId, String data) {
         UserCommand userCommand = UserCommand.valueOf(data);
         ShelterType shelterType = ShelterType.valueOf(userService.getSelectedShelter(userId));
@@ -148,18 +152,19 @@ public class UserDataCallbackQueryHandler {
                 shareContacts(userId, messageId);
                 break;
             case CALL_VOLUNTEER:
-                startConversation(userId, messageId);
+                startConversation(userId, messageId, shelterType);
                 break;
             case BACK:
-                handleBackCommand(userId, messageId);
+                handleBackCommand(userId, messageId, shelterType);
                 break;
             case MAIN_MENU:
-                String selectedShelter = userService.getSelectedShelter(userId);
-                handleChooseShelter(userId, messageId, selectedShelter);
+//                String selectedShelter = userService.getSelectedShelter(userId);
+                handleChooseShelter(userId, messageId, shelterType.name());
                 break;
         }
     }
 
+    @Transactional
     public void handleHowAdoptPet(Long userId, Integer messageId, String data) {
         UserCommand userCommand = UserCommand.valueOf(data);
         ShelterType shelterType = ShelterType.valueOf(userService.getSelectedShelter(userId));
@@ -209,10 +214,10 @@ public class UserDataCallbackQueryHandler {
                 shareContacts(userId, messageId);
                 break;
             case CALL_VOLUNTEER:
-                startConversation(userId, messageId);
+                startConversation(userId, messageId, shelterType);
                 break;
             case BACK:
-                handleBackCommand(userId, messageId);
+                handleBackCommand(userId, messageId, shelterType);
                 break;
             case MAIN_MENU:
                 String selectedShelter = userService.getSelectedShelter(userId);
@@ -221,6 +226,7 @@ public class UserDataCallbackQueryHandler {
         }
     }
 
+    @Transactional
     public void handleSendReport(Long userId, Integer messageId, String data) {
         UserCommand userCommand = UserCommand.valueOf(data);
         ShelterType shelterType = ShelterType.valueOf(userService.getSelectedShelter(userId));
@@ -231,10 +237,10 @@ public class UserDataCallbackQueryHandler {
                 selectAnimalToReport(userId, messageId, shelterType);
                 break;
             case CALL_VOLUNTEER:
-                startConversation(userId, messageId);
+                startConversation(userId, messageId, shelterType);
                 break;
             case BACK:
-                handleBackCommand(userId, messageId);
+                handleBackCommand(userId, messageId, shelterType);
                 break;
             case MAIN_MENU:
                 String selectedShelter = userService.getSelectedShelter(userId);
@@ -243,6 +249,7 @@ public class UserDataCallbackQueryHandler {
         }
     }
 
+    @Transactional
     public void handleSelectAnimalToReport(Long userId, Integer messageId, String data) {
         Long petId = Long.parseLong(data);
         User user = userService.getUser(userId);
@@ -267,7 +274,8 @@ public class UserDataCallbackQueryHandler {
 
             if (probation != null && !probation.getPet().getId().equals(petId)) {
                 inlineKeyboardMarkup = inlineKeyboardService.getSendReportUserMenuKeyboard();
-                telegramBotService.editInlineKeyboard(userId, messageId, "сначала заполните до конца отчет для " + probation.getPet().getName(), inlineKeyboardMarkup);
+                telegramBotService.editInlineKeyboard(userId, messageId, "сначала заполните до конца отчет для "
+                        + probation.getPet().getName(), inlineKeyboardMarkup);
                 userService.setUserState(userId, UserState.SEND_REPORT);
             }
 
@@ -281,6 +289,7 @@ public class UserDataCallbackQueryHandler {
         }
     }
 
+    @Transactional
     public void handleViewingAnimals(Long userId, Integer messageId, String data) {
         ShelterType shelterType = ShelterType.valueOf(userService.getSelectedShelter(userId));
         int page = Integer.parseInt(data);
@@ -302,7 +311,8 @@ public class UserDataCallbackQueryHandler {
      * @param userId    ID of the user who interacts with the bot
      * @param messageId ID of the message to which the inline keyboard belongs
      */
-    private void handleBackCommand(Long userId, Integer messageId) {
+    @Transactional
+    private void handleBackCommand(Long userId, Integer messageId, ShelterType shelterType) {
         UserState userState = userService.getUserState(userId);
 
         switch (userState) {
@@ -312,8 +322,8 @@ public class UserDataCallbackQueryHandler {
             case INFO_ABOUT_SHELTER:
             case HOW_ADOPT_PET:
             case SEND_REPORT:
-                String selectedShelter = userService.getSelectedShelter(userId);
-                handleChooseShelter(userId, messageId, selectedShelter);
+//                String selectedShelter = userService.getSelectedShelter(userId);
+                handleChooseShelter(userId, messageId, shelterType.name());
                 break;
         }
     }
@@ -328,12 +338,13 @@ public class UserDataCallbackQueryHandler {
      *
      * @param userId ID of the user who interacts with the bot
      */
-    private void startConversation(Long userId, Integer messageId) {
+    @Transactional
+    private void startConversation(Long userId, Integer messageId, ShelterType shelterType) {
         Volunteer volunteer = volunteerService.getFreeVolunteer();
         User user = userService.getUser(userId);
         UserState userState = UserState.valueOf(user.getState());
         InlineKeyboardMarkup inlineKeyboardMarkup = new InlineKeyboardMarkup();
-        ShelterType shelterType;
+//        ShelterType shelterType;
 
         if (volunteer == null) {
             switch (userState) {
@@ -344,7 +355,7 @@ public class UserDataCallbackQueryHandler {
                     inlineKeyboardMarkup = inlineKeyboardService.getInfoAboutShelterUserMenuKeyboard(UserCommand.CALL_VOLUNTEER);
                     break;
                 case HOW_ADOPT_PET:
-                    shelterType = ShelterType.valueOf(user.getSelectedShelter());
+//                    shelterType = ShelterType.valueOf(user.getSelectedShelter());
                     inlineKeyboardMarkup = inlineKeyboardService.getHowAdoptPetUserMenuKeyboard(UserCommand.CALL_VOLUNTEER, shelterType);
                     break;
                 case SEND_REPORT:
@@ -395,6 +406,7 @@ public class UserDataCallbackQueryHandler {
         telegramBotService.editMessage(userId, messageId, text);
     }
 
+    @Transactional
     private void listOfAnimals(Long userId, Integer messageId, ShelterType shelterType, int page) {
         int countPets = (int) petService.countPetsByKindOfPet(shelterType);
 
@@ -423,6 +435,7 @@ public class UserDataCallbackQueryHandler {
         }
     }
 
+    @Transactional
     private void selectAnimalToReport(Long userId, Integer messageId, ShelterType shelterType) {
         Probation probation = probationService.getProbationByUserIdAndShelterTypeAndState(userId, shelterType, ProbationState.FILLING_REPORT);
         List<Probation> probationList = probationService.getProbationList(userId, shelterType, ProbationState.WAITING_FOR_A_NEW_REPORT);

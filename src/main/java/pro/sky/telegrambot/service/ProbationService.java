@@ -1,6 +1,7 @@
 package pro.sky.telegrambot.service;
 
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import pro.sky.telegrambot.dto.ProbationDtoIn;
 import pro.sky.telegrambot.dto.ProbationDtoOut;
 import pro.sky.telegrambot.enums.PetState;
@@ -30,6 +31,7 @@ public class ProbationService {
         this.petService = petService;
     }
 
+    @Transactional
     public ProbationDtoOut createProbation(ProbationDtoIn probationDtoIn) {
         Probation probation = getProbationByPetId(probationDtoIn.getPetId());
 
@@ -66,12 +68,14 @@ public class ProbationService {
         }
     }
 
+    @Transactional
     public void setProbationState(Long id, ProbationState state) {
         Probation probation = getProbation(id);
         probation.setState(state.name());
         probationRepository.save(probation);
     }
 
+    @Transactional
     public void setLastReportDate(Long id) {
         Probation probation = getProbation(id);
         probation.setLastReportDate(LocalDateTime.now());
@@ -86,6 +90,7 @@ public class ProbationService {
         probationRepository.delete(probation);
     }
 
+    @Transactional
     public void extendProbation(Long id, int days) {
         Probation probation = getProbation(id);
         probation.setProbationEndDate(probation.getProbationEndDate().plusDays(days));

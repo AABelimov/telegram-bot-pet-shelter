@@ -6,6 +6,16 @@ public class PetDtoIn {
     private String kindOfPet;
     private String aboutPet;
 
+    public PetDtoIn() {
+
+    }
+
+    public PetDtoIn(String name, String kindOfPet, String aboutPet) {
+        this.name = name;
+        this.kindOfPet = kindOfPet;
+        this.aboutPet = aboutPet;
+    }
+
     public String getName() {
         return name;
     }

@@ -28,7 +28,7 @@ class AdoptionServiceTest {
     }
 
     @Test
-    void shouldCallMethodToSaveAdoption() {
+    void testCreateAdoption() {
         try (MockedStatic<LocalDateTime> mockedStatic = Mockito.mockStatic(LocalDateTime.class)) {
             mockedStatic.when(LocalDateTime::now).thenReturn(ADOPTION_LOCAL_DATE_TIME_1);
             out.createAdoption(USER_1, PET_1);

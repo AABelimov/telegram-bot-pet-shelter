@@ -18,7 +18,6 @@ public class PetReport {
 
     @ManyToOne
     private User user;
-
     private LocalDateTime timeSendingReport;
     private String photoPath;
     private String diet;

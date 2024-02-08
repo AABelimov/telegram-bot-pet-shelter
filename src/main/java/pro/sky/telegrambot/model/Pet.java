@@ -29,6 +29,15 @@ public class Pet {
         this.state = state;
     }
 
+    public Pet(Pet original) {
+        this.id = original.getId();
+        this.kindOfPet = original.getKindOfPet();
+        this.name = original.getName();
+        this.photoPath = original.getPhotoPath();
+        this.aboutPet = original.getAboutPet();
+        this.state = original.getState();
+    }
+
     public Long getId() {
         return id;
     }

@@ -73,7 +73,7 @@ class ProbationControllerTest {
 
     @Test
     void testCreateProbation() throws Exception {
-        Probation probation = PROBATION_1;
+        Probation probation = new Probation(PROBATION_1);
         probation.setId(null);
 
         when(probationRepository.findByPetId(eq(PET_ID_1))).thenReturn(null);

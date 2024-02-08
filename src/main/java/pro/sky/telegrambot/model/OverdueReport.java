@@ -8,7 +8,6 @@ public class OverdueReport {
 
     @Id
     private Long id;
-
     private int days;
 
     @ManyToOne

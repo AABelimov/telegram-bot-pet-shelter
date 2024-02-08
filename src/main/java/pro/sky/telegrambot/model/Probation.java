@@ -45,6 +45,17 @@ public class Probation {
         this.state = state;
     }
 
+    public Probation(Probation original) {
+        this.id = original.getId();
+        this.user = original.getUser();
+        this.pet = original.getPet();
+        this.shelterType = original.getShelterType();
+        this.probationEndDate = original.getProbationEndDate();
+        this.lastReportDate = original.getLastReportDate();
+        this.volunteer = original.getVolunteer();
+        this.state = original.getState();
+    }
+
     public Long getId() {
         return id;
     }

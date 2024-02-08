@@ -12,7 +12,7 @@ class PetMapperTest {
     private final PetMapper out = new PetMapper(null);
 
     @Test
-    void shouldReturnPetDtoOut() {
+    void testToDto() {
         PetDtoOut actualPetDtoOut = out.toDto(PET_1);
 
         assertEquals(PET_DTO_OUT_1.getId(), actualPetDtoOut.getId());

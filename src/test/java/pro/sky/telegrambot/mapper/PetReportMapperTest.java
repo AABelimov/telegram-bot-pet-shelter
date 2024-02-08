@@ -28,7 +28,7 @@ class PetReportMapperTest {
     private PetReportMapper out;
 
     @Test
-    void shouldReturnPetReportDtoOut() {
+    void testToDto() {
         PetReportDtoOut actualPetReportDtoOut;
 
         when(userMapperMock.toDto(eq(USER_1))).thenReturn(USER_DTO_OUT_1);

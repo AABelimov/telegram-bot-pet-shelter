@@ -43,14 +43,14 @@ class ProbationMapperTest {
     private ProbationMapper out;
 
     @Test
-    void shouldReturnProbationDtoOut() {
+    void testToDto() {
         when(petMapper.toDto(eq(PET_1))).thenReturn(PET_DTO_OUT_1);
 
         assertEquals(PROBATION_DTO_OUT_1, out.toDto(PROBATION_1));
     }
 
     @Test
-    void shouldReturnProbation() {
+    void testToEntity() {
         Probation acatualProbation;
         when(userService.getUser(eq(USER_ID_2))).thenReturn(USER_2);
         when(petService.getPet(eq(PET_ID_2))).thenReturn(PET_2);
@@ -68,12 +68,11 @@ class ProbationMapperTest {
         assertEquals(PROBATION_2.getLastReportDate(), acatualProbation.getLastReportDate());
         assertEquals(PROBATION_2.getVolunteer(), acatualProbation.getVolunteer());
         assertEquals(PROBATION_2.getState(), acatualProbation.getState());
-    }
 
-    @Test
-    void shouldTrowException() {
+
         assertThrows(UserNotFoundException.class, () -> out.toEntity(PROBATION_DTO_IN_1));
         when(userService.getUser(eq(USER_ID_1))).thenReturn(USER_1);
         assertThrows(VolunteerNotFoundException.class, () -> out.toEntity(PROBATION_DTO_IN_1));
     }
+
 }

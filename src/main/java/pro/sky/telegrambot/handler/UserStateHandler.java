@@ -4,6 +4,7 @@ import com.pengrad.telegrambot.model.CallbackQuery;
 import com.pengrad.telegrambot.model.Message;
 import com.pengrad.telegrambot.model.PhotoSize;
 import org.springframework.stereotype.Component;
+import org.springframework.transaction.annotation.Transactional;
 import pro.sky.telegrambot.enums.UserState;
 import pro.sky.telegrambot.service.UserService;
 
@@ -35,6 +36,7 @@ public class UserStateHandler {
      * @param callbackQuery represent an incoming callback query from a callback button in an inline keyboard
      * @param message       message coming from someone who use bot
      */
+    @Transactional
     public void handleState(Long userId, CallbackQuery callbackQuery, Message message) {
         UserState userState = userService.getUserState(userId);
 

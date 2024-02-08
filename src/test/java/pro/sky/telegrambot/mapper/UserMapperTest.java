@@ -10,7 +10,7 @@ class UserMapperTest {
     private final UserMapper out = new UserMapper();
 
     @Test
-    void shouldReturnUserDtoOut() {
+    void testToDto() {
         assertEquals(USER_DTO_OUT_1, out.toDto(USER_1));
     }
 
