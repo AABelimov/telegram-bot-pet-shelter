@@ -6,22 +6,25 @@ import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import org.springframework.http.MediaType;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
+import org.springframework.web.bind.annotation.*;
 import pro.sky.telegrambot.dto.ProbationDtoIn;
 import pro.sky.telegrambot.dto.ProbationDtoOut;
+import pro.sky.telegrambot.enums.ProbationState;
+import pro.sky.telegrambot.service.PetService;
 import pro.sky.telegrambot.service.ProbationService;
 
-@RestController
-@RequestMapping("probation")
+@Controller
+@RequestMapping("probations")
 public class ProbationController {
 
     private final ProbationService probationService;
+    private final PetService petService;
 
-    public ProbationController(ProbationService probationService) {
+    public ProbationController(ProbationService probationService, PetService petService) {
         this.probationService = probationService;
+        this.petService = petService;
     }
 
     @Operation(
@@ -48,8 +51,25 @@ public class ProbationController {
             }
     )
     @PostMapping
-    public ProbationDtoOut createProbation(@Parameter(description = "")
-                                           @RequestBody ProbationDtoIn probationDtoIn) {
-        return probationService.createProbation(probationDtoIn);
+    public String createProbation(@Parameter(description = "")
+                                  @ModelAttribute ProbationDtoIn probationDtoIn,
+                                  Model model) {
+        probationService.createProbation(probationDtoIn);
+        model.addAttribute("pets", petService.getAllPetsAvailableForAdoption(0));
+        model.addAttribute("page", 0);
+        model.addAttribute("shelterType", null);
+        return "pets/pets";
+    }
+
+    @GetMapping("{id}")
+    public String getProbation(@PathVariable Long id, Model model) {
+        model.addAttribute("probation", probationService.getProbationDto(id));
+        return "probations/probation";
+    }
+
+    @GetMapping("coming-to-end")
+    public String getProbationaryPeriodsComingToEnd(@RequestParam Integer page, Model model) {
+        model.addAttribute("probations", probationService.getProbationsByState(ProbationState.ON_THE_DECISION, page));
+        return "probations/probations";
     }
 }

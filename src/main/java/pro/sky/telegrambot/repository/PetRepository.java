@@ -10,4 +10,8 @@ public interface PetRepository extends JpaRepository<Pet, Long> {
     List<Pet> findByKindOfPetAndStateOrderByName(String kindOfPet, String state, PageRequest pageRequest);
 
     long countByKindOfPetAndState(String kindOfPet, String state);
+
+    List<Pet> findAllByStateOrderByIdDesc(String state, PageRequest pageRequest);
+
+    List<Pet> findAllByStateAndKindOfPetOrderByIdDesc(String state, String kindOfPet, PageRequest pageRequest);
 }

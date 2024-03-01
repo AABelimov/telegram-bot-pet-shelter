@@ -7,13 +7,21 @@ import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import org.springframework.http.MediaType;
+import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 import pro.sky.telegrambot.dto.PetReportDtoOut;
+import pro.sky.telegrambot.model.PetReport;
 import pro.sky.telegrambot.service.PetReportService;
 
-import java.util.List;
+import javax.servlet.http.HttpServletResponse;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.OutputStream;
+import java.nio.file.Files;
+import java.nio.file.Path;
 
-@RestController
+@Controller
 @RequestMapping("reports")
 public class PetReportController {
 
@@ -42,9 +50,11 @@ public class PetReportController {
             }
     )
     @GetMapping("{id}")
-    public PetReportDtoOut getReport(@Parameter(description = "id of report to be searched")
-                                     @PathVariable Long id) {
-        return petReportService.getReportDto(id);
+    public String getReport(@Parameter(description = "id of report to be searched")
+                            @PathVariable Long id,
+                            Model model) {
+        model.addAttribute("report", petReportService.getReportDto(id));
+        return "reports/report";
     }
 
     @Operation(
@@ -62,8 +72,23 @@ public class PetReportController {
             }
     )
     @GetMapping("unverified")
-    public List<PetReportDtoOut> getUnverifiedReports() {
-        return petReportService.getUnverifiedReports();
+    public String getUnverifiedReports(@RequestParam Integer page, Model model) {
+        model.addAttribute("reports", petReportService.getUnverifiedReports(page));
+        return "reports/reports";
+    }
+
+    @GetMapping("{id}/photo")
+    public void getPhoto(@PathVariable Long id, HttpServletResponse response) throws IOException {
+        PetReport petReport = petReportService.getReport(id);
+        Path path = Path.of(petReport.getPhotoPath());
+        try (
+                InputStream is = Files.newInputStream(path);
+                OutputStream os = response.getOutputStream()
+        ) {
+            response.setStatus(200);
+            response.setContentType(MediaType.IMAGE_JPEG_VALUE);
+            is.transferTo(os);
+        }
     }
 
     @Operation(
@@ -85,9 +110,12 @@ public class PetReportController {
             }
     )
     @PatchMapping("{id}/accept")
-    public PetReportDtoOut acceptReport(@Parameter(description = "id of the report that will be accepted")
-                                        @PathVariable Long id) {
-        return petReportService.acceptReport(id);
+    public String acceptReport(@Parameter(description = "id of the report that will be accepted")
+                               @PathVariable Long id,
+                               Model model) {
+        petReportService.acceptReport(id);
+        model.addAttribute("reports", petReportService.getUnverifiedReports(0));
+        return "reports/reports";
     }
 
     @Operation(
@@ -109,10 +137,13 @@ public class PetReportController {
             }
     )
     @PatchMapping("{id}/deny")
-    public PetReportDtoOut denyReport(@Parameter(description = "id of the report that will be denied")
-                                      @PathVariable Long id,
-                                      @Parameter(description = "rejection reason")
-                                      @RequestParam String comment) {
-        return petReportService.denyReport(id, comment);
+    public String denyReport(@Parameter(description = "id of the report that will be denied")
+                             @PathVariable Long id,
+                             @Parameter(description = "rejection reason")
+                             @RequestParam String comment,
+                             Model model) {
+        petReportService.denyReport(id, comment);
+        model.addAttribute("reports", petReportService.getUnverifiedReports(0));
+        return "reports/reports";
     }
 }

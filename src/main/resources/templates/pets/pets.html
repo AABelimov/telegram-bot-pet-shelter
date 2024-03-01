@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+</head>
+<body>
+<div>
+    <nav>
+        <a th:href="@{/pets?page=0}">Главная</a>
+        <a th:href="@{/pets/cat_shelter?page=0}">Кошачий приют</a>
+        <a th:href="@{/pets/dog_shelter?page=0}">Собачий приют</a>
+        <a th:href="@{/reports/unverified?page=0}">Проверить отчеты</a>
+        <a th:href="@{/probations/coming-to-end?page=0}">fasasdfs</a>
+    </nav>
+    <div th:each="pet : ${pets}">
+        <div>
+            <span th:text="${pet.getId()}"></span>
+            <a th:href="@{'/pets/' + ${pet.getId()}}" th:text="${pet.getName()}"></a>
+            <span th:text="${pet.getKindOfPet()}"></span>
+            <img th:src="${pet.getPhotoPath()}" alt="oops" height="90" width="160">
+        </div>
+    </div>
+</div>
+<div th:if="${shelterType == null}">
+    <a th:href="@{'/pets?page=' + ${page - 1}}">prev</a>
+    <a th:href="@{'/pets?page=' + ${page + 1}}">next</a>
+</div>
+<div th:if="${shelterType == 'cat_shelter'}">
+    <p><a th:href="@{/pets/cat_shelter/create-form}">add new pet</a></p>
+    <a th:href="@{'/pets/cat_shelter?page=' + ${page - 1}}">prev</a>
+    <a th:href="@{'/pets/cat_shelter?page=' + ${page + 1}}">next</a>
+</div>
+<div th:if="${shelterType == 'dog_shelter'}">
+    <p><a th:href="@{/pets/dog_shelter/create-form}">add new pet</a></p>
+    <a th:href="@{'/pets/dog_shelter?page=' + ${page - 1}}">prev</a>
+    <a th:href="@{'/pets/dog_shelter?page=' + ${page + 1}}">next</a>
+</div>
+</body>
+</html>

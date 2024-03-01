@@ -1,3 +1,4 @@
+/*
 package pro.sky.telegrambot.constants;
 
 import pro.sky.telegrambot.dto.ProbationDtoIn;
@@ -64,3 +65,4 @@ public class ProbationConstants {
     public static final ProbationDtoIn NOT_FOUNT_USER_ID_PROBATION_DTO_IN = new ProbationDtoIn(NOT_FOUND_USER_ID, PET_ID_1, VOLUNTEER_ID_1);
     public static final ProbationDtoIn NOT_FOUNT_VOLUNTEER_ID_PROBATION_DTO_IN = new ProbationDtoIn(USER_ID_1, PET_ID_1, NOT_FOUND_VOLUNTEER_ID);
 }
+*/

@@ -1,7 +1,7 @@
 package pro.sky.telegrambot.service;
 
+import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
 import pro.sky.telegrambot.dto.ProbationDtoIn;
 import pro.sky.telegrambot.dto.ProbationDtoOut;
 import pro.sky.telegrambot.enums.PetState;
@@ -15,6 +15,7 @@ import pro.sky.telegrambot.repository.ProbationRepository;
 
 import java.time.LocalDateTime;
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Service
 public class ProbationService {
@@ -31,7 +32,6 @@ public class ProbationService {
         this.petService = petService;
     }
 
-    @Transactional
     public ProbationDtoOut createProbation(ProbationDtoIn probationDtoIn) {
         Probation probation = getProbationByPetId(probationDtoIn.getPetId());
 
@@ -68,14 +68,12 @@ public class ProbationService {
         }
     }
 
-    @Transactional
     public void setProbationState(Long id, ProbationState state) {
         Probation probation = getProbation(id);
         probation.setState(state.name());
         probationRepository.save(probation);
     }
 
-    @Transactional
     public void setLastReportDate(Long id) {
         Probation probation = getProbation(id);
         probation.setLastReportDate(LocalDateTime.now());
@@ -90,7 +88,6 @@ public class ProbationService {
         probationRepository.delete(probation);
     }
 
-    @Transactional
     public void extendProbation(Long id, int days) {
         Probation probation = getProbation(id);
         probation.setProbationEndDate(probation.getProbationEndDate().plusDays(days));
@@ -105,4 +102,15 @@ public class ProbationService {
         return probationRepository.findAllByVolunteerIdAndState(volunteerId, state.name());
     }
 
+    public List<ProbationDtoOut> getProbationsByState(ProbationState probationState, Integer page) {
+        PageRequest pageRequest = PageRequest.of(page, 10);
+        List<Probation> probations = probationRepository.findAllByState(probationState.name(), pageRequest);
+        return probations.stream()
+                .map(probationMapper::toDto)
+                .collect(Collectors.toList());
+    }
+
+    public ProbationDtoOut getProbationDto(Long id) {
+        return probationMapper.toDto(getProbation(id));
+    }
 }

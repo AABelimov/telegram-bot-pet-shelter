@@ -1,0 +1,31 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+</head>
+<body>
+
+<nav>
+    <a th:href="@{/pets?page=0}">Главная</a>
+    <a th:href="@{/pets/cat_shelter?page=0}">Кошачий приют</a>
+    <a th:href="@{/pets/dog_shelter?page=0}">Собачий приют</a>
+    <a th:href="@{/reports/unverified?page=0}">Проверить отчеты</a>
+</nav>
+
+<div>
+    <!--        <a th:href="@{'/pets/' + ${pet.getId()}}" th:text="${probation.get()}"></a>-->
+    <span th:text="${probation.getUser().getName()}"></span>
+    <br>
+    <span th:text="${probation.getPet().getName()}"></span>
+    <br>
+    <span th:text="${probation.getVolunteer().getName()}"></span>
+    <br>
+    <span th:text="${probation.getLastReportDate()}"></span>
+    <br>
+    <span th:text="${probation.getProbationEndDate()}"></span>
+    <!--        <img th:src="${pet.getPhotoPath()}" alt="oops" height="90" width="160">-->
+</div>
+
+</body>
+</html>

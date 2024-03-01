@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+</head>
+<body>
+
+<nav>
+    <a th:href="@{/pets?page=0}">Главная</a>
+    <a th:href="@{/pets/cat_shelter?page=0}">Кошачий приют</a>
+    <a th:href="@{/pets/dog_shelter?page=0}">Собачий приют</a>
+    <a th:href="@{/reports/unverified?page=0}">Проверить отчеты</a>
+</nav>
+
+<p>create new pet</p>
+
+<form th:action="@{/pets}" th:object="${pet}" method="post" enctype="multipart/form-data">
+    <label for="name">Name</label>
+    <br>
+    <input placeholder="Игорь" type="text" th:field="*{name}" id="name"/>
+    <br>
+    <br>
+    <label for="aboutPet">About pet</label>
+    <br>
+    <textarea placeholder="Балдежный пет" type="text" th:field="*{aboutPet}" id="aboutPet"></textarea>
+    <br>
+    <br>
+    <label for="file">Pet's photo</label>
+    <br>
+    <input type="file" name="file" id="file" accept="image/*"> <!--class="form-control-file"-->
+    <br>
+    <label th:switch="${shelterType}">
+        <input th:case="'cat_shelter'" type="hidden" value="CAT" name="kindOfPet"/>
+        <input th:case="'dog_shelter'" type="hidden" value="DOG" name="kindOfPet"/>
+    </label>
+    <br>
+    <button type="submit">Создать</button>
+</form>
+</body>
+</html>

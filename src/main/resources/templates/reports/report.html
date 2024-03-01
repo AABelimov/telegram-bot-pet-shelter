@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+</head>
+<body>
+
+<nav>
+    <a th:href="@{/pets?page=0}">Главная</a>
+    <a th:href="@{/pets/cat_shelter?page=0}">Кошачий приют</a>
+    <a th:href="@{/pets/dog_shelter?page=0}">Собачий приют</a>
+    <a th:href="@{/reports/unverified?page=0}">Проверить отчеты</a>
+</nav>
+
+<div>
+    <span th:text="${report.getUser().getName()}"></span>
+    <span th:text="${report.getPet().getName()}"></span>
+    <span th:text="${report.getVolunteer().getName()}"></span>
+    <span th:text="${report.getTimeSendingReport()}"></span>
+    <span th:text="${report.getDiet()}"></span>
+    <span th:text="${report.getWellBeing()}"></span>
+    <span th:text="${report.getChangeInBehavior()}"></span>
+    <img th:src="${report.getPhotoPath()}" alt="oops" height="90" width="160">
+
+    <form th:action="@{'/reports/' + ${report.getId()} + '/accept'}" th:method="patch">
+        <button type="submit">Принять</button>
+    </form>
+
+    <form th:action="@{'/reports/' + ${report.getId()} + '/deny'}" th:method="patch">
+        <label>
+            <textarea type="text" th:name="comment"></textarea>
+        </label>
+        <button type="submit">Не принять</button>
+    </form>
+</div>
+
+</body>
+</html>

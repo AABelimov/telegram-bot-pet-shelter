@@ -75,6 +75,7 @@ public class ProbationMapper {
     public ProbationDtoOut toDto(Probation probation) {
         ProbationDtoOut probationDtoOut = new ProbationDtoOut();
 
+        probationDtoOut.setId(probation.getId());
         probationDtoOut.setUser(userMapper.toDto(probation.getUser()));
         probationDtoOut.setPet(petMapper.toDto(probation.getPet()));
         probationDtoOut.setProbationEndDate(probation.getProbationEndDate());

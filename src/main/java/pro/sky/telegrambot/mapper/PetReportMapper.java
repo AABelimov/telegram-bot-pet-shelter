@@ -23,6 +23,7 @@ public class PetReportMapper {
         PetReportDtoOut petReportDtoOut = new PetReportDtoOut();
 
         petReportDtoOut.setId(petReport.getId());
+        petReportDtoOut.setPhotoPath("http://localhost:8080/reports/" + petReport.getId() + "/photo");
         petReportDtoOut.setUser(userMapper.toDto(petReport.getUser()));
         petReportDtoOut.setPet(petMapper.toDto(petReport.getPet()));
         petReportDtoOut.setVolunteer(volunteerMapper.toDto(petReport.getVolunteer()));

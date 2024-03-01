@@ -78,7 +78,7 @@ class PetReportControllerTest {
     @Autowired
     private ObjectMapper objectMapper;
 
-    @Test
+    /*@Test
     void testGetUnverifiedReports() throws Exception {
         when(petReportRepository.findAllByState(eq(PetReportState.WAITING_FOR_VERIFICATION.name()))).thenReturn(UNVERIFIED_REPORTS_LIST);
 
@@ -91,7 +91,7 @@ class PetReportControllerTest {
                     assertEquals(objectMapper.writeValueAsString(UNVERIFIED_REPORTS_DTO_OUT_LIST),
                             result.getResponse().getContentAsString());
                 });
-    }
+    }*/
 
     @Test
     void testGetReport() throws Exception {

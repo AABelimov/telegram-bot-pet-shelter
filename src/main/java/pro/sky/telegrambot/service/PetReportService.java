@@ -1,7 +1,7 @@
 package pro.sky.telegrambot.service;
 
+import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
 import pro.sky.telegrambot.dto.PetReportDtoOut;
 import pro.sky.telegrambot.enums.PetReportState;
 import pro.sky.telegrambot.enums.ProbationState;
@@ -75,53 +75,47 @@ public class PetReportService {
         return petReportRepository.findByUserIdAndShelterTypeAndState(userId, shelterType.name(), state.name());
     }
 
-    @Transactional
     public void setPhotoPath(Long id, String photoPath) {
         PetReport petReport = getReport(id);
         petReport.setPhotoPath(photoPath);
         petReportRepository.save(petReport);
     }
 
-    @Transactional
     public void setDiet(Long id, String text) {
         PetReport petReport = getReport(id);
         petReport.setDiet(text);
         petReportRepository.save(petReport);
     }
 
-    @Transactional
     public PetReport getReportByUserIdAndState(Long userId) {
         User user = userService.getUser(userId);
         ShelterType shelterType = ShelterType.valueOf(user.getSelectedShelter());
         return getReportByUserIdAndShelterTypeAndState(userId, shelterType, PetReportState.FILLING);
     }
 
-    public List<PetReport> getPetReportsByState(PetReportState state) {
-        return petReportRepository.findAllByState(state.name());
+    public List<PetReport> getPetReportsByState(PetReportState state, Integer page) {
+        return petReportRepository.findAllByState(state.name(), PageRequest.of(page, 10));
     }
 
-    @Transactional
     public void setWellBeing(Long id, String text) {
         PetReport petReport = getReport(id);
         petReport.setWellBeing(text);
         petReportRepository.save(petReport);
     }
 
-    @Transactional
     public void setChangeInBehavior(Long id, String text) {
         PetReport petReport = getReport(id);
         petReport.setChangeInBehavior(text);
-        petReportRepository.save(petReport);
+        setTimeSendingReport(id);
+//        petReportRepository.save(petReport);
     }
 
-    @Transactional
     public void setTimeSendingReport(Long id) {
         PetReport petReport = getReport(id);
         petReport.setTimeSendingReport(LocalDateTime.now());
         petReportRepository.save(petReport);
     }
 
-    @Transactional
     public void setReportState(Long id, PetReportState state) {
         PetReport petReport = getReport(id);
         petReport.setState(state.name());
@@ -132,26 +126,24 @@ public class PetReportService {
         return petReportRepository.findFirstByVolunteerIdAndState(volunteerId, state.name());
     }
 
-    public List<PetReportDtoOut> getUnverifiedReports() {
-        List<PetReport> petReports = getPetReportsByState(PetReportState.WAITING_FOR_VERIFICATION);
+    public List<PetReportDtoOut> getUnverifiedReports(Integer page) {
+        List<PetReport> petReports = getPetReportsByState(PetReportState.WAITING_FOR_VERIFICATION, page);
         return petReports.stream()
                 .map(petReportMapper::toDto)
                 .collect(Collectors.toList());
     }
 
-    @Transactional
     public PetReportDtoOut acceptReport(Long id) {
         PetReport petReport = getReport(id);
         Probation probation = probationService.getProbationByPetId(petReport.getPet().getId());
         setReportState(id, PetReportState.ACCEPTED);
-        setTimeSendingReport(id);
+//        setTimeSendingReport(id);
         probationService.setProbationState(probation.getId(), ProbationState.REPORT_ACCEPTED);
         probationService.setLastReportDate(probation.getId());
         overdueReportService.deleteOverdueReport(probation);
         return petReportMapper.toDto(petReport);
     }
 
-    @Transactional
     public PetReportDtoOut denyReport(Long id, String comment) {
         PetReport petReport = getReport(id);
         Probation probation = probationService.getProbationByPetId(petReport.getPet().getId());
