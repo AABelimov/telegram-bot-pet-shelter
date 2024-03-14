@@ -101,6 +101,14 @@ public class PetService {
                 .collect(Collectors.toList());
     }
 
+    public List<PetDtoOut> getAllPets(Integer page) {
+        PageRequest pageRequest = PageRequest.of(page, 10);
+        List<Pet> pets = petRepository.findAll(pageRequest).getContent();
+        return pets.stream()
+                .map(petMapper::toDto)
+                .collect(Collectors.toList());
+    }
+
     public List<PetDtoOut> getAllPetsByShelterTypeAvailableForAdoption(String shelterType, Integer page) {
         PageRequest pageRequest = PageRequest.of(page, 10);
         String kindOfPet = ShelterType.valueOf(shelterType.toUpperCase()).equals(ShelterType.CAT_SHELTER) ? "CAT" : "DOG";
@@ -126,5 +134,41 @@ public class PetService {
     public void deletePet(Long id) {
         Pet pet = getPet(id);
         petRepository.delete(pet);
+    }
+
+    public List<PetDtoOut> getPets(String shelterType, String state, Integer page) {
+
+        if (shelterType.equals("all") && state.equals("all")) {
+            return getAllPets(page);
+        } else if (shelterType.equals("all")) {
+            return getAllPetsByState(state, page);
+        }
+        ShelterType typeOfShelter = ShelterType.valueOf(shelterType.toUpperCase());
+
+        return getAllPetsByShelterTypeAndState(typeOfShelter, state, page);
+    }
+
+    private List<PetDtoOut> getAllPetsByState(String state, Integer page) {
+        PageRequest pageRequest = PageRequest.of(page, 10);
+        PetState petState = PetState.valueOf(state.toUpperCase());
+        return petRepository.findAllByState(petState.name(), pageRequest).stream()
+                .map(petMapper::toDto)
+                .collect(Collectors.toList());
+    }
+
+    private List<PetDtoOut> getAllPetsByShelterTypeAndState(ShelterType shelterType, String state, Integer page) {
+        String kindOfPet = ShelterType.valueOf(shelterType.name().toUpperCase()).equals(ShelterType.CAT_SHELTER) ? "CAT" : "DOG";
+        PageRequest pageRequest = PageRequest.of(page, 10);
+
+        if (state.equals("all")) {
+            return petRepository.findAllByKindOfPet(kindOfPet, pageRequest).stream()
+                    .map(petMapper::toDto)
+                    .collect(Collectors.toList());
+        }
+        PetState petState = PetState.valueOf(state.toUpperCase());
+
+        return petRepository.findAllByStateAndKindOfPetOrderByIdDesc(petState.name(), kindOfPet, pageRequest).stream()
+                .map(petMapper::toDto)
+                .collect(Collectors.toList());
     }
 }

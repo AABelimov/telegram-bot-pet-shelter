@@ -1,7 +1,6 @@
 package pro.sky.telegrambot.mapper;
 
 import org.springframework.stereotype.Component;
-import org.springframework.transaction.annotation.Transactional;
 import pro.sky.telegrambot.dto.ProbationDtoIn;
 import pro.sky.telegrambot.dto.ProbationDtoOut;
 import pro.sky.telegrambot.enums.ProbationState;
@@ -42,7 +41,6 @@ public class ProbationMapper {
         this.volunteerMapper = volunteerMapper;
     }
 
-    @Transactional
     public Probation toEntity(ProbationDtoIn probationDtoIn) {
         Probation probation = new Probation();
         User user = userService.getUser(probationDtoIn.getUserId());

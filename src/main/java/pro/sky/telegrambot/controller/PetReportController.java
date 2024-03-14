@@ -31,6 +31,16 @@ public class PetReportController {
         this.petReportService = petReportService;
     }
 
+    @GetMapping
+    public String getReports(@RequestParam(required = false, name = "shelter-type") String shelterType,
+                             @RequestParam(required = false) String state,
+                             @RequestParam Integer page,
+                             Model model) {
+        model.addAttribute("reports", petReportService.getReports(shelterType, state, page));
+        model.addAttribute("shelterType", shelterType);
+        return "reports/reports";
+    }
+
     @Operation(
             summary = "Get report by id",
             responses = {
@@ -57,7 +67,7 @@ public class PetReportController {
         return "reports/report";
     }
 
-    @Operation(
+/*    @Operation(
             summary = "Get all unverified reports",
             responses = {
                     @ApiResponse(
@@ -75,7 +85,7 @@ public class PetReportController {
     public String getUnverifiedReports(@RequestParam Integer page, Model model) {
         model.addAttribute("reports", petReportService.getUnverifiedReports(page));
         return "reports/reports";
-    }
+    }*/
 
     @GetMapping("{id}/photo")
     public void getPhoto(@PathVariable Long id, HttpServletResponse response) throws IOException {

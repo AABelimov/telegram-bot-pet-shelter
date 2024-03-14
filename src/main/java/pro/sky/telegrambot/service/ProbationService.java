@@ -10,7 +10,9 @@ import pro.sky.telegrambot.enums.ShelterType;
 import pro.sky.telegrambot.exception.PetIsAlreadyOnProbationException;
 import pro.sky.telegrambot.exception.ProbationNotFoundException;
 import pro.sky.telegrambot.mapper.ProbationMapper;
+import pro.sky.telegrambot.model.Pet;
 import pro.sky.telegrambot.model.Probation;
+import pro.sky.telegrambot.model.User;
 import pro.sky.telegrambot.repository.ProbationRepository;
 
 import java.time.LocalDateTime;
@@ -23,13 +25,16 @@ public class ProbationService {
     private final ProbationRepository probationRepository;
     private final ProbationMapper probationMapper;
     private final PetService petService;
+    private final TelegramBotService telegramBotService;
 
     public ProbationService(ProbationRepository probationRepository,
                             ProbationMapper probationMapper,
-                            PetService petService) {
+                            PetService petService,
+                            TelegramBotService telegramBotService) {
         this.probationRepository = probationRepository;
         this.probationMapper = probationMapper;
         this.petService = petService;
+        this.telegramBotService = telegramBotService;
     }
 
     public ProbationDtoOut createProbation(ProbationDtoIn probationDtoIn) {
@@ -88,10 +93,14 @@ public class ProbationService {
         probationRepository.delete(probation);
     }
 
-    public void extendProbation(Long id, int days) {
-        Probation probation = getProbation(id);
+    public void extendProbation(Probation probation, int days) {
+        User user = probation.getUser();
+        Pet pet = probation.getPet();
+
         probation.setProbationEndDate(probation.getProbationEndDate().plusDays(days));
+        probation.setState(ProbationState.WAITING_FOR_A_NEW_REPORT.name());
         probationRepository.save(probation);
+        telegramBotService.sendMessage(user.getId(), String.format("Вам добавили %d дней к испытательному сроку для %s", days, pet.getName()));
     }
 
     public List<Probation> getAll() {
@@ -112,5 +121,23 @@ public class ProbationService {
 
     public ProbationDtoOut getProbationDto(Long id) {
         return probationMapper.toDto(getProbation(id));
+    }
+
+    public List<ProbationDtoOut> getAllProbations(Integer page) {
+        PageRequest pageRequest = PageRequest.of(page, 10);
+        return probationRepository.findAll(pageRequest).getContent().stream()
+                .map(probationMapper::toDto)
+                .collect(Collectors.toList());
+    }
+
+    public void refuseAdoption(Probation probation) {
+        User user = probation.getUser();
+        Pet pet = probation.getPet();
+        String text = String.format("Вы не прошли испытательный срок, %s должен вернуться к нам", pet.getName());
+
+        probationRepository.delete(probation);
+
+        petService.setPetState(pet.getId(), PetState.WAITING_TO_BE_ADOPTED);
+        telegramBotService.sendMessage(user.getId(), text);
     }
 }

@@ -71,6 +71,48 @@ public class PetController {
         return "pets/pets";
     }
 
+    @GetMapping("{id:\\d+}")
+    public String getPet(@PathVariable Long id, Model model) {
+        model.addAttribute("pet", petService.getDtoPet(id));
+        return "pets/pet";
+    }
+
+    @GetMapping("{shelterType}/{state}")
+    public String getPets(@PathVariable String shelterType,
+                          @PathVariable String state,
+                          @RequestParam Integer page,
+                          Model model) {
+        model.addAttribute("pets", petService.getPets(shelterType, state, page));
+        model.addAttribute("page", page);
+        model.addAttribute("shelterType", shelterType);
+        return "pets/pets";
+    }
+
+    @GetMapping("{id}/photo")
+    public void getPhoto(@PathVariable Long id, HttpServletResponse response) throws IOException {
+        Pet pet = petService.getPet(id);
+        Path path = Path.of(pet.getPhotoPath());
+        try (
+                InputStream is = Files.newInputStream(path);
+                OutputStream os = response.getOutputStream()
+        ) {
+            response.setStatus(200);
+            response.setContentType(MediaType.IMAGE_JPEG_VALUE);
+            is.transferTo(os);
+        }
+    }
+
+    @GetMapping("{id}/potential-parents")
+    public String getPotentialParents(@PathVariable Long id,
+                                      @RequestParam String phone,
+                                      Model model) {
+        model.addAttribute("petId", id);
+        model.addAttribute("parents", userService.getUsersByPhoneNumber(phone));
+        model.addAttribute("volunteers", volunteerService.getVolunteers());
+        model.addAttribute("probation", new ProbationDtoIn());
+        return "pets/potential-parents";
+    }
+
     @GetMapping("{shelterType}/create-form")
     public String getFormToCreatePet(@PathVariable String shelterType, Model model) {
         model.addAttribute("pet", new PetDtoIn());
@@ -91,53 +133,6 @@ public class PetController {
         return "pets/parent-search";
     }
 
-    @GetMapping("{id}/potential-parents")
-    public String getPotentialParents(@PathVariable Long id,
-                                      @RequestParam String phone,
-                                      Model model) {
-        model.addAttribute("petId", id);
-        model.addAttribute("parents", userService.getUsersByPhoneNumber(phone));
-        model.addAttribute("volunteers", volunteerService.getVolunteers());
-        model.addAttribute("probation", new ProbationDtoIn());
-        return "pets/potential-parents";
-    }
-
-    @GetMapping()
-    public String getPetsAvailableForAdoption(@RequestParam Integer page, Model model) {
-        model.addAttribute("pets", petService.getAllPetsAvailableForAdoption(page));
-        model.addAttribute("page", page);
-        model.addAttribute("shelterType", null);
-        return "pets/pets";
-    }
-
-    @GetMapping("{id:\\d+}")
-    public String getPet(@PathVariable Long id, Model model) {
-        model.addAttribute("pet", petService.getDtoPet(id));
-        return "pets/pet";
-    }
-
-    @GetMapping("{shelterType:[a-z_]+}")
-    public String getPetsByShelterTypeAvailableForAdoption(@PathVariable String shelterType, @RequestParam Integer page, Model model) {
-        model.addAttribute("pets", petService.getAllPetsByShelterTypeAvailableForAdoption(shelterType, page));
-        model.addAttribute("page", page);
-        model.addAttribute("shelterType", shelterType);
-        return "pets/pets";
-    }
-
-    @GetMapping("{id}/photo")
-    public void getPhoto(@PathVariable Long id, HttpServletResponse response) throws IOException {
-        Pet pet = petService.getPet(id);
-        Path path = Path.of(pet.getPhotoPath());
-        try (
-                InputStream is = Files.newInputStream(path);
-                OutputStream os = response.getOutputStream()
-        ) {
-            response.setStatus(200);
-            response.setContentType(MediaType.IMAGE_JPEG_VALUE);
-            is.transferTo(os);
-        }
-    }
-
     @PatchMapping(value = "{id}", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
     public String editPet(@PathVariable Long id,
                           @ModelAttribute PetDtoEdit petDtoEdit,
@@ -147,28 +142,6 @@ public class PetController {
         model.addAttribute("pet", petService.getDtoPet(id));
         return "pets/pet";
     }
-
-/*    @Operation(
-            summary = "Upload a photo to pet's avatar",
-            responses = {
-                    @ApiResponse(
-                            responseCode = "200",
-                            description = "Avatar uploaded",
-                            content = @Content(
-                                    mediaType = MediaType.APPLICATION_JSON_VALUE,
-                                    schema = @Schema(implementation = PetDtoOut.class)
-                            )
-                    )
-            }
-    )
-    @PatchMapping(value = "{id}/avatar", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
-    public PetDtoOut uploadAvatar(@PathVariable Long id, @RequestParam MultipartFile file) {
-        try {
-            return petService.uploadAvatar(id, file);
-        } catch (IOException e) {
-            throw new RuntimeException(e);
-        }
-    }*/
 
     @DeleteMapping("{id}")
     public String deletePet(@PathVariable Long id, Model model) {

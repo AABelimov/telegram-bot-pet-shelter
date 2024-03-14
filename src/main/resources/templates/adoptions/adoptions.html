@@ -15,12 +15,18 @@
     <a th:href="@{/adoptions?page=0}">Семьи</a>
 </nav>
 
-<form th:action="@{'/pets/' + ${id} + '/potential-parents'}">
-    <label>
-        <input type="text" th:name="phone"/>
-    </label>
-    <button type="submit">Найти по номеру телефона</button>
-</form>
+<div th:each="adoption : ${adoptions}">
+    <div>
+        <span th:text="${adoption.getId()}"></span>
+        <br>
+        <span th:text="${adoption.getUser().getName()}"></span>
+        <br>
+        <span th:text="${adoption.getPet().getName()}"></span>
+        <br>
+        <span th:text="${adoption.getAdoptionTime()}"></span>
+        <!--        <img th:src="${pet.getPhotoPath()}" alt="oops" height="90" width="160">-->
+    </div>
+</div>
 
 </body>
 </html>

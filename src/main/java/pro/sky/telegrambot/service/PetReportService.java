@@ -3,10 +3,7 @@ package pro.sky.telegrambot.service;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
 import pro.sky.telegrambot.dto.PetReportDtoOut;
-import pro.sky.telegrambot.enums.PetReportState;
-import pro.sky.telegrambot.enums.ProbationState;
-import pro.sky.telegrambot.enums.ShelterType;
-import pro.sky.telegrambot.enums.UserState;
+import pro.sky.telegrambot.enums.*;
 import pro.sky.telegrambot.exception.PetReportNotFoundException;
 import pro.sky.telegrambot.mapper.PetReportMapper;
 import pro.sky.telegrambot.model.*;
@@ -160,5 +157,41 @@ public class PetReportService {
 
     public List<PetReport> getReportsByVolunteerIdAndState(Long volunteerId, PetReportState state) {
         return petReportRepository.findAllByVolunteerIdAndState(volunteerId, state.name());
+    }
+
+    public List<PetReportDtoOut> getReports(String shelterType, String state, Integer page) {
+        PageRequest pageRequest = PageRequest.of(page, 10);
+        PetReportState petReportState = null;
+        ShelterType typeOfShelter = null;
+
+        if (shelterType.equals("all") && state == null) {
+            return getAllReports(pageRequest);
+        } else if (shelterType.equals("all")) {
+            petReportState = PetReportState.valueOf(state.toUpperCase());
+            return getPetReportsByState(petReportState, page).stream()
+                    .map(petReportMapper::toDto)
+                    .collect(Collectors.toList());
+        }
+        typeOfShelter = ShelterType.valueOf(shelterType.toUpperCase());
+        return getReportsByShelterTypeAndState(typeOfShelter, state, pageRequest);
+    }
+
+    private List<PetReportDtoOut> getReportsByShelterTypeAndState(ShelterType shelterType, String state, PageRequest pageRequest) {
+        PetReportState petReportState = null;
+        if (state == null) {
+            return petReportRepository.findAllByShelterType(shelterType.name(), pageRequest).stream()
+                    .map(petReportMapper::toDto)
+                    .collect(Collectors.toList());
+        }
+        petReportState = PetReportState.valueOf(state.toUpperCase());
+        return petReportRepository.findAllByShelterTypeAndState(shelterType.name(), petReportState.name(), pageRequest).stream()
+                .map(petReportMapper::toDto)
+                .collect(Collectors.toList());
+    }
+
+    private List<PetReportDtoOut> getAllReports(PageRequest pageRequest) {
+        return petReportRepository.findAll(pageRequest).getContent().stream()
+                .map(petReportMapper::toDto)
+                .collect(Collectors.toList());
     }
 }

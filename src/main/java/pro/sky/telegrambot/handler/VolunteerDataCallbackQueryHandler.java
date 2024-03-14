@@ -224,14 +224,15 @@ public class VolunteerDataCallbackQueryHandler {
 
     private void allowAdoption(Long volunteerId, Integer messageId) {
         Probation probation = probationService.getProbationByVolunteerIdAndState(volunteerId, ProbationState.WAITING_FOR_A_DECISION);
-        User user = probation.getUser();
+/*        User user = probation.getUser();
         Pet pet = probation.getPet();
         String text = String.format("Вы прошли испытательный срок, поздравляем!\n%s теперь ваш", pet.getName());
 
         adoptionService.createAdoption(user, pet);
         probationService.deleteProbation(probation);
         petService.setPetState(pet.getId(), PetState.ADOPTED);
-        telegramBotService.sendMessage(user.getId(), text);
+        telegramBotService.sendMessage(user.getId(), text);*/
+        adoptionService.createAdoptionNew(probation);
 
         probation = probationService.getProbationByVolunteerIdAndState(volunteerId, ProbationState.ON_THE_DECISION);
 
@@ -256,13 +257,14 @@ public class VolunteerDataCallbackQueryHandler {
 
     private void refuseAdoption(Long volunteerId, Integer messageId) {
         Probation probation = probationService.getProbationByVolunteerIdAndState(volunteerId, ProbationState.WAITING_FOR_A_DECISION);
-        User user = probation.getUser();
+        /*User user = probation.getUser();
         Pet pet = probation.getPet();
         String text = String.format("Вы не прошли испытательный срок, %s должен вернуться к нам", pet.getName());
 
         probationService.deleteProbation(probation);
         petService.setPetState(pet.getId(), PetState.WAITING_TO_BE_ADOPTED);
-        telegramBotService.sendMessage(user.getId(), text);
+        telegramBotService.sendMessage(user.getId(), text);*/
+        probationService.refuseAdoption(probation);
 
         probation = probationService.getProbationByVolunteerIdAndState(volunteerId, ProbationState.ON_THE_DECISION);
 
@@ -276,12 +278,12 @@ public class VolunteerDataCallbackQueryHandler {
 
     private void extendProbation(Long volunteerId, Integer messageId, int days) {
         Probation probation = probationService.getProbationByVolunteerIdAndState(volunteerId, ProbationState.WAITING_FOR_A_DECISION);
-        User user = probation.getUser();
-        Pet pet = probation.getPet();
+/*        User user = probation.getUser();
+        Pet pet = probation.getPet();*/
 
-        probationService.extendProbation(probation.getId(), days);
-        probationService.setProbationState(probation.getId(), ProbationState.WAITING_FOR_A_NEW_REPORT);
-        telegramBotService.sendMessage(user.getId(), String.format("Вам добавили %d дней к испытательному сроку для %s", days, pet.getName()));
+        probationService.extendProbation(probation, days);
+//        probationService.setProbationState(probation.getId(), ProbationState.WAITING_FOR_A_NEW_REPORT);
+//        telegramBotService.sendMessage(user.getId(), String.format("Вам добавили %d дней к испытательному сроку для %s", days, pet.getName()));
 
         probation = probationService.getProbationByVolunteerIdAndState(volunteerId, ProbationState.ON_THE_DECISION);
 

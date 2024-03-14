@@ -12,6 +12,7 @@ import org.springframework.web.bind.annotation.*;
 import pro.sky.telegrambot.dto.ProbationDtoIn;
 import pro.sky.telegrambot.dto.ProbationDtoOut;
 import pro.sky.telegrambot.enums.ProbationState;
+import pro.sky.telegrambot.model.Probation;
 import pro.sky.telegrambot.service.PetService;
 import pro.sky.telegrambot.service.ProbationService;
 
@@ -61,15 +62,37 @@ public class ProbationController {
         return "pets/pets";
     }
 
+    @GetMapping
+    public String getProbations(@RequestParam Integer page, Model model) {
+        model.addAttribute("probations", probationService.getAllProbations(page));
+        return "probations/probations";
+    }
+
+    @GetMapping("coming-to-end")
+    public String getProbationaryPeriodsComingToEnd(@RequestParam Integer page, Model model) {
+        model.addAttribute("probations", probationService.getProbationsByState(ProbationState.ON_THE_DECISION, page));
+        return "probations/probations";
+    }
+
     @GetMapping("{id}")
     public String getProbation(@PathVariable Long id, Model model) {
         model.addAttribute("probation", probationService.getProbationDto(id));
         return "probations/probation";
     }
 
-    @GetMapping("coming-to-end")
-    public String getProbationaryPeriodsComingToEnd(@RequestParam Integer page, Model model) {
-        model.addAttribute("probations", probationService.getProbationsByState(ProbationState.ON_THE_DECISION, page));
+    @PatchMapping("{id}")
+    public String extendProbation(@PathVariable Long id, @RequestParam Integer days, Model model) {
+        Probation probation = probationService.getProbation(id);
+        probationService.extendProbation(probation, days);
+        model.addAttribute("probations", probationService.getProbationsByState(ProbationState.ON_THE_DECISION, 0));
+        return "probations/probations";
+    }
+
+    @DeleteMapping("{id}")
+    public String refuseAdoption(@PathVariable Long id, Model model) {
+        Probation probation = probationService.getProbation(id);
+        probationService.refuseAdoption(probation);
+        model.addAttribute("probations", probationService.getProbationsByState(ProbationState.ON_THE_DECISION, 0));
         return "probations/probations";
     }
 }
