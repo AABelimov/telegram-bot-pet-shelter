@@ -1,0 +1,50 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<databaseChangeLog
+        xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
+        http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-4.9.xsd">
+
+    <changeSet id="create-overdue_reports-table.1" author="AABelimov">
+        <preConditions>
+            <not>
+                <tableExists tableName="overdue_reports"/>
+            </not>
+        </preConditions>
+
+        <createTable tableName="overdue_reports">
+            <column name="id" type="BIGINT" autoIncrement="false">
+                <constraints primaryKey="true"/>
+            </column>
+            <column name="days" type="INT">
+                <constraints nullable="false"/>
+            </column>
+            <column name="user_id" type="BIGINT">
+                <constraints nullable="false"/>
+            </column>
+            <column name="pet_id" type="BIGINT">
+                <constraints nullable="false"/>
+            </column>
+            <column name="volunteer_id" type="BIGINT">
+                <constraints nullable="false"/>
+            </column>
+        </createTable>
+
+        <addForeignKeyConstraint baseTableName="overdue_reports" baseColumnNames="user_id"
+                                 constraintName="fk_overdue_reports_user_id"
+                                 referencedTableName="users"
+                                 referencedColumnNames="id"/>
+
+        <addForeignKeyConstraint baseTableName="overdue_reports" baseColumnNames="pet_id"
+                                 constraintName="fk_overdue_reports_pet_id"
+                                 referencedTableName="pets"
+                                 referencedColumnNames="id"/>
+
+        <addForeignKeyConstraint baseTableName="overdue_reports" baseColumnNames="volunteer_id"
+                                 constraintName="fk_overdue_reports_volunteer_id"
+                                 referencedTableName="volunteers"
+                                 referencedColumnNames="id"/>
+
+    </changeSet>
+
+</databaseChangeLog>
