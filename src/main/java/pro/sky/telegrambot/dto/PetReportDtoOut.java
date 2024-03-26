@@ -5,6 +5,7 @@ import java.time.LocalDateTime;
 public class PetReportDtoOut {
 
     private Long id;
+    private String photoPath;
     private UserDtoOut user;
     private PetDtoOut pet;
     private VolunteerDtoOut volunteer;
@@ -18,6 +19,7 @@ public class PetReportDtoOut {
     }
 
     public PetReportDtoOut(Long id,
+                           String photoPath,
                            UserDtoOut user,
                            PetDtoOut pet,
                            VolunteerDtoOut volunteer,
@@ -26,6 +28,7 @@ public class PetReportDtoOut {
                            String wellBeing,
                            String changeInBehavior) {
         this.id = id;
+        this.photoPath = photoPath;
         this.user = user;
         this.pet = pet;
         this.volunteer = volunteer;
@@ -37,6 +40,14 @@ public class PetReportDtoOut {
 
     public Long getId() {
         return id;
+    }
+
+    public String getPhotoPath() {
+        return photoPath;
+    }
+
+    public void setPhotoPath(String photoPath) {
+        this.photoPath = photoPath;
     }
 
     public void setId(Long id) {

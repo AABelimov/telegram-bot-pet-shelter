@@ -1,5 +1,6 @@
 package pro.sky.telegrambot.repository;
 
+import org.springframework.data.domain.PageRequest;
 import org.springframework.data.jpa.repository.JpaRepository;
 import pro.sky.telegrambot.model.Probation;
 
@@ -15,4 +16,6 @@ public interface ProbationRepository extends JpaRepository<Probation, Long> {
     Probation findFirstByVolunteerIdAndState(Long volunteerId, String state);
 
     List<Probation> findAllByVolunteerIdAndState(Long volunteerId, String state);
+
+    List<Probation> findAllByState(String state, PageRequest pageRequest);
 }

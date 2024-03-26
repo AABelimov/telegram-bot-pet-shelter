@@ -36,9 +36,9 @@ public class PetConstants {
     public static final PetDtoIn PET_DTO_IN_2 = new PetDtoIn(PET_NAME_2, KIND_OF_PET_2, PET_ABOUT_PET_2);
     public static final PetDtoIn PET_DTO_IN_3 = new PetDtoIn(PET_NAME_3, KIND_OF_PET_3, PET_ABOUT_PET_3);
     public static final PetDtoIn PET_DTO_IN_INVALID = new PetDtoIn(PET_NAME_1, KIND_OF_PET_INVALID, PET_ABOUT_PET_1);
-    public static final PetDtoOut PET_DTO_OUT_1 = new PetDtoOut(PET_ID_1, KIND_OF_PET_1, PET_NAME_1);
-    public static final PetDtoOut PET_DTO_OUT_2 = new PetDtoOut(PET_ID_2, KIND_OF_PET_2, PET_NAME_2);
-    public static final PetDtoOut PET_DTO_OUT_3 = new PetDtoOut(PET_ID_3, KIND_OF_PET_3, PET_NAME_3);
+//    public static final PetDtoOut PET_DTO_OUT_1 = new PetDtoOut(PET_ID_1, KIND_OF_PET_1, PET_NAME_1, "");
+//    public static final PetDtoOut PET_DTO_OUT_2 = new PetDtoOut(PET_ID_2, KIND_OF_PET_2, PET_NAME_2, "");
+//    public static final PetDtoOut PET_DTO_OUT_3 = new PetDtoOut(PET_ID_3, KIND_OF_PET_3, PET_NAME_3, "");
     public static final List<Pet> PET_LIST = new ArrayList<>(List.of(
             PET_1,
             PET_2,

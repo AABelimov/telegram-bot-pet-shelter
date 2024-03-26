@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+</head>
+<body>
+
+<nav>
+    <a th:href="@{/pets/all/all?page=0}">Все приюты</a>
+    <a th:href="@{/pets/cat_shelter/all?page=0}">Кошачий приют</a>
+    <a th:href="@{/pets/dog_shelter/all?page=0}">Собачий приют</a>
+    <a th:href="@{'/reports?shelter-type=all&page=0'}">Отчеты</a>
+    <a th:href="@{/probations?page=0}">Испытательные сроки</a>
+    <a th:href="@{/adoptions?page=0}">Семьи</a>
+</nav>
+
+<div>
+    <a th:href="@{'/reports?shelter-type=all&page=0'}">По всем</a>
+    <a th:href="@{'/reports?shelter-type=cat_shelter&page=0'}">По кошкам</a>
+    <a th:href="@{'/reports?shelter-type=dog_shelter&page=0'}">По собакам</a>
+</div>
+
+<div>
+    <a th:href="@{'/reports?shelter-type=' + ${shelterType} + '&page=0'}">Все</a>
+    <a th:href="@{'/reports?shelter-type=' + ${shelterType} + '&state=waiting_for_verification&page=0'}">Непроверенные</a>
+    <a th:href="@{'/reports?shelter-type=' + ${shelterType} + '&state=denied&page=0'}">Непринятые</a>
+    <a th:href="@{'/reports?shelter-type=' + ${shelterType} + '&state=accepted&page=0'}">Принятые</a>
+</div>
+
+<div th:each="report : ${reports}">
+    <div>
+        <span th:text="${report.getPet().getName()}"></span>
+        <a th:href="@{'/reports/' + ${report.getId()}}">
+            <img th:src="${report.getPhotoPath()}" alt="oops" height="90" width="160">
+        </a>
+    </div>
+</div>
+
+</body>
+</html>

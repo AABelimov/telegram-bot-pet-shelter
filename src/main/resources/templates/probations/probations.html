@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+</head>
+<body>
+
+<nav>
+    <a th:href="@{/pets/all/all?page=0}">Все приюты</a>
+    <a th:href="@{/pets/cat_shelter/all?page=0}">Кошачий приют</a>
+    <a th:href="@{/pets/dog_shelter/all?page=0}">Собачий приют</a>
+    <a th:href="@{'/reports?shelter-type=all&page=0'}">Отчеты</a>
+    <a th:href="@{/probations?page=0}">Испытательные сроки</a>
+    <a th:href="@{/adoptions?page=0}">Семьи</a>
+</nav>
+
+<div>
+    <a th:href="@{/probations?page=0}">Все</a>
+    <a th:href="@{/probations/coming-to-end?page=0}">Принять решение</a>
+</div>
+
+<div th:each="probation : ${probations}">
+    <div>
+        <a th:href="@{'/probations/' + ${probation.getId()}}" th:text="${probation.getUser().getName()}"></a>
+        <!--<span th:text="${probation.getUser().getName()}"></span>-->
+        <br>
+        <span th:text="${probation.getPet().getName()}"></span>
+        <br>
+        <span th:text="${probation.getVolunteer().getName()}"></span>
+        <br>
+        <span th:text="${probation.getLastReportDate()}"></span>
+        <br>
+        <span th:text="${probation.getProbationEndDate()}"></span>
+<!--        <img th:src="${pet.getPhotoPath()}" alt="oops" height="90" width="160">-->
+    </div>
+</div>
+
+</body>
+</html>

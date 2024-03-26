@@ -8,7 +8,6 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
-import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.StringUtils;
 import pro.sky.telegrambot.enums.UserState;
 import pro.sky.telegrambot.model.PetReport;
@@ -44,7 +43,6 @@ public class UserPhotoMessageHandler {
         this.reportPhotosDir = reportPhotosDir;
     }
 
-    @Transactional
     public void handlePhoto(Long userId, PhotoSize photoSize) {
         GetFileResponse getFileResponse = telegramBot.execute(new GetFile(photoSize.fileId()));
         PetReport petReport = petReportService.getReportByUserIdAndState(userId);
@@ -58,7 +56,6 @@ public class UserPhotoMessageHandler {
         }
     }
 
-    @Transactional
     private void savePhotoToReport(Long userId, PetReport petReport, byte[] data, String extension) throws IOException {
         Path filePath = Path.of(reportPhotosDir, petReport.getShelterType().toLowerCase(), petReport.hashCode() + "." + extension);
         Files.createDirectories(filePath.getParent());

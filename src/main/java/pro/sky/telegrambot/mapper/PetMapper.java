@@ -40,6 +40,8 @@ public class PetMapper {
         petDtoOut.setId(pet.getId());
         petDtoOut.setKindOfPet(pet.getKindOfPet());
         petDtoOut.setName(pet.getName());
+        petDtoOut.setAboutPet(pet.getAboutPet());
+        petDtoOut.setPhotoPath("http://localhost:8080/pets/" + pet.getId() + "/photo");
 
         return petDtoOut;
     }
