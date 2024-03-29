@@ -1,56 +1,86 @@
 <!DOCTYPE html>
-<html xmlns:th="http://www.thymeleaf.org" lang="en">
+<html xmlns:th="http://www.thymeleaf.org" lang="ru">
 <head>
     <meta charset="UTF-8">
     <title>Title</title>
+    <link rel="stylesheet" th:href="@{/styles/probation-style.css}">
 </head>
 <body>
+<div class="wrapper">
+    <div class="header">
+        <div class="container">
+            <div class="menu-container">
+                <ul class="menu">
+                    <li class="menu__link">
+                        <a th:href="@{/pets/all/all?page=0}">Животные</a>
+                    </li>
+                    <li class="menu__link">
+                        <a th:href="@{'/reports?shelter-type=all&page=0'}">Отчеты</a>
+                    </li>
+                    <li class="menu__link menu__link_active">
+                        <a th:href="@{/probations?page=0}">Испытательные сроки</a>
+                    </li>
+                    <li class="menu__link">
+                        <a th:href="@{/adoptions?page=0}">Семьи</a>
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </div>
 
-<nav>
-    <a th:href="@{/pets/all/all?page=0}">Все приюты</a>
-    <a th:href="@{/pets/cat_shelter/all?page=0}">Кошачий приют</a>
-    <a th:href="@{/pets/dog_shelter/all?page=0}">Собачий приют</a>
-    <a th:href="@{'/reports?shelter-type=all&page=0'}">Отчеты</a>
-    <a th:href="@{/probations?page=0}">Испытательные сроки</a>
-    <a th:href="@{/adoptions?page=0}">Семьи</a>
-</nav>
-
-<div>
-    <!--        <a th:href="@{'/pets/' + ${pet.getId()}}" th:text="${probation.get()}"></a>-->
-    <span th:text="${probation.getUser().getName()}"></span>
-    <br>
-    <span th:text="${probation.getPet().getName()}"></span>
-    <br>
-    <span th:text="${probation.getVolunteer().getName()}"></span>
-    <br>
-    <span th:text="${probation.getLastReportDate()}"></span>
-    <br>
-    <span th:text="${probation.getProbationEndDate()}"></span>
-    <!--        <img th:src="${pet.getPhotoPath()}" alt="oops" height="90" width="160">-->
+    <div class="body">
+        <div class="probation-row">
+            <div class="container">
+                <div class="probation">
+                    <div class="probation__body">
+                        <div class="probation__image">
+                            <img th:src="${probation.getPet().getPhotoPath()}" alt="oops">
+                        </div>
+                        <div class="probation__info">
+                            <div class="probation__field">
+                                <div class="probation__title">Питомец:</div>
+                                <div th:text="${probation.getPet().getName()}" class="probation__value"></div>
+                            </div>
+                            <div class="probation__field">
+                                <div class="probation__title">Усыновитель:</div>
+                                <div th:text="${probation.getUser().getName()}" class="probation__value"></div>
+                            </div>
+                            <div class="probation__field">
+                                <div class="probation__title">Крнец срока:</div>
+                                <div th:text="${probation.getProbationEndDate()}" class="probation__value"></div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="probation__interaction">
+                        <div class="probation__action">
+                            <form th:action="@{/adoptions}" th:method="post" class="probation__form">
+                                <label>
+                                    <input type="hidden" th:value="${probation.getId()}" th:name="probation-id"/>
+                                </label>
+                                <button type="submit">Разрешить</button>
+                            </form>
+                        </div>
+                        <div class="probation__action">
+                            <form th:action="@{'/probations/' + ${probation.getId()}}" th:method="patch" class="probation__form">
+                                <label>
+                                    <select th:name="days">
+                                        <option value="14">14</option>
+                                        <option value="30">30</option>
+                                    </select>
+                                </label>
+                                <button type="submit">Продлить</button>
+                            </form>
+                        </div>
+                        <div class="probation__action">
+                            <form th:action="@{'/probations/' + ${probation.getId()}}" th:method="delete" class="probation__form">
+                                <button type="submit">Отказать</button>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
 </div>
-
-<div>
-    <form th:action="@{/adoptions}" th:method="post">
-        <label>
-            <input type="hidden" th:value="${probation.getId()}" th:name="probation-id"/>
-        </label>
-        <button type="submit">Разрешить</button>
-    </form>
-
-    <form th:action="@{'/probations/' + ${probation.getId()}}" th:method="delete">
-        <button type="submit">Отказать</button>
-    </form>
-
-    <form th:action="@{'/probations/' + ${probation.getId()}}" th:method="patch">
-        <label>
-            <select th:name="days">
-                <option value="14">14</option>
-                <option value="30">30</option>
-            </select>
-        </label>
-        <button type="submit">Продлить</button>
-    </form>
-</div>
-
 </body>
 </html>

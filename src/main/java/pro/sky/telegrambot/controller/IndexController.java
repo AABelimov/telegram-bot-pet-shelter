@@ -16,9 +16,10 @@ public class IndexController {
 
     @GetMapping
     public String index(Model model) {
-        model.addAttribute("pets", petService.getAllPetsAvailableForAdoption(0));
+        model.addAttribute("pets", petService.getPets("all", "all", 0));
         model.addAttribute("page", 0);
-        model.addAttribute("shelterType", null);
+        model.addAttribute("shelterType", "all");
+        model.addAttribute("state", "all");
         return "pets/pets";
     }
 }

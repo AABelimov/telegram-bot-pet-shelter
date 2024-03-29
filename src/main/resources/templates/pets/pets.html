@@ -1,49 +1,104 @@
 <!DOCTYPE html>
-<html xmlns:th="http://www.thymeleaf.org" lang="en">
+<html xmlns:th="http://www.thymeleaf.org" lang="ru">
 <head>
     <meta charset="UTF-8">
     <title>Title</title>
+    <link rel="stylesheet" th:href="@{/styles/pet-style.css}">
 </head>
 <body>
-<div>
-    <nav>
-        <a th:href="@{/pets/all/all?page=0}">Все приюты</a>
-        <a th:href="@{/pets/cat_shelter/all?page=0}">Кошачий приют</a>
-        <a th:href="@{/pets/dog_shelter/all?page=0}">Собачий приют</a>
-        <a th:href="@{'/reports?shelter-type=all&page=0'}">Отчеты</a>
-        <a th:href="@{/probations?page=0}">Испытательные сроки</a>
-        <a th:href="@{/adoptions?page=0}">Семьи</a>
-    </nav>
+<div class="wrapper">
+    <div class="header">
+        <div class="container">
+            <div class="menu-container">
+                <ul class="menu">
+                    <li class="menu__link menu__link_active">
+                        <a th:href="@{'/pets/all/'+ ${state} +'?page=0'}">Животные</a>
+                    </li>
+                    <li class="menu__link">
+                        <a th:href="@{'/reports?shelter-type=all&page=0'}">Отчеты</a>
+                    </li>
+                    <li class="menu__link">
+                        <a th:href="@{/probations?page=0}">Испытательные сроки</a>
+                    </li>
+                    <li class="menu__link">
+                        <a th:href="@{/adoptions?page=0}">Семьи</a>
+                    </li>
+                </ul>
 
-    <div>
-        <a th:href="@{'/pets/' + ${shelterType} + '/all?page=0'}">Все</a>
-        <a th:href="@{'/pets/' + ${shelterType} + '/waiting_to_be_adopted?page=0'}">В приюте</a>
-        <a th:href="@{'/pets/' + ${shelterType} + '/on_probation?page=0'}">На испытательном сроке</a>
-        <a th:href="@{'/pets/' + ${shelterType} + '/adopted?page=0'}">Усыновленные</a>
-    </div>
+                <ul class="menu">
+                    <li class="menu__link" th:classappend="${shelterType == 'all'} ? 'menu_' + '_link_active'">
+                        <a th:href="@{'/pets/all/'+ ${state} +'?page=0'}">Все приюты</a>
+                    </li>
+                    <li class="menu__link" th:classappend="${shelterType == 'cat_shelter'} ? 'menu_' + '_link_active'">
+                        <a th:href="@{'/pets/cat_shelter/' + ${state} + '?page=0'}">Кошачий приют</a>
+                    </li>
+                    <li class="menu__link" th:classappend="${shelterType == 'dog_shelter'} ? 'menu_' + '_link_active'">
+                        <a th:href="@{'/pets/dog_shelter/' + ${state} + '?page=0'}">Собачий приют</a>
+                    </li>
+                </ul>
 
-    <div th:each="pet : ${pets}">
-        <div>
-            <span th:text="${pet.getId()}"></span>
-            <a th:href="@{'/pets/' + ${pet.getId()}}" th:text="${pet.getName()}"></a>
-            <span th:text="${pet.getKindOfPet()}"></span>
-            <img th:src="${pet.getPhotoPath()}" alt="oops" height="90" width="160">
+                <ul class="menu">
+                    <li class="menu__link" th:classappend="${state == 'all'} ? 'menu_' + '_link_active'">
+                        <a th:href="@{'/pets/' + ${shelterType} + '/all?page=0'}">Все</a>
+                    </li>
+                    <li class="menu__link" th:classappend="${state == 'waiting_to_be_adopted'} ? 'menu_' + '_link_active'">
+                        <a th:href="@{'/pets/' + ${shelterType} + '/waiting_to_be_adopted?page=0'}">В приюте</a>
+                    </li>
+                    <li class="menu__link" th:classappend="${state == 'on_probation'} ? 'menu_' + '_link_active'">
+                        <a th:href="@{'/pets/' + ${shelterType} + '/on_probation?page=0'}">На испытательном сроке</a>
+                    </li>
+                    <li class="menu__link" th:classappend="${state == 'adopted'} ? 'menu_' + '_link_active'">
+                        <a th:href="@{'/pets/' + ${shelterType} + '/adopted?page=0'}">Усыновленные</a>
+                    </li>
+                </ul>
+            </div>
         </div>
     </div>
-</div>
-<div th:if="${shelterType == 'all'}">
-    <a th:href="@{'/pets?page=' + ${page - 1}}">prev</a>
-    <a th:href="@{'/pets?page=' + ${page + 1}}">next</a>
-</div>
-<div th:if="${shelterType == 'cat_shelter'}">
-    <p><a th:href="@{/pets/cat_shelter/create-form}">add new pet</a></p>
-    <a th:href="@{'/pets/cat_shelter?page=' + ${page - 1}}">prev</a>
-    <a th:href="@{'/pets/cat_shelter?page=' + ${page + 1}}">next</a>
-</div>
-<div th:if="${shelterType == 'dog_shelter'}">
-    <p><a th:href="@{/pets/dog_shelter/create-form}">add new pet</a></p>
-    <a th:href="@{'/pets/dog_shelter?page=' + ${page - 1}}">prev</a>
-    <a th:href="@{'/pets/dog_shelter?page=' + ${page + 1}}">next</a>
+
+    <div class="body">
+        <div class="new-pet-body">
+            <div class="container">
+                <a th:href="@{'/pets/' + ${shelterType} + '/create-form'}">add new pet +</a>
+            </div>
+        </div>
+        <div class="pet-body">
+            <div class="container">
+                <div class="pet-container">
+                    <div th:each="pet : ${pets}" class="pet-container-pet">
+                        <div class="pet-container-pet__image">
+                            <img th:src="${pet.getPhotoPath()}" alt="oops">
+                        </div>
+                        <div class="pet-container-pet__info">
+                            <div class="pet-container-pet__name">
+                                <a th:href="@{'/pets/' + ${pet.getId()}}" th:text="${pet.getName()}"></a>
+                            </div>
+                            <div class="pet-container-pet__about">
+                                <p th:text="${pet.getAboutPet()}"></p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div th:if="${pets.size()} == 0" class="empty-pet-list">
+                    <span>Здесь животных нет</span>
+                </div>
+            </div>
+        </div>
+        <div class="page-control-body">
+            <div class="container">
+                <div class="page-control">
+                    <div class="page-control__nav" th:classappend="${page == 0} ? 'page-control_' + '_nav_not-active'">
+                        <a th:href="@{'/pets/' + ${shelterType} + '/' + ${state} + '?page=' + ${page - 1}}">prev</a>
+                    </div>
+                    <div class="page-control__val">
+                        <span th:text="${page}"></span>
+                    </div>
+                    <div class="page-control__nav" th:classappend="${page == 0} ? 'page-control_' + '_nav_not-active'">
+                        <a th:href="@{'/pets/' + ${shelterType} + '/' + ${state} + '?page=' + ${page + 1}}">next</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
 </div>
 </body>
 </html>

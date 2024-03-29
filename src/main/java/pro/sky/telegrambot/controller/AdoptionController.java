@@ -25,7 +25,7 @@ public class AdoptionController {
     @PostMapping
     public String createAdoption(@RequestParam(name = "probation-id") Long probationId, Model model) {
         Probation probation = probationService.getProbation(probationId);
-        adoptionService.createAdoptionNew(probation);
+        adoptionService.createAdoption(probation);
         model.addAttribute("page", 0);
         model.addAttribute("adoptions", adoptionService.getAllAdoptions(0));
         return "adoptions/adoptions";

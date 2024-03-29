@@ -154,7 +154,6 @@ public class UserDataCallbackQueryHandler {
                 handleBackCommand(userId, messageId, shelterType);
                 break;
             case MAIN_MENU:
-//                String selectedShelter = userService.getSelectedShelter(userId);
                 handleChooseShelter(userId, messageId, shelterType.name());
                 break;
         }
@@ -268,7 +267,7 @@ public class UserDataCallbackQueryHandler {
 
             if (probation != null && !probation.getPet().getId().equals(petId)) {
                 inlineKeyboardMarkup = inlineKeyboardService.getSendReportUserMenuKeyboard();
-                telegramBotService.editInlineKeyboard(userId, messageId, "сначала заполните до конца отчет для "
+                telegramBotService.editInlineKeyboard(userId, messageId, "Сначала заполните до конца отчет для "
                         + probation.getPet().getName(), inlineKeyboardMarkup);
                 userService.setUserState(userId, UserState.SEND_REPORT);
             }
@@ -314,7 +313,6 @@ public class UserDataCallbackQueryHandler {
             case INFO_ABOUT_SHELTER:
             case HOW_ADOPT_PET:
             case SEND_REPORT:
-//                String selectedShelter = userService.getSelectedShelter(userId);
                 handleChooseShelter(userId, messageId, shelterType.name());
                 break;
         }
@@ -335,7 +333,6 @@ public class UserDataCallbackQueryHandler {
         User user = userService.getUser(userId);
         UserState userState = UserState.valueOf(user.getState());
         InlineKeyboardMarkup inlineKeyboardMarkup = new InlineKeyboardMarkup();
-//        ShelterType shelterType;
 
         if (volunteer == null) {
             switch (userState) {
@@ -346,7 +343,6 @@ public class UserDataCallbackQueryHandler {
                     inlineKeyboardMarkup = inlineKeyboardService.getInfoAboutShelterUserMenuKeyboard(UserCommand.CALL_VOLUNTEER);
                     break;
                 case HOW_ADOPT_PET:
-//                    shelterType = ShelterType.valueOf(user.getSelectedShelter());
                     inlineKeyboardMarkup = inlineKeyboardService.getHowAdoptPetUserMenuKeyboard(UserCommand.CALL_VOLUNTEER, shelterType);
                     break;
                 case SEND_REPORT:
@@ -398,16 +394,16 @@ public class UserDataCallbackQueryHandler {
     }
 
     private void listOfAnimals(Long userId, Integer messageId, ShelterType shelterType, int page) {
-        int countPets = (int) petService.countPetsByKindOfPet(shelterType);
+        PageRequest pageRequest = PageRequest.of(page, 1);
+        List<Pet> pets = petService.getListOfAnimals(shelterType, PetState.WAITING_TO_BE_ADOPTED, pageRequest);
 
-        if (countPets > 0) {
-            PageRequest pageRequest = PageRequest.of(page, 1);
-            Pet pet = petService.getListOfAnimals(shelterType, PetState.WAITING_TO_BE_ADOPTED, pageRequest).get(0);
+        if (pets.size() > 0) {
+            Pet pet = pets.get(0);
             String name = pet.getName();
             Path photoPath = Path.of(pet.getPhotoPath());
             File photo = photoPath.toFile();
             String aboutPet = pet.getAboutPet();
-            InlineKeyboardMarkup inlineKeyboardMarkup = inlineKeyboardService.getListOfAnimalsUserMenuKeyboard(page, countPets - 1);
+            InlineKeyboardMarkup inlineKeyboardMarkup = inlineKeyboardService.getListOfAnimalsUserMenuKeyboard(page, pets.size() - 1);
             String text = String.format("Имя: %s\nО себе: %s", name, aboutPet);
             UserState userState = userService.getUserState(userId);
 

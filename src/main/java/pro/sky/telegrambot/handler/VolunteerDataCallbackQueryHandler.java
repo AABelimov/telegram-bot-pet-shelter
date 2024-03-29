@@ -23,7 +23,6 @@ public class VolunteerDataCallbackQueryHandler {
     private final VolunteerTextMessageHandler volunteerTextMessageHandler;
     private final ProbationService probationService;
     private final AdoptionService adoptionService;
-    private final PetService petService;
     private final OverdueReportService overdueReportService;
 
     public VolunteerDataCallbackQueryHandler(VolunteerService volunteerService,
@@ -33,7 +32,6 @@ public class VolunteerDataCallbackQueryHandler {
                                              VolunteerTextMessageHandler volunteerTextMessageHandler,
                                              ProbationService probationService,
                                              AdoptionService adoptionService,
-                                             PetService petService,
                                              OverdueReportService overdueReportService) {
         this.volunteerService = volunteerService;
         this.telegramBotService = telegramBotService;
@@ -42,7 +40,6 @@ public class VolunteerDataCallbackQueryHandler {
         this.volunteerTextMessageHandler = volunteerTextMessageHandler;
         this.probationService = probationService;
         this.adoptionService = adoptionService;
-        this.petService = petService;
         this.overdueReportService = overdueReportService;
     }
 
@@ -224,15 +221,7 @@ public class VolunteerDataCallbackQueryHandler {
 
     private void allowAdoption(Long volunteerId, Integer messageId) {
         Probation probation = probationService.getProbationByVolunteerIdAndState(volunteerId, ProbationState.WAITING_FOR_A_DECISION);
-/*        User user = probation.getUser();
-        Pet pet = probation.getPet();
-        String text = String.format("Вы прошли испытательный срок, поздравляем!\n%s теперь ваш", pet.getName());
-
-        adoptionService.createAdoption(user, pet);
-        probationService.deleteProbation(probation);
-        petService.setPetState(pet.getId(), PetState.ADOPTED);
-        telegramBotService.sendMessage(user.getId(), text);*/
-        adoptionService.createAdoptionNew(probation);
+        adoptionService.createAdoption(probation);
 
         probation = probationService.getProbationByVolunteerIdAndState(volunteerId, ProbationState.ON_THE_DECISION);
 
@@ -257,13 +246,6 @@ public class VolunteerDataCallbackQueryHandler {
 
     private void refuseAdoption(Long volunteerId, Integer messageId) {
         Probation probation = probationService.getProbationByVolunteerIdAndState(volunteerId, ProbationState.WAITING_FOR_A_DECISION);
-        /*User user = probation.getUser();
-        Pet pet = probation.getPet();
-        String text = String.format("Вы не прошли испытательный срок, %s должен вернуться к нам", pet.getName());
-
-        probationService.deleteProbation(probation);
-        petService.setPetState(pet.getId(), PetState.WAITING_TO_BE_ADOPTED);
-        telegramBotService.sendMessage(user.getId(), text);*/
         probationService.refuseAdoption(probation);
 
         probation = probationService.getProbationByVolunteerIdAndState(volunteerId, ProbationState.ON_THE_DECISION);
@@ -278,12 +260,8 @@ public class VolunteerDataCallbackQueryHandler {
 
     private void extendProbation(Long volunteerId, Integer messageId, int days) {
         Probation probation = probationService.getProbationByVolunteerIdAndState(volunteerId, ProbationState.WAITING_FOR_A_DECISION);
-/*        User user = probation.getUser();
-        Pet pet = probation.getPet();*/
 
         probationService.extendProbation(probation, days);
-//        probationService.setProbationState(probation.getId(), ProbationState.WAITING_FOR_A_NEW_REPORT);
-//        telegramBotService.sendMessage(user.getId(), String.format("Вам добавили %d дней к испытательному сроку для %s", days, pet.getName()));
 
         probation = probationService.getProbationByVolunteerIdAndState(volunteerId, ProbationState.ON_THE_DECISION);
 
