@@ -65,12 +65,14 @@ public class ProbationController {
     @GetMapping
     public String getProbations(@RequestParam Integer page, Model model) {
         model.addAttribute("probations", probationService.getAllProbations(page));
+        model.addAttribute("state", null);
         return "probations/probations";
     }
 
     @GetMapping("coming-to-end")
     public String getProbationaryPeriodsComingToEnd(@RequestParam Integer page, Model model) {
         model.addAttribute("probations", probationService.getProbationsByState(ProbationState.ON_THE_DECISION, page));
+        model.addAttribute("state", "coming-to-end");
         return "probations/probations";
     }
 

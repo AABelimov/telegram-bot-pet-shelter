@@ -104,7 +104,7 @@ public class PetReportService {
         PetReport petReport = getReport(id);
         petReport.setChangeInBehavior(text);
         setTimeSendingReport(id);
-//        petReportRepository.save(petReport);
+        petReportRepository.save(petReport);
     }
 
     public void setTimeSendingReport(Long id) {

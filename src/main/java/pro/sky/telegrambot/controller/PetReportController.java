@@ -38,6 +38,7 @@ public class PetReportController {
                              Model model) {
         model.addAttribute("reports", petReportService.getReports(shelterType, state, page));
         model.addAttribute("shelterType", shelterType);
+        model.addAttribute("state", state);
         return "reports/reports";
     }
 

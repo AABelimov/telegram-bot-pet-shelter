@@ -1,0 +1,182 @@
+@import "nullstyle.scss";
+
+body {
+  font-family: Arial, "Helvetica Neue", Helvetica, sans-serif;
+  font-size: 16px;
+}
+
+a {
+  color: black;
+}
+
+.wrapper {
+  min-height: 100%;
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+}
+
+.container {
+  max-width: 1180px;
+  margin: 0 auto;
+}
+
+.menu-container {
+  padding: 20px 0 0 0;
+}
+
+.menu {
+  display: flex;
+  justify-content: center;
+  margin: 15px 0 0 0;
+
+  &__link {
+    margin: 0 7px;
+
+    &_active {
+      text-decoration: underline;
+    }
+  }
+}
+
+.body {
+  flex: 1 1 auto;
+  display: flex;
+  flex-direction: column;
+  margin: 20px 0 0 0;
+}
+
+.report-item {
+  display: flex;
+  padding: 5px 0;
+  border-top: 1px solid black;
+
+  &:last-child {
+    border-bottom: 1px solid black;
+  }
+
+  &__image {
+    flex: 0 0 350px;
+    max-height: 260px;
+    overflow: hidden;
+  }
+
+  &__image img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+  }
+
+  &__info{
+    flex: 1 1 auto;
+    margin: 0 5px;
+    border-left: 1px solid black;
+  }
+
+  &__field {
+    display: flex;
+    padding: 5px 0 5px 5px;
+  }
+
+  &__title {
+    text-align: right;
+    font-weight: bold;
+    flex: 0 0 125px;
+  }
+
+  &__value {
+    flex: 1 1 auto;
+    padding-left: 5px;
+  }
+
+  &__button {
+    align-self: end;
+    padding: 3px 7px;
+    border: 1px solid black;
+    border-radius: 5px;
+  }
+}
+
+.report {
+  display: flex;
+  flex-direction: column;
+
+  &__body {
+    display: flex;
+    flex-direction: column;
+    padding: 5px;
+    border: 1px solid black;
+  }
+
+  &__image {
+    flex: 0 0 500px;
+    overflow: hidden;
+  }
+
+  &__image img {
+    width: 100%;
+    height: 100%;
+    object-fit: contain;
+  }
+
+  &__info {
+    display: flex;
+    flex-direction: column;
+    margin-top: 25px;
+  }
+
+  &__field {
+    display: flex;
+    padding-bottom: 10px;
+  }
+
+  &__field:last-child {
+    padding-bottom: unset;
+  }
+
+  &__title {
+    text-align: right;
+    font-weight: bold;
+    flex: 0 0 150px;
+  }
+
+  &__value {
+    flex: 1 1 auto;
+    padding-left: 10px;
+  }
+
+  &__interaction {
+    padding-top: 25px;
+  }
+
+  &__interaction button {
+    font-size: 16px;
+    min-width: 121px;
+    padding: 3px 7px;
+    border: 1px solid black;
+    border-radius: 5px;
+  }
+
+  &__action {
+    margin-bottom: 15px;
+  }
+
+  &__form {
+    display: flex;
+    justify-content: end;
+    align-items: end;
+  }
+
+  &__textarea {
+    margin-right: 25px;
+    flex: 1 1 auto;
+    border: 1px solid black;
+  }
+
+  &__textarea textarea {
+    font-size: 16px;
+    width: 100%;
+    min-height: 100px;
+    padding: 5px;
+  }
+}

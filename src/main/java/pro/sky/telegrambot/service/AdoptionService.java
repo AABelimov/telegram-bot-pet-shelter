@@ -35,15 +35,7 @@ public class AdoptionService {
         this.adoptionMapper = adoptionMapper;
     }
 
-/*    public void createAdoption(User user, Pet pet) {
-        Adoption adoption = new Adoption();
-        adoption.setUser(user);
-        adoption.setPet(pet);
-        adoption.setAdoptionTime(LocalDateTime.now());
-        adoptionRepository.save(adoption);
-    }*/
-
-    public void createAdoptionNew(Probation probation) {
+    public void createAdoption(Probation probation) {
         Adoption adoption = new Adoption();
         User user = probation.getUser();
         Pet pet = probation.getPet();

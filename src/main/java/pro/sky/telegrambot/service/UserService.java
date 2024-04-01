@@ -71,6 +71,9 @@ public class UserService {
     }
 
     public List<User> getUsersByPhoneNumber(String phone) {
+        if (phone == null) {
+            return userRepository.findAll(Pageable.ofSize(10)).getContent();
+        }
         return userRepository.findAllByPhoneNumberContaining(phone, Pageable.ofSize(10));
     }
 }

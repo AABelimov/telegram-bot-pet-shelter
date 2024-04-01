@@ -67,6 +67,7 @@ public class PetController {
         model.addAttribute("pets", petService.getAllPetsByShelterTypeAvailableForAdoption(shelterType.name().toLowerCase(), 0));
         model.addAttribute("page", 0);
         model.addAttribute("shelterType", shelterType.name().toLowerCase());
+        model.addAttribute("state", "all");
         /*model.addAttribute("pet", petService.getPet(petDtoOut.getId()));*/
         return "pets/pets";
     }
@@ -85,6 +86,7 @@ public class PetController {
         model.addAttribute("pets", petService.getPets(shelterType, state, page));
         model.addAttribute("page", page);
         model.addAttribute("shelterType", shelterType);
+        model.addAttribute("state", state);
         return "pets/pets";
     }
 
@@ -104,13 +106,13 @@ public class PetController {
 
     @GetMapping("{id}/potential-parents")
     public String getPotentialParents(@PathVariable Long id,
-                                      @RequestParam String phone,
+                                      @RequestParam(required = false) String phone,
                                       Model model) {
         model.addAttribute("petId", id);
         model.addAttribute("parents", userService.getUsersByPhoneNumber(phone));
         model.addAttribute("volunteers", volunteerService.getVolunteers());
         model.addAttribute("probation", new ProbationDtoIn());
-        return "pets/potential-parents";
+        return "users/potential-parents";
     }
 
     @GetMapping("{shelterType}/create-form")
@@ -125,12 +127,6 @@ public class PetController {
         model.addAttribute("pet", new PetDtoEdit());
         model.addAttribute("id", id);
         return "pets/edit-pet";
-    }
-
-    @GetMapping("{id}/search-parent-form")
-    public String getFormForParentSearch(@PathVariable Long id, Model model) {
-        model.addAttribute("id", id);
-        return "pets/parent-search";
     }
 
     @PatchMapping(value = "{id}", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
