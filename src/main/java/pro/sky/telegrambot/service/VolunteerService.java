@@ -24,7 +24,7 @@ public class VolunteerService {
     }
 
     public Volunteer getFreeVolunteer() {
-        List<Volunteer> volunteers = volunteerRepository.findByUserIdAndState(null, VolunteerState.AT_WORK.name());
+        List<Volunteer> volunteers = volunteerRepository.findAllByUserIdAndState(null, VolunteerState.AT_WORK.name());
 
         if (volunteers.size() < 1) {
             return null;
@@ -36,19 +36,6 @@ public class VolunteerService {
     public void setVolunteerState(Long volunteerId, VolunteerState volunteerState) {
         Volunteer volunteer = getVolunteer(volunteerId);
         volunteer.setState(volunteerState.name());
-        volunteerRepository.save(volunteer);
-    }
-
-    public void startConversation(Volunteer volunteer, User user) {
-        volunteer.setUser(user);
-        volunteer.setState(VolunteerState.CONVERSATION.name());
-        volunteerRepository.save(volunteer);
-    }
-
-    public void stopConversation(Long volunteerId) {
-        Volunteer volunteer = getVolunteer(volunteerId);
-        volunteer.setUser(null);
-        volunteer.setState(VolunteerState.AT_WORK.name());
         volunteerRepository.save(volunteer);
     }
 
@@ -69,5 +56,18 @@ public class VolunteerService {
 
     public List<Volunteer> getVolunteers() {
         return volunteerRepository.findAll(Pageable.ofSize(10)).getContent();
+    }
+
+    public void startConversation(Volunteer volunteer, User user) {
+        volunteer.setUser(user);
+        volunteer.setState(VolunteerState.CONVERSATION.name());
+        volunteerRepository.save(volunteer);
+    }
+
+    public void stopConversation(Long volunteerId) {
+        Volunteer volunteer = getVolunteer(volunteerId);
+        volunteer.setUser(null);
+        volunteer.setState(VolunteerState.AT_WORK.name());
+        volunteerRepository.save(volunteer);
     }
 }

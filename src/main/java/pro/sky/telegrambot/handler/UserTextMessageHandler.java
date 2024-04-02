@@ -111,7 +111,9 @@ public class UserTextMessageHandler {
     }
 
     public void handleDiet(Long userId, String text) {
-        PetReport petReport = petReportService.getReportByUserIdAndState(userId);
+        User user = userService.getUser(userId);
+        ShelterType shelterType = ShelterType.valueOf(user.getSelectedShelter());
+        PetReport petReport = petReportService.getReport(userId, shelterType, PetReportState.FILLING);
 
         petReportService.setDiet(petReport.getId(), text);
         userService.setUserState(userId, UserState.FILL_OUT_THE_REPORT_WELL_BEING);
@@ -119,7 +121,9 @@ public class UserTextMessageHandler {
     }
 
     public void handleWellBeing(Long userId, String text) {
-        PetReport petReport = petReportService.getReportByUserIdAndState(userId);
+        User user = userService.getUser(userId);
+        ShelterType shelterType = ShelterType.valueOf(user.getSelectedShelter());
+        PetReport petReport = petReportService.getReport(userId, shelterType, PetReportState.FILLING);
 
         petReportService.setWellBeing(petReport.getId(), text);
         userService.setUserState(userId, UserState.FILL_OUT_THE_REPORT_CHANGE_IN_BEHAVIOR);
@@ -127,9 +131,9 @@ public class UserTextMessageHandler {
     }
 
     public void handleChangeInBehavior(Long userId, String text) {
-        PetReport petReport = petReportService.getReportByUserIdAndState(userId);
-        Pet pet = petReport.getPet();
-        ShelterType shelterType = pet.getKindOfPet().equals("CAT") ? ShelterType.CAT_SHELTER : ShelterType.DOG_SHELTER;
+        User user = userService.getUser(userId);
+        ShelterType shelterType = ShelterType.valueOf(user.getSelectedShelter());
+        PetReport petReport = petReportService.getReport(userId, shelterType, PetReportState.FILLING);
         Probation probation = probationService.getProbationByUserIdAndShelterTypeAndState(userId, shelterType, ProbationState.FILLING_REPORT);
         InlineKeyboardMarkup inlineKeyboardMarkup = inlineKeyboardService.getUserMainMenuKeyboard();
         String textMessage = messageService.getMessage("USER_MAIN_MENU", shelterType);

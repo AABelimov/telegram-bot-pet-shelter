@@ -7,9 +7,9 @@ import pro.sky.telegrambot.model.Probation;
 import java.util.List;
 
 public interface ProbationRepository extends JpaRepository<Probation, Long> {
-    List<Probation> findByUserIdAndShelterTypeAndState(Long userId, String shelterType, String state);
+    List<Probation> findAllByUserIdAndShelterTypeAndState(Long userId, String shelterType, String state);
 
-    List<Probation> findByUserIdAndShelterType(Long userId, String shelterType);
+    List<Probation> findAllByUserIdAndShelterType(Long userId, String shelterType);
 
     Probation findByPetId(Long petId);
 

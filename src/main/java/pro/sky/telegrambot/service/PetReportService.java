@@ -37,19 +37,7 @@ public class PetReportService {
         this.overdueReportService = overdueReportService;
     }
 
-    public PetReport getReport(Long id) {
-        return petReportRepository.findById(id).orElseThrow(() -> new PetReportNotFoundException(id));
-    }
-
-    public PetReportDtoOut getReportDto(Long id) {
-        return petReportMapper.toDto(getReport(id));
-    }
-
-    public PetReport getReportByPetIdAndState(Long petId, PetReportState state) {
-        return petReportRepository.findByPetIdAndState(petId, state.name());
-    }
-
-    public PetReport createPetReport(Pet pet, User user, Volunteer volunteer, ShelterType shelterType) {
+    public PetReport createReport(Pet pet, User user, Volunteer volunteer, ShelterType shelterType) {
         PetReport petReport = new PetReport();
 
         petReport.setPet(pet);
@@ -61,15 +49,77 @@ public class PetReportService {
         return petReportRepository.save(petReport);
     }
 
-    public void fillReport(Long userId, PetReport petReport) {
+    public PetReport getReport(Long id) {
+        return petReportRepository.findById(id).orElseThrow(() -> new PetReportNotFoundException(id));
+    }
+
+    public PetReport getReport(Long petId, PetReportState state) {
+        return petReportRepository.findByPetIdAndState(petId, state.name());
+    }
+
+    public PetReport getReport(Long userId, ShelterType shelterType, PetReportState state) {
+        return petReportRepository.findByUserIdAndShelterTypeAndState(userId, shelterType.name(), state.name());
+    }
+
+    public PetReport getReportByVolunteerIdAndState(Long volunteerId, PetReportState state) {
+        return petReportRepository.findFirstByVolunteerIdAndState(volunteerId, state.name());
+    }
+
+    public PetReportDtoOut getReportDto(Long id) {
+        return petReportMapper.toDto(getReport(id));
+    }
+
+    public List<PetReport> getReports(PetReportState state, Integer page) {
+        return petReportRepository.findAllByState(state.name(), PageRequest.of(page, 10));
+    }
+
+    public List<PetReport> getReports(Long volunteerId, PetReportState state) {
+        return petReportRepository.findAllByVolunteerIdAndState(volunteerId, state.name());
+    }
+
+    public List<PetReportDtoOut> getReports(String shelterType, String state, Integer page) {
+        PageRequest pageRequest = PageRequest.of(page, 10);
+        PetReportState petReportState;
+        ShelterType typeOfShelter;
+
+        if (shelterType.equals("all") && state == null) {
+            return getAllReports(pageRequest);
+        } else if (shelterType.equals("all")) {
+            petReportState = PetReportState.valueOf(state.toUpperCase());
+            return getReports(petReportState, page).stream()
+                    .map(petReportMapper::toDto)
+                    .collect(Collectors.toList());
+        }
+        typeOfShelter = ShelterType.valueOf(shelterType.toUpperCase());
+        return getReportsByShelterTypeAndState(typeOfShelter, state, pageRequest);
+    }
+
+    private List<PetReportDtoOut> getAllReports(PageRequest pageRequest) {
+        return petReportRepository.findAll(pageRequest).getContent().stream()
+                .map(petReportMapper::toDto)
+                .collect(Collectors.toList());
+    }
+
+    private List<PetReportDtoOut> getReportsByShelterTypeAndState(ShelterType shelterType, String state, PageRequest pageRequest) {
+        PetReportState petReportState;
+        List<PetReport> petReports;
+
+        if (state == null) {
+            petReports = petReportRepository.findAllByShelterType(shelterType.name(), pageRequest);
+        } else {
+            petReportState = PetReportState.valueOf(state.toUpperCase());
+            petReports = petReportRepository.findAllByShelterTypeAndState(shelterType.name(), petReportState.name(), pageRequest);
+        }
+        return petReports.stream()
+                .map(petReportMapper::toDto)
+                .collect(Collectors.toList());
+    }
+
+    public void startFillingOutTheReport(Long userId, PetReport petReport) {
         if (petReport.getPhotoPath() == null) {
             userService.setUserState(userId, UserState.FILL_OUT_THE_REPORT_PHOTO);
             telegramBotService.sendMessage(userId, "Отправте фото животного");
         }
-    }
-
-    public PetReport getReportByUserIdAndShelterTypeAndState(Long userId, ShelterType shelterType, PetReportState state) {
-        return petReportRepository.findByUserIdAndShelterTypeAndState(userId, shelterType.name(), state.name());
     }
 
     public void setPhotoPath(Long id, String photoPath) {
@@ -82,16 +132,6 @@ public class PetReportService {
         PetReport petReport = getReport(id);
         petReport.setDiet(text);
         petReportRepository.save(petReport);
-    }
-
-    public PetReport getReportByUserIdAndState(Long userId) {
-        User user = userService.getUser(userId);
-        ShelterType shelterType = ShelterType.valueOf(user.getSelectedShelter());
-        return getReportByUserIdAndShelterTypeAndState(userId, shelterType, PetReportState.FILLING);
-    }
-
-    public List<PetReport> getPetReportsByState(PetReportState state, Integer page) {
-        return petReportRepository.findAllByState(state.name(), PageRequest.of(page, 10));
     }
 
     public void setWellBeing(Long id, String text) {
@@ -119,29 +159,17 @@ public class PetReportService {
         petReportRepository.save(petReport);
     }
 
-    public PetReport getReportByVolunteerIdAndState(Long volunteerId, PetReportState state) {
-        return petReportRepository.findFirstByVolunteerIdAndState(volunteerId, state.name());
-    }
-
-    public List<PetReportDtoOut> getUnverifiedReports(Integer page) {
-        List<PetReport> petReports = getPetReportsByState(PetReportState.WAITING_FOR_VERIFICATION, page);
-        return petReports.stream()
-                .map(petReportMapper::toDto)
-                .collect(Collectors.toList());
-    }
-
-    public PetReportDtoOut acceptReport(Long id) {
+    public void acceptReport(Long id) {
         PetReport petReport = getReport(id);
         Probation probation = probationService.getProbationByPetId(petReport.getPet().getId());
         setReportState(id, PetReportState.ACCEPTED);
-//        setTimeSendingReport(id);
         probationService.setProbationState(probation.getId(), ProbationState.REPORT_ACCEPTED);
         probationService.setLastReportDate(probation.getId());
         overdueReportService.deleteOverdueReport(probation);
-        return petReportMapper.toDto(petReport);
+        petReportMapper.toDto(petReport);
     }
 
-    public PetReportDtoOut denyReport(Long id, String comment) {
+    public void denyReport(Long id, String comment) {
         PetReport petReport = getReport(id);
         Probation probation = probationService.getProbationByPetId(petReport.getPet().getId());
         comment = String.format("%s, ваш отчет по животному с кличкой %s не был принят по причине:\n%s",
@@ -152,46 +180,6 @@ public class PetReportService {
 
         telegramBotService.sendMessage(probation.getUser().getId(), comment);
 
-        return petReportMapper.toDto(petReport);
-    }
-
-    public List<PetReport> getReportsByVolunteerIdAndState(Long volunteerId, PetReportState state) {
-        return petReportRepository.findAllByVolunteerIdAndState(volunteerId, state.name());
-    }
-
-    public List<PetReportDtoOut> getReports(String shelterType, String state, Integer page) {
-        PageRequest pageRequest = PageRequest.of(page, 10);
-        PetReportState petReportState = null;
-        ShelterType typeOfShelter = null;
-
-        if (shelterType.equals("all") && state == null) {
-            return getAllReports(pageRequest);
-        } else if (shelterType.equals("all")) {
-            petReportState = PetReportState.valueOf(state.toUpperCase());
-            return getPetReportsByState(petReportState, page).stream()
-                    .map(petReportMapper::toDto)
-                    .collect(Collectors.toList());
-        }
-        typeOfShelter = ShelterType.valueOf(shelterType.toUpperCase());
-        return getReportsByShelterTypeAndState(typeOfShelter, state, pageRequest);
-    }
-
-    private List<PetReportDtoOut> getReportsByShelterTypeAndState(ShelterType shelterType, String state, PageRequest pageRequest) {
-        PetReportState petReportState = null;
-        if (state == null) {
-            return petReportRepository.findAllByShelterType(shelterType.name(), pageRequest).stream()
-                    .map(petReportMapper::toDto)
-                    .collect(Collectors.toList());
-        }
-        petReportState = PetReportState.valueOf(state.toUpperCase());
-        return petReportRepository.findAllByShelterTypeAndState(shelterType.name(), petReportState.name(), pageRequest).stream()
-                .map(petReportMapper::toDto)
-                .collect(Collectors.toList());
-    }
-
-    private List<PetReportDtoOut> getAllReports(PageRequest pageRequest) {
-        return petReportRepository.findAll(pageRequest).getContent().stream()
-                .map(petReportMapper::toDto)
-                .collect(Collectors.toList());
+        petReportMapper.toDto(petReport);
     }
 }

@@ -27,7 +27,8 @@ public class AdoptionService {
     public AdoptionService(AdoptionRepository adoptionRepository,
                            ProbationService probationService,
                            PetService petService,
-                           TelegramBotService telegramBotService, AdoptionMapper adoptionMapper) {
+                           TelegramBotService telegramBotService,
+                           AdoptionMapper adoptionMapper) {
         this.adoptionRepository = adoptionRepository;
         this.probationService = probationService;
         this.petService = petService;

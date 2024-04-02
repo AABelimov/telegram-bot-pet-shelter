@@ -4,7 +4,6 @@ import com.pengrad.telegrambot.model.request.InlineKeyboardMarkup;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Component;
 import pro.sky.telegrambot.enums.*;
 import pro.sky.telegrambot.model.*;
@@ -166,8 +165,8 @@ public class UserDataCallbackQueryHandler {
         InlineKeyboardMarkup inlineKeyboardMarkup;
 
         switch (userCommand) {
-            case LIST_OF_ANIMALS:
-                listOfAnimals(userId, messageId, shelterType, 0);
+            case LIST_OF_PETS:
+                listOfPets(userId, messageId, shelterType, 0);
                 break;
             case RULES_FOR_MEETING:
                 inlineKeyboardMarkup = inlineKeyboardService.getHowAdoptPetUserMenuKeyboard(userCommand, shelterType);
@@ -257,12 +256,12 @@ public class UserDataCallbackQueryHandler {
             handleMainMenu(userId, messageId, UserCommand.SEND_REPORT.name());
         } else {
             pet = petService.getPet(petId);
-            petReport = petReportService.getReportByPetIdAndState(petId, PetReportState.FILLING);
+            petReport = petReportService.getReport(petId, PetReportState.FILLING);
             shelterType = pet.getKindOfPet().equals("CAT") ? ShelterType.CAT_SHELTER : ShelterType.DOG_SHELTER;
             probation = probationService.getProbationByUserIdAndShelterTypeAndState(userId, shelterType, ProbationState.FILLING_REPORT);
 
             if (probation != null && probation.getPet().getId().equals(petId)) {
-                petReportService.fillReport(userId, petReport);
+                petReportService.startFillingOutTheReport(userId, petReport);
             }
 
             if (probation != null && !probation.getPet().getId().equals(petId)) {
@@ -275,9 +274,9 @@ public class UserDataCallbackQueryHandler {
             if (petReport == null && probation == null) {
                 probation = probationService.getProbationByPetId(petId);
                 volunteer = probation.getVolunteer();
-                petReport = petReportService.createPetReport(pet, user, volunteer, shelterType);
+                petReport = petReportService.createReport(pet, user, volunteer, shelterType);
                 probationService.setProbationState(probation.getId(), ProbationState.FILLING_REPORT);
-                petReportService.fillReport(userId, petReport);
+                petReportService.startFillingOutTheReport(userId, petReport);
             }
         }
     }
@@ -293,7 +292,7 @@ public class UserDataCallbackQueryHandler {
             telegramBotService.sendInlineKeyboard(userId, text, inlineKeyboardMarkup);
             userService.setUserState(userId, UserState.MAIN_MENU);
         } else {
-            listOfAnimals(userId, messageId, shelterType, page);
+            listOfPets(userId, messageId, shelterType, page);
         }
     }
 
@@ -393,9 +392,8 @@ public class UserDataCallbackQueryHandler {
         telegramBotService.editMessage(userId, messageId, text);
     }
 
-    private void listOfAnimals(Long userId, Integer messageId, ShelterType shelterType, int page) {
-        PageRequest pageRequest = PageRequest.of(page, 1);
-        List<Pet> pets = petService.getListOfAnimals(shelterType, PetState.WAITING_TO_BE_ADOPTED, pageRequest);
+    private void listOfPets(Long userId, Integer messageId, ShelterType shelterType, int page) {
+        List<Pet> pets = petService.getListOfPets(shelterType, PetState.WAITING_TO_BE_ADOPTED, page);
 
         if (pets.size() > 0) {
             Pet pet = pets.get(0);
@@ -416,14 +414,14 @@ public class UserDataCallbackQueryHandler {
             }
         } else {
             userService.setUserState(userId, UserState.HOW_ADOPT_PET);
-            InlineKeyboardMarkup inlineKeyboardMarkup = inlineKeyboardService.getHowAdoptPetUserMenuKeyboard(UserCommand.LIST_OF_ANIMALS, shelterType);
+            InlineKeyboardMarkup inlineKeyboardMarkup = inlineKeyboardService.getHowAdoptPetUserMenuKeyboard(UserCommand.LIST_OF_PETS, shelterType);
             sendInlineKeyboard(userId, messageId, inlineKeyboardMarkup, shelterType, "LIST_OF_ANIMALS_NULL");
         }
     }
 
     private void selectAnimalToReport(Long userId, Integer messageId, ShelterType shelterType) {
         Probation probation = probationService.getProbationByUserIdAndShelterTypeAndState(userId, shelterType, ProbationState.FILLING_REPORT);
-        List<Probation> probationList = probationService.getProbationList(userId, shelterType, ProbationState.WAITING_FOR_A_NEW_REPORT);
+        List<Probation> probationList = probationService.getProbationListByShelterTypeAndState(userId, shelterType, ProbationState.WAITING_FOR_A_NEW_REPORT);
         List<Pet> pets;
         InlineKeyboardMarkup inlineKeyboardMarkup;
 
@@ -436,7 +434,7 @@ public class UserDataCallbackQueryHandler {
                 .collect(Collectors.toList());
         inlineKeyboardMarkup = inlineKeyboardService.getSelectAnimalToReportUserMenuKeyboard(pets);
         String text;
-        probationList = probationService.getProbationList(userId, shelterType);
+        probationList = probationService.getProbationListByUserIdAndShelterType(userId, shelterType);
 
         if (probationList.size() == 0) {
             text = "В этом приюте вы не брали животных";

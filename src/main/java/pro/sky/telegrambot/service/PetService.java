@@ -46,8 +46,7 @@ public class PetService {
         uploadAvatar(pet, file);
     }
 
-    public void uploadAvatar(Pet pet, MultipartFile file) throws IOException {
-//        Pet pet = getPet(id);
+    private void uploadAvatar(Pet pet, MultipartFile file) throws IOException {
         ShelterType shelterType = pet.getKindOfPet().equals("CAT") ? ShelterType.CAT_SHELTER : ShelterType.DOG_SHELTER;
         String extension = StringUtils.getFilenameExtension(file.getOriginalFilename());
         Path filePath = Path.of(photosDir, shelterType.name().toLowerCase(), pet.hashCode() + "." + extension);
@@ -63,7 +62,6 @@ public class PetService {
             bis.transferTo(bos);
             pet.setPhotoPath(filePath.toString());
             petRepository.save(pet);
-//            petMapper.toDto(pet);
         }
     }
 
@@ -75,65 +73,10 @@ public class PetService {
         return petMapper.toDto(getPet(id));
     }
 
-    public List<Pet> getListOfAnimals(ShelterType shelterType, PetState state, PageRequest pageRequest) {
+    public List<Pet> getListOfPets(ShelterType shelterType, PetState state, int page) {
+        PageRequest pageRequest = PageRequest.of(page, 1);
         String kindOfPet = shelterType.equals(ShelterType.DOG_SHELTER) ? "DOG" : "CAT";
-
-        return petRepository.findByKindOfPetAndStateOrderByName(kindOfPet, state.name(), pageRequest);
-    }
-
-    public long countPetsByKindOfPet(ShelterType shelterType) {
-        String kindOfPet = shelterType.equals(ShelterType.DOG_SHELTER) ? "DOG" : "CAT";
-
-        return petRepository.countByKindOfPetAndState(kindOfPet, PetState.WAITING_TO_BE_ADOPTED.name());
-    }
-
-    public void setPetState(Long id, PetState state) {
-        Pet pet = getPet(id);
-        pet.setState(state.name());
-        petRepository.save(pet);
-    }
-
-    public List<PetDtoOut> getAllPetsAvailableForAdoption(Integer page) {
-        PageRequest pageRequest = PageRequest.of(page, 10);
-        List<Pet> pets = petRepository.findAllByStateOrderByIdDesc(PetState.WAITING_TO_BE_ADOPTED.toString(), pageRequest);
-        return pets.stream()
-                .map(petMapper::toDto)
-                .collect(Collectors.toList());
-    }
-
-    public List<PetDtoOut> getAllPets(Integer page) {
-        PageRequest pageRequest = PageRequest.of(page, 10);
-        List<Pet> pets = petRepository.findAll(pageRequest).getContent();
-        return pets.stream()
-                .map(petMapper::toDto)
-                .collect(Collectors.toList());
-    }
-
-    public List<PetDtoOut> getAllPetsByShelterTypeAvailableForAdoption(String shelterType, Integer page) {
-        PageRequest pageRequest = PageRequest.of(page, 10);
-        String kindOfPet = ShelterType.valueOf(shelterType.toUpperCase()).equals(ShelterType.CAT_SHELTER) ? "CAT" : "DOG";
-        List<Pet> pets = petRepository.findAllByStateAndKindOfPetOrderByIdDesc(PetState.WAITING_TO_BE_ADOPTED.toString(), kindOfPet, pageRequest);
-        return pets.stream()
-                .map(petMapper::toDto)
-                .collect(Collectors.toList());
-    }
-
-    public void editPet(Long id, PetDtoEdit petDtoEdit, MultipartFile file) throws IOException {
-        Pet pet = getPet(id);
-        if (!(petDtoEdit.getName().isEmpty() || petDtoEdit.getName().isBlank())) {
-            pet.setName(petDtoEdit.getName());
-        }
-        if (!(petDtoEdit.getAboutPet().isEmpty() || petDtoEdit.getAboutPet().isBlank())) {
-            pet.setAboutPet(petDtoEdit.getAboutPet());
-        }
-        if (!file.isEmpty()) {
-            uploadAvatar(pet, file);
-        }
-    }
-
-    public void deletePet(Long id) {
-        Pet pet = getPet(id);
-        petRepository.delete(pet);
+        return petRepository.findAllByStateAndKindOfPetOrderByIdDesc(state.name(), kindOfPet, pageRequest);
     }
 
     public List<PetDtoOut> getPets(String shelterType, String state, Integer page) {
@@ -146,6 +89,14 @@ public class PetService {
         ShelterType typeOfShelter = ShelterType.valueOf(shelterType.toUpperCase());
 
         return getAllPetsByShelterTypeAndState(typeOfShelter, state, page);
+    }
+
+    private List<PetDtoOut> getAllPets(Integer page) {
+        PageRequest pageRequest = PageRequest.of(page, 10);
+        List<Pet> pets = petRepository.findAll(pageRequest).getContent();
+        return pets.stream()
+                .map(petMapper::toDto)
+                .collect(Collectors.toList());
     }
 
     private List<PetDtoOut> getAllPetsByState(String state, Integer page) {
@@ -170,5 +121,29 @@ public class PetService {
         return petRepository.findAllByStateAndKindOfPetOrderByIdDesc(petState.name(), kindOfPet, pageRequest).stream()
                 .map(petMapper::toDto)
                 .collect(Collectors.toList());
+    }
+
+    public void editPet(Long id, PetDtoEdit petDtoEdit, MultipartFile file) throws IOException {
+        Pet pet = getPet(id);
+        if (!(petDtoEdit.getName().isEmpty() || petDtoEdit.getName().isBlank())) {
+            pet.setName(petDtoEdit.getName());
+        }
+        if (!(petDtoEdit.getAboutPet().isEmpty() || petDtoEdit.getAboutPet().isBlank())) {
+            pet.setAboutPet(petDtoEdit.getAboutPet());
+        }
+        if (!file.isEmpty()) {
+            uploadAvatar(pet, file);
+        }
+    }
+
+    public void setPetState(Long id, PetState state) {
+        Pet pet = getPet(id);
+        pet.setState(state.name());
+        petRepository.save(pet);
+    }
+
+    public void deletePet(Long id) {
+        Pet pet = getPet(id);
+        petRepository.delete(pet);
     }
 }

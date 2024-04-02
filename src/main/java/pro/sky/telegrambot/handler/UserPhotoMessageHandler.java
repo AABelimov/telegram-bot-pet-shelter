@@ -9,8 +9,11 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 import org.springframework.util.StringUtils;
+import pro.sky.telegrambot.enums.PetReportState;
+import pro.sky.telegrambot.enums.ShelterType;
 import pro.sky.telegrambot.enums.UserState;
 import pro.sky.telegrambot.model.PetReport;
+import pro.sky.telegrambot.model.User;
 import pro.sky.telegrambot.service.PetReportService;
 import pro.sky.telegrambot.service.TelegramBotService;
 import pro.sky.telegrambot.service.UserService;
@@ -45,7 +48,9 @@ public class UserPhotoMessageHandler {
 
     public void handlePhoto(Long userId, PhotoSize photoSize) {
         GetFileResponse getFileResponse = telegramBot.execute(new GetFile(photoSize.fileId()));
-        PetReport petReport = petReportService.getReportByUserIdAndState(userId);
+        User user = userService.getUser(userId);
+        ShelterType shelterType = ShelterType.valueOf(user.getSelectedShelter());
+        PetReport petReport = petReportService.getReport(userId, shelterType, PetReportState.FILLING);
 
         try {
             String extension = StringUtils.getFilenameExtension(getFileResponse.file().filePath());

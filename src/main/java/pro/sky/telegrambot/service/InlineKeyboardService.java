@@ -127,7 +127,7 @@ public class InlineKeyboardService {
         InlineKeyboardMarkup inlineKeyboardMarkup = new InlineKeyboardMarkup();
 
         InlineKeyboardButton listOfAnimalsButton = new InlineKeyboardButton("Список животных")
-                .callbackData(UserCommand.LIST_OF_ANIMALS.name());
+                .callbackData(UserCommand.LIST_OF_PETS.name());
 
         InlineKeyboardButton rulesForMeetingButton = new InlineKeyboardButton("Правила знакомства с животным")
                 .callbackData(UserCommand.RULES_FOR_MEETING.name());
@@ -187,7 +187,7 @@ public class InlineKeyboardService {
         }
 
         switch (userCommand) {
-            case LIST_OF_ANIMALS:
+            case LIST_OF_PETS:
                 inlineKeyboardButtons.remove(listOfAnimalsButton);
                 break;
             case RULES_FOR_MEETING:

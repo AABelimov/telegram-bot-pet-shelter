@@ -1,9 +1,5 @@
 package pro.sky.telegrambot.controller;
 
-import io.swagger.v3.oas.annotations.Operation;
-import io.swagger.v3.oas.annotations.media.Content;
-import io.swagger.v3.oas.annotations.media.Schema;
-import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import org.springframework.http.MediaType;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -11,8 +7,8 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 import pro.sky.telegrambot.dto.PetDtoEdit;
 import pro.sky.telegrambot.dto.PetDtoIn;
-import pro.sky.telegrambot.dto.PetDtoOut;
 import pro.sky.telegrambot.dto.ProbationDtoIn;
+import pro.sky.telegrambot.enums.PetState;
 import pro.sky.telegrambot.enums.ShelterType;
 import pro.sky.telegrambot.model.Pet;
 import pro.sky.telegrambot.service.PetService;
@@ -40,35 +36,16 @@ public class PetController {
         this.volunteerService = volunteerService;
     }
 
-    @Operation(
-            summary = "Create pet",
-            responses = {
-                    @ApiResponse(
-                            responseCode = "200",
-                            description = "Pet created",
-                            content = @Content(
-                                    mediaType = MediaType.APPLICATION_JSON_VALUE,
-                                    schema = @Schema(implementation = PetDtoOut.class)
-                            )
-                    ),
-                    @ApiResponse(
-                            responseCode = "400",
-                            description = "Kind of pet isn't correct",
-                            content = @Content
-                    )
-            }
-    )
     @PostMapping(consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
-    public String createPet(@ModelAttribute PetDtoIn pet,//@ModelAttribute //@RequestPart
-                            @RequestParam MultipartFile file,//@RequestPart //@RequestParam
+    public String createPet(@ModelAttribute PetDtoIn pet,
+                            @RequestParam MultipartFile file,
                             Model model) throws IOException {
         petService.createPet(pet, file);
         ShelterType shelterType = pet.getKindOfPet().equals("CAT") ? ShelterType.CAT_SHELTER : ShelterType.DOG_SHELTER;
-        model.addAttribute("pets", petService.getAllPetsByShelterTypeAvailableForAdoption(shelterType.name().toLowerCase(), 0));
+        model.addAttribute("pets", petService.getPets(shelterType.name(), PetState.WAITING_TO_BE_ADOPTED.name(), 0));
         model.addAttribute("page", 0);
         model.addAttribute("shelterType", shelterType.name().toLowerCase());
         model.addAttribute("state", "all");
-        /*model.addAttribute("pet", petService.getPet(petDtoOut.getId()));*/
         return "pets/pets";
     }
 
@@ -142,7 +119,7 @@ public class PetController {
     @DeleteMapping("{id}")
     public String deletePet(@PathVariable Long id, Model model) {
         petService.deletePet(id);
-        model.addAttribute("pets", petService.getAllPetsAvailableForAdoption(0));
+        model.addAttribute("pets", petService.getPets("all", PetState.WAITING_TO_BE_ADOPTED.name(), 0));
         model.addAttribute("page", 0);
         model.addAttribute("shelterType", null);
         return "pets/pets";

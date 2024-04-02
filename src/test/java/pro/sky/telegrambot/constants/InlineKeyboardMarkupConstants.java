@@ -51,7 +51,7 @@ public class InlineKeyboardMarkupConstants {
             .callbackData(UserCommand.SHARE_CONTACTS.name());
 
     public static final InlineKeyboardButton LIST_OF_ANIMALS_BUTTON = new InlineKeyboardButton("Список животных")
-            .callbackData(UserCommand.LIST_OF_ANIMALS.name());
+            .callbackData(UserCommand.LIST_OF_PETS.name());
 
     public static final InlineKeyboardButton RULES_FOR_MEETING_BUTTON = new InlineKeyboardButton("Правила знакомства с животным")
             .callbackData(UserCommand.RULES_FOR_MEETING.name());

@@ -37,7 +37,7 @@ public class ProbationService {
         this.telegramBotService = telegramBotService;
     }
 
-    public ProbationDtoOut createProbation(ProbationDtoIn probationDtoIn) {
+    public void createProbation(ProbationDtoIn probationDtoIn) {
         Probation probation = getProbationByPetId(probationDtoIn.getPetId());
 
         if (probation != null) {
@@ -45,32 +45,63 @@ public class ProbationService {
         }
 
         petService.setPetState(probationDtoIn.getPetId(), PetState.ON_PROBATION);
-        return probationMapper.toDto(probationRepository.save(probationMapper.toEntity(probationDtoIn)));
+        probationMapper.toDto(probationRepository.save(probationMapper.toEntity(probationDtoIn)));
     }
 
     public Probation getProbation(Long id) {
         return probationRepository.findById(id).orElseThrow(() -> new ProbationNotFoundException(id));
     }
 
-    public List<Probation> getProbationList(Long userId, ShelterType shelterType, ProbationState state) {
-        return probationRepository.findByUserIdAndShelterTypeAndState(userId, shelterType.name(), state.name());
-    }
-
-    public List<Probation> getProbationList(Long userId, ShelterType shelterType) {
-        return probationRepository.findByUserIdAndShelterType(userId, shelterType.name());
+    public ProbationDtoOut getProbationDto(Long id) {
+        return probationMapper.toDto(getProbation(id));
     }
 
     public Probation getProbationByPetId(Long petId) {
         return probationRepository.findByPetId(petId);
     }
 
+    public Probation getProbationByVolunteerIdAndState(Long volunteerId, ProbationState state) {
+        return probationRepository.findFirstByVolunteerIdAndState(volunteerId, state.name());
+    }
+
     public Probation getProbationByUserIdAndShelterTypeAndState(Long userId, ShelterType shelterType, ProbationState state) {
-        List<Probation> probationList = getProbationList(userId, shelterType, state);
+        List<Probation> probationList = getProbationListByShelterTypeAndState(userId, shelterType, state);
         if (probationList.size() == 0) {
             return null;
         } else {
             return probationList.get(0);
         }
+    }
+
+    public List<Probation> getProbationListByShelterTypeAndState(Long userId, ShelterType shelterType, ProbationState state) {
+        return probationRepository.findAllByUserIdAndShelterTypeAndState(userId, shelterType.name(), state.name());
+    }
+
+    public List<Probation> getProbationListByUserIdAndShelterType(Long userId, ShelterType shelterType) {
+        return probationRepository.findAllByUserIdAndShelterType(userId, shelterType.name());
+    }
+
+    public List<Probation> getProbationListByVolunteerIdAndState(Long volunteerId, ProbationState state) {
+        return probationRepository.findAllByVolunteerIdAndState(volunteerId, state.name());
+    }
+
+    public List<ProbationDtoOut> getProbationListByState(ProbationState probationState, Integer page) {
+        PageRequest pageRequest = PageRequest.of(page, 10);
+        List<Probation> probationList = probationRepository.findAllByState(probationState.name(), pageRequest);
+        return probationList.stream()
+                .map(probationMapper::toDto)
+                .collect(Collectors.toList());
+    }
+
+    public List<ProbationDtoOut> getAll(Integer page) {
+        PageRequest pageRequest = PageRequest.of(page, 10);
+        return probationRepository.findAll(pageRequest).getContent().stream()
+                .map(probationMapper::toDto)
+                .collect(Collectors.toList());
+    }
+
+    public List<Probation> getAll() {
+        return probationRepository.findAll();
     }
 
     public void setProbationState(Long id, ProbationState state) {
@@ -83,10 +114,6 @@ public class ProbationService {
         Probation probation = getProbation(id);
         probation.setLastReportDate(LocalDateTime.now());
         probationRepository.save(probation);
-    }
-
-    public Probation getProbationByVolunteerIdAndState(Long volunteerId, ProbationState state) {
-        return probationRepository.findFirstByVolunteerIdAndState(volunteerId, state.name());
     }
 
     public void deleteProbation(Probation probation) {
@@ -103,40 +130,12 @@ public class ProbationService {
         telegramBotService.sendMessage(user.getId(), String.format("Вам добавили %d дней к испытательному сроку для %s", days, pet.getName()));
     }
 
-    public List<Probation> getAll() {
-        return probationRepository.findAll();
-    }
-
-    public List<Probation> getProbationListByVolunteerIdAndState(Long volunteerId, ProbationState state) {
-        return probationRepository.findAllByVolunteerIdAndState(volunteerId, state.name());
-    }
-
-    public List<ProbationDtoOut> getProbationsByState(ProbationState probationState, Integer page) {
-        PageRequest pageRequest = PageRequest.of(page, 10);
-        List<Probation> probations = probationRepository.findAllByState(probationState.name(), pageRequest);
-        return probations.stream()
-                .map(probationMapper::toDto)
-                .collect(Collectors.toList());
-    }
-
-    public ProbationDtoOut getProbationDto(Long id) {
-        return probationMapper.toDto(getProbation(id));
-    }
-
-    public List<ProbationDtoOut> getAllProbations(Integer page) {
-        PageRequest pageRequest = PageRequest.of(page, 10);
-        return probationRepository.findAll(pageRequest).getContent().stream()
-                .map(probationMapper::toDto)
-                .collect(Collectors.toList());
-    }
-
     public void refuseAdoption(Probation probation) {
         User user = probation.getUser();
         Pet pet = probation.getPet();
         String text = String.format("Вы не прошли испытательный срок, %s должен вернуться к нам", pet.getName());
 
         probationRepository.delete(probation);
-
         petService.setPetState(pet.getId(), PetState.WAITING_TO_BE_ADOPTED);
         telegramBotService.sendMessage(user.getId(), text);
     }

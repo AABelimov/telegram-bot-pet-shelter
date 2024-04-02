@@ -44,7 +44,7 @@ class PetReportServiceTest {
 
     @Test
     void testCreateReport() {
-        out.createPetReport(PET_1, USER_1, VOLUNTEER_1, ShelterType.CAT_SHELTER);
+        out.createReport(PET_1, USER_1, VOLUNTEER_1, ShelterType.CAT_SHELTER);
         verify(petReportRepositoryMock).save(argThat(x -> {
             assertEquals(PET_1, x.getPet());
             assertEquals(ShelterType.CAT_SHELTER.name(), x.getShelterType());
@@ -58,11 +58,11 @@ class PetReportServiceTest {
 
     @Test
     void testFillReport() {
-        out.fillReport(USER_ID_1, PET_REPORT_1);
+        out.startFillingOutTheReport(USER_ID_1, PET_REPORT_1);
         verify(userServiceMock, times(0)).setUserState(eq(USER_ID_1), eq(UserState.FILL_OUT_THE_REPORT_PHOTO));
         verify(telegramBotServiceMock, times(0)).sendMessage(eq(USER_ID_1), eq("Отправте фото животного"));
 
-        out.fillReport(USER_ID_2, PET_REPORT_2);
+        out.startFillingOutTheReport(USER_ID_2, PET_REPORT_2);
         verify(userServiceMock, times(1)).setUserState(eq(USER_ID_2), eq(UserState.FILL_OUT_THE_REPORT_PHOTO));
         verify(telegramBotServiceMock, times(1)).sendMessage(eq(USER_ID_2), eq("Отправте фото животного"));
     }

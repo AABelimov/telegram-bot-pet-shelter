@@ -2,7 +2,6 @@ package pro.sky.telegrambot.repository;
 
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.jpa.repository.JpaRepository;
-import pro.sky.telegrambot.dto.PetReportDtoOut;
 import pro.sky.telegrambot.model.PetReport;
 
 import java.util.List;

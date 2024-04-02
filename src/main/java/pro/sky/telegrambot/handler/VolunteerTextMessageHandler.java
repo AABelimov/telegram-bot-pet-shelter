@@ -53,7 +53,7 @@ public class VolunteerTextMessageHandler {
 
     public void handleStart(Long volunteerId, String text, Integer messageId) {
         if ("/start".equals(text)) {
-            int countReports = petReportService.getReportsByVolunteerIdAndState(volunteerId, PetReportState.WAITING_FOR_VERIFICATION).size();
+            int countReports = petReportService.getReports(volunteerId, PetReportState.WAITING_FOR_VERIFICATION).size();
             int countOverdueReports = overdueReportService.getOverdueReportsByVolunteerId(volunteerId).size();
             int countProbation =  probationService.getProbationListByVolunteerIdAndState(volunteerId, ProbationState.ON_THE_DECISION).size();
             Volunteer volunteer = volunteerService.getVolunteer(volunteerId);
