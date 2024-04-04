@@ -27,7 +27,7 @@ public class ProbationController {
         probationService.createProbation(probationDtoIn);
         model.addAttribute("pets", petService.getPets("all", PetState.WAITING_TO_BE_ADOPTED.name(), 0));
         model.addAttribute("page", 0);
-        model.addAttribute("shelterType", null);
+        model.addAttribute("shelterType", "all");
         return "pets/pets";
     }
 

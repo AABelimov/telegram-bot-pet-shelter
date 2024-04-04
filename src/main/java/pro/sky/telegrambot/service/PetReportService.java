@@ -9,6 +9,9 @@ import pro.sky.telegrambot.mapper.PetReportMapper;
 import pro.sky.telegrambot.model.*;
 import pro.sky.telegrambot.repository.PetReportRepository;
 
+import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Path;
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -113,6 +116,11 @@ public class PetReportService {
         return petReports.stream()
                 .map(petReportMapper::toDto)
                 .collect(Collectors.toList());
+    }
+
+    public byte[] getPhoto(Long id) throws IOException {
+        PetReport petReport = getReport(id);
+        return Files.readAllBytes(Path.of(petReport.getPhotoPath()));
     }
 
     public void startFillingOutTheReport(Long userId, PetReport petReport) {

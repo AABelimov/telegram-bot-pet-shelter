@@ -5,15 +5,9 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 import pro.sky.telegrambot.enums.PetReportState;
-import pro.sky.telegrambot.model.PetReport;
 import pro.sky.telegrambot.service.PetReportService;
 
-import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
-import java.io.InputStream;
-import java.io.OutputStream;
-import java.nio.file.Files;
-import java.nio.file.Path;
 
 @Controller
 @RequestMapping("reports")
@@ -42,18 +36,10 @@ public class PetReportController {
         return "reports/report";
     }
 
-    @GetMapping("{id}/photo")
-    public void getPhoto(@PathVariable Long id, HttpServletResponse response) throws IOException {
-        PetReport petReport = petReportService.getReport(id);
-        Path path = Path.of(petReport.getPhotoPath());
-        try (
-                InputStream is = Files.newInputStream(path);
-                OutputStream os = response.getOutputStream()
-        ) {
-            response.setStatus(200);
-            response.setContentType(MediaType.IMAGE_JPEG_VALUE);
-            is.transferTo(os);
-        }
+    @GetMapping(value = "{id}/photo", produces = {MediaType.IMAGE_JPEG_VALUE, MediaType.IMAGE_PNG_VALUE})
+    @ResponseBody
+    public byte[] getPhoto(@PathVariable Long id) throws IOException {
+        return petReportService.getPhoto(id);
     }
 
     @PatchMapping("{id}/accept")

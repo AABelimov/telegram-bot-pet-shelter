@@ -10,17 +10,11 @@ import pro.sky.telegrambot.dto.PetDtoIn;
 import pro.sky.telegrambot.dto.ProbationDtoIn;
 import pro.sky.telegrambot.enums.PetState;
 import pro.sky.telegrambot.enums.ShelterType;
-import pro.sky.telegrambot.model.Pet;
 import pro.sky.telegrambot.service.PetService;
 import pro.sky.telegrambot.service.UserService;
 import pro.sky.telegrambot.service.VolunteerService;
 
-import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
-import java.io.InputStream;
-import java.io.OutputStream;
-import java.nio.file.Files;
-import java.nio.file.Path;
 
 @Controller
 @RequestMapping("pets")
@@ -30,7 +24,9 @@ public class PetController {
     private final UserService userService;
     private final VolunteerService volunteerService;
 
-    public PetController(PetService petService, UserService userService, VolunteerService volunteerService) {
+    public PetController(PetService petService,
+                         UserService userService,
+                         VolunteerService volunteerService) {
         this.petService = petService;
         this.userService = userService;
         this.volunteerService = volunteerService;
@@ -67,18 +63,10 @@ public class PetController {
         return "pets/pets";
     }
 
-    @GetMapping("{id}/photo")
-    public void getPhoto(@PathVariable Long id, HttpServletResponse response) throws IOException {
-        Pet pet = petService.getPet(id);
-        Path path = Path.of(pet.getPhotoPath());
-        try (
-                InputStream is = Files.newInputStream(path);
-                OutputStream os = response.getOutputStream()
-        ) {
-            response.setStatus(200);
-            response.setContentType(MediaType.IMAGE_JPEG_VALUE);
-            is.transferTo(os);
-        }
+    @GetMapping(value = "{id}/photo", produces = {MediaType.IMAGE_JPEG_VALUE, MediaType.IMAGE_PNG_VALUE})
+    @ResponseBody
+    public byte[] getPhoto(@PathVariable Long id) throws IOException {
+        return petService.getPhoto(id);
     }
 
     @GetMapping("{id}/potential-parents")
@@ -121,7 +109,7 @@ public class PetController {
         petService.deletePet(id);
         model.addAttribute("pets", petService.getPets("all", PetState.WAITING_TO_BE_ADOPTED.name(), 0));
         model.addAttribute("page", 0);
-        model.addAttribute("shelterType", null);
+        model.addAttribute("shelterType", "all");
         return "pets/pets";
     }
 }

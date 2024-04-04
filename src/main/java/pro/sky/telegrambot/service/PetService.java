@@ -123,6 +123,11 @@ public class PetService {
                 .collect(Collectors.toList());
     }
 
+    public byte[] getPhoto(Long id) throws IOException {
+        Pet pet = getPet(id);
+        return Files.readAllBytes(Path.of(pet.getPhotoPath()));
+    }
+
     public void editPet(Long id, PetDtoEdit petDtoEdit, MultipartFile file) throws IOException {
         Pet pet = getPet(id);
         if (!(petDtoEdit.getName().isEmpty() || petDtoEdit.getName().isBlank())) {
