@@ -90,6 +90,9 @@
                         </div>
                     </div>
                 </div>
+                <div th:if="${reports.size()} == 0" class="empty-report-list">
+                    <span>Отчетов нет</span>
+                </div>
             </div>
         </div>
     </div>

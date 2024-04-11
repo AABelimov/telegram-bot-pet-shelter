@@ -3,11 +3,13 @@ package pro.sky.telegrambot.service;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.StringUtils;
 import org.springframework.web.multipart.MultipartFile;
 import pro.sky.telegrambot.dto.PetDtoEdit;
 import pro.sky.telegrambot.dto.PetDtoIn;
 import pro.sky.telegrambot.dto.PetDtoOut;
+import pro.sky.telegrambot.enums.KindOfPet;
 import pro.sky.telegrambot.enums.PetState;
 import pro.sky.telegrambot.enums.ShelterType;
 import pro.sky.telegrambot.exception.PetNotFoundException;
@@ -38,6 +40,7 @@ public class PetService {
         this.photosDir = photosDir;
     }
 
+    @Transactional
     public void createPet(PetDtoIn petDtoIn, MultipartFile file) throws IOException {
         Pet pet;
         petDtoIn.setKindOfPet(petDtoIn.getKindOfPet().toUpperCase());
@@ -47,9 +50,9 @@ public class PetService {
     }
 
     private void uploadAvatar(Pet pet, MultipartFile file) throws IOException {
-        ShelterType shelterType = pet.getKindOfPet().equals("CAT") ? ShelterType.CAT_SHELTER : ShelterType.DOG_SHELTER;
+        KindOfPet kindOfPet = KindOfPet.valueOf(pet.getKindOfPet());
         String extension = StringUtils.getFilenameExtension(file.getOriginalFilename());
-        Path filePath = Path.of(photosDir, shelterType.name().toLowerCase(), pet.hashCode() + "." + extension);
+        Path filePath = Path.of(photosDir, kindOfPet.getShelterType().toLowerCase(), pet.hashCode() + "." + extension);
         Files.createDirectories(filePath.getParent());
         Files.deleteIfExists(filePath);
 
@@ -75,8 +78,7 @@ public class PetService {
 
     public List<Pet> getListOfPets(ShelterType shelterType, PetState state, int page) {
         PageRequest pageRequest = PageRequest.of(page, 1);
-        String kindOfPet = shelterType.equals(ShelterType.DOG_SHELTER) ? "DOG" : "CAT";
-        return petRepository.findAllByStateAndKindOfPetOrderByIdDesc(state.name(), kindOfPet, pageRequest);
+        return petRepository.findAllByStateAndKindOfPetOrderByIdDesc(state.name(), shelterType.getKindOfPet(), pageRequest);
     }
 
     public List<PetDtoOut> getPets(String shelterType, String state, Integer page) {
@@ -108,17 +110,16 @@ public class PetService {
     }
 
     private List<PetDtoOut> getAllPetsByShelterTypeAndState(ShelterType shelterType, String state, Integer page) {
-        String kindOfPet = ShelterType.valueOf(shelterType.name().toUpperCase()).equals(ShelterType.CAT_SHELTER) ? "CAT" : "DOG";
         PageRequest pageRequest = PageRequest.of(page, 10);
 
         if (state.equals("all")) {
-            return petRepository.findAllByKindOfPet(kindOfPet, pageRequest).stream()
+            return petRepository.findAllByKindOfPet(shelterType.getKindOfPet(), pageRequest).stream()
                     .map(petMapper::toDto)
                     .collect(Collectors.toList());
         }
         PetState petState = PetState.valueOf(state.toUpperCase());
 
-        return petRepository.findAllByStateAndKindOfPetOrderByIdDesc(petState.name(), kindOfPet, pageRequest).stream()
+        return petRepository.findAllByStateAndKindOfPetOrderByIdDesc(petState.name(), shelterType.getKindOfPet(), pageRequest).stream()
                 .map(petMapper::toDto)
                 .collect(Collectors.toList());
     }
@@ -148,7 +149,12 @@ public class PetService {
     }
 
     public void deletePet(Long id) {
-        Pet pet = getPet(id);
-        petRepository.delete(pet);
+        try {
+            Pet pet = getPet(id);
+            Files.deleteIfExists(Path.of(pet.getPhotoPath()));
+            petRepository.delete(pet);
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
     }
 }

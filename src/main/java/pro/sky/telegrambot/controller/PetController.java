@@ -8,8 +8,8 @@ import org.springframework.web.multipart.MultipartFile;
 import pro.sky.telegrambot.dto.PetDtoEdit;
 import pro.sky.telegrambot.dto.PetDtoIn;
 import pro.sky.telegrambot.dto.ProbationDtoIn;
+import pro.sky.telegrambot.enums.KindOfPet;
 import pro.sky.telegrambot.enums.PetState;
-import pro.sky.telegrambot.enums.ShelterType;
 import pro.sky.telegrambot.service.PetService;
 import pro.sky.telegrambot.service.UserService;
 import pro.sky.telegrambot.service.VolunteerService;
@@ -37,10 +37,10 @@ public class PetController {
                             @RequestParam MultipartFile file,
                             Model model) throws IOException {
         petService.createPet(pet, file);
-        ShelterType shelterType = pet.getKindOfPet().equals("CAT") ? ShelterType.CAT_SHELTER : ShelterType.DOG_SHELTER;
-        model.addAttribute("pets", petService.getPets(shelterType.name(), PetState.WAITING_TO_BE_ADOPTED.name(), 0));
+        KindOfPet kindOfPet = KindOfPet.valueOf(pet.getKindOfPet());
+        model.addAttribute("pets", petService.getPets(kindOfPet.getShelterType(), PetState.WAITING_TO_BE_ADOPTED.name(), 0));
         model.addAttribute("page", 0);
-        model.addAttribute("shelterType", shelterType.name().toLowerCase());
+        model.addAttribute("shelterType", kindOfPet.getShelterType().toLowerCase());
         model.addAttribute("state", "all");
         return "pets/pets";
     }

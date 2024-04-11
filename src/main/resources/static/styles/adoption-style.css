@@ -165,4 +165,10 @@ a {
   border-radius: 5px;
 }
 
+.empty-adoption-list {
+  text-align: center;
+  font-size: 24px;
+  font-weight: 600;
+}
+
 /*# sourceMappingURL=adoption-style.css.map */

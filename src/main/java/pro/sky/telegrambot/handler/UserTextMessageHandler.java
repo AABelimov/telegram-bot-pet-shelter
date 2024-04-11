@@ -4,6 +4,7 @@ import com.pengrad.telegrambot.model.request.InlineKeyboardMarkup;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Component;
+import org.springframework.transaction.annotation.Transactional;
 import pro.sky.telegrambot.enums.*;
 import pro.sky.telegrambot.model.*;
 import pro.sky.telegrambot.service.*;
@@ -12,6 +13,7 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 @Component
+@Transactional
 public class UserTextMessageHandler {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(UserTextMessageHandler.class);
@@ -40,13 +42,6 @@ public class UserTextMessageHandler {
         this.messageService = messageService;
     }
 
-    /**
-     * This method handles the start command
-     *
-     * @param userId    ID of the user who sent the message
-     * @param text      text from message
-     * @param messageId ID of the message to which the inline keyboard belongs
-     */
     public void handleStart(Long userId, String text, Integer messageId) {
         if ("/start".equals(text)) {
             InlineKeyboardMarkup inlineKeyboardMarkup = inlineKeyboardService.getChooseShelterUserMenuKeyboard();
@@ -67,12 +62,6 @@ public class UserTextMessageHandler {
         handleStart(userId, text, null);
     }
 
-    /**
-     * This method sends a message to the volunteer while user chatting with him or ends the conversation
-     *
-     * @param userId ID of the user who sent the message
-     * @param text   text from message
-     */
     public void sendMessageToVolunteer(Long userId, String text) {
         Volunteer volunteer = volunteerService.getVolunteerByUserId(userId);
 
@@ -86,12 +75,6 @@ public class UserTextMessageHandler {
         }
     }
 
-    /**
-     * This method handles the user's phone number
-     *
-     * @param userId ID of the user who sent the message
-     * @param text   text from message
-     */
     public void handleUserPhoneNumber(Long userId, String text) {
         Matcher matcher = PATTERN_PHONE.matcher(text);
 
@@ -134,7 +117,7 @@ public class UserTextMessageHandler {
         User user = userService.getUser(userId);
         ShelterType shelterType = ShelterType.valueOf(user.getSelectedShelter());
         PetReport petReport = petReportService.getReport(userId, shelterType, PetReportState.FILLING);
-        Probation probation = probationService.getProbationByUserIdAndShelterTypeAndState(userId, shelterType, ProbationState.FILLING_REPORT);
+        Probation probation = probationService.getProbationByUserIdAndShelterTypeAndState(userId, shelterType.name(), ProbationState.FILLING_REPORT);
         InlineKeyboardMarkup inlineKeyboardMarkup = inlineKeyboardService.getUserMainMenuKeyboard();
         String textMessage = messageService.getMessage("USER_MAIN_MENU", shelterType);
 

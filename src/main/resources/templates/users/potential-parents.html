@@ -82,7 +82,9 @@
                         </div>
                     </div>
                 </div>
-                <p th:if="${parents.size() == 0}">Совпадений не нашлось</p>
+                <div th:if="${parents.size()} == 0" class="empty-user-list">
+                    <span>Кандитатов не нашлось</span>
+                </div>
             </div>
         </div>
     </div>

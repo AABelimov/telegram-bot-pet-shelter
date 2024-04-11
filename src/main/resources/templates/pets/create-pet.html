@@ -33,15 +33,15 @@
             <div class="container">
                 <form th:action="@{/pets}" th:object="${pet}" method="post" enctype="multipart/form-data" class="form">
                     <div class="form__field">
-                        <label for="name">Name</label>
+                        <label for="name">Имя</label>
                         <input placeholder="Игорь" type="text" th:field="*{name}" id="name" class="form__text-input"/>
                     </div>
                     <div class="form__field">
-                        <label for="aboutPet">About pet</label>
-                        <textarea placeholder="Балдежный пет" type="text" th:field="*{aboutPet}" id="aboutPet"></textarea>
+                        <label for="aboutPet">О животном</label>
+                        <textarea placeholder="Что-нибудь интересное и полезное о животном" type="text" th:field="*{aboutPet}" id="aboutPet"></textarea>
                     </div>
                     <div class="form__field">
-                        <label for="file">Pet's photo</label>
+                        <label for="file">Фото животного</label>
                         <input type="file" name="file" id="file" accept="image/*">
                     </div>
                     <div class="form__field">

@@ -7,9 +7,8 @@ import org.springframework.stereotype.Component;
 import pro.sky.telegrambot.enums.UserState;
 import pro.sky.telegrambot.service.UserService;
 
-/**
- * This class handles user states
- */
+import java.util.Objects;
+
 @Component
 public class UserStateHandler {
 
@@ -28,13 +27,6 @@ public class UserStateHandler {
         this.userPhotoMessageHandler = userPhotoMessageHandler;
     }
 
-    /**
-     * This method calls command handlers
-     *
-     * @param userId        ID of the user who interacts with the bot
-     * @param callbackQuery represent an incoming callback query from a callback button in an inline keyboard
-     * @param message       message coming from someone who use bot
-     */
     public void handleState(Long userId, CallbackQuery callbackQuery, Message message) {
         UserState userState = userService.getUserState(userId);
 
@@ -92,10 +84,8 @@ public class UserStateHandler {
                         break;
                 }
             } else if (photoSizes != null) {
-                switch (userState) {
-                    case FILL_OUT_THE_REPORT_PHOTO:
-                        userPhotoMessageHandler.handlePhoto(userId, photoSizes[photoSizes.length - 1]);
-                        break;
+                if (Objects.requireNonNull(userState) == UserState.FILL_OUT_THE_REPORT_PHOTO) {
+                    userPhotoMessageHandler.handlePhoto(userId, photoSizes[photoSizes.length - 1]);
                 }
             }
         }

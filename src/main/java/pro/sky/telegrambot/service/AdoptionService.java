@@ -2,6 +2,7 @@ package pro.sky.telegrambot.service;
 
 import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import pro.sky.telegrambot.dto.AdoptionDtoOut;
 import pro.sky.telegrambot.enums.PetState;
 import pro.sky.telegrambot.mapper.AdoptionMapper;
@@ -36,6 +37,7 @@ public class AdoptionService {
         this.adoptionMapper = adoptionMapper;
     }
 
+    @Transactional
     public void createAdoption(Probation probation) {
         Adoption adoption = new Adoption();
         User user = probation.getUser();

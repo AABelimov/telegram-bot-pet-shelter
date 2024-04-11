@@ -2,6 +2,7 @@ package pro.sky.telegrambot.service;
 
 import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import pro.sky.telegrambot.dto.PetReportDtoOut;
 import pro.sky.telegrambot.enums.*;
 import pro.sky.telegrambot.exception.PetReportNotFoundException;
@@ -40,11 +41,11 @@ public class PetReportService {
         this.overdueReportService = overdueReportService;
     }
 
-    public PetReport createReport(Pet pet, User user, Volunteer volunteer, ShelterType shelterType) {
+    public PetReport createReport(Pet pet, User user, Volunteer volunteer, String shelterType) {
         PetReport petReport = new PetReport();
 
         petReport.setPet(pet);
-        petReport.setShelterType(shelterType.name());
+        petReport.setShelterType(shelterType);
         petReport.setUser(user);
         petReport.setVolunteer(volunteer);
         petReport.setState(PetReportState.FILLING.name());
@@ -126,7 +127,7 @@ public class PetReportService {
     public void startFillingOutTheReport(Long userId, PetReport petReport) {
         if (petReport.getPhotoPath() == null) {
             userService.setUserState(userId, UserState.FILL_OUT_THE_REPORT_PHOTO);
-            telegramBotService.sendMessage(userId, "Отправте фото животного");
+            telegramBotService.sendMessage(userId, "Отправьте фото животного");
         }
     }
 
@@ -151,12 +152,6 @@ public class PetReportService {
     public void setChangeInBehavior(Long id, String text) {
         PetReport petReport = getReport(id);
         petReport.setChangeInBehavior(text);
-        setTimeSendingReport(id);
-        petReportRepository.save(petReport);
-    }
-
-    public void setTimeSendingReport(Long id) {
-        PetReport petReport = getReport(id);
         petReport.setTimeSendingReport(LocalDateTime.now());
         petReportRepository.save(petReport);
     }
@@ -167,6 +162,7 @@ public class PetReportService {
         petReportRepository.save(petReport);
     }
 
+    @Transactional
     public void acceptReport(Long id) {
         PetReport petReport = getReport(id);
         Probation probation = probationService.getProbationByPetId(petReport.getPet().getId());
@@ -174,9 +170,9 @@ public class PetReportService {
         probationService.setProbationState(probation.getId(), ProbationState.REPORT_ACCEPTED);
         probationService.setLastReportDate(probation.getId());
         overdueReportService.deleteOverdueReport(probation);
-        petReportMapper.toDto(petReport);
     }
 
+    @Transactional
     public void denyReport(Long id, String comment) {
         PetReport petReport = getReport(id);
         Probation probation = probationService.getProbationByPetId(petReport.getPet().getId());
@@ -187,7 +183,5 @@ public class PetReportService {
         setReportState(id, PetReportState.DENIED);
 
         telegramBotService.sendMessage(probation.getUser().getId(), comment);
-
-        petReportMapper.toDto(petReport);
     }
 }
