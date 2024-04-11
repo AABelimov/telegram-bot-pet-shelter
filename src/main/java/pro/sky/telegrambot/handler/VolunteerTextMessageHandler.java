@@ -8,9 +8,6 @@ import pro.sky.telegrambot.enums.VolunteerState;
 import pro.sky.telegrambot.model.*;
 import pro.sky.telegrambot.service.*;
 
-/**
- * This class handles commands coming from the volunteer
- */
 @Component
 public class VolunteerTextMessageHandler {
 

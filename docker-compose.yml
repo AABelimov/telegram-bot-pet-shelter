@@ -1,0 +1,27 @@
+version: "3"
+services:
+  postgres:
+    container_name: postgres
+    image: postgres:16-alpine
+    restart: always
+    environment:
+      POSTGRES_DB: "${DB_NAME:-postgres_db}"
+      POSTGRES_USER: "${DB_USER:-user}"
+      POSTGRES_PASSWORD: "${DB_PASSWORD:-password}"
+    ports:
+      - "${DB_PORT:-5432}:5432"
+    volumes:
+      - "${PROJECT_DIR:-pet_shelter}/bd:/var/lib/postgresql/data"
+  server:
+    container_name: server
+    image: aabelimov/pet-shelter
+    environment:
+      DB_PORT: "5432"
+      DB_NAME: "${DB_NAME:-postgres_db}"
+      DB_USER: "${DB_USER:-user}"
+      DB_PASSWORD: "${DB_PASSWORD:-password}"
+      TOKEN: "${TOKEN}"
+    ports:
+      - "${APP_PORT:-8080}:8080"
+    volumes:
+      - "${PROJECT_DIR:-pet_shelter}/files:/pet_shelter/files"

@@ -6,33 +6,18 @@ import javax.persistence.OneToOne;
 import javax.persistence.Table;
 import java.util.Objects;
 
-/**
- * Volunteers will be stored in the volunteers table
- */
 @Entity
 @Table(name = "volunteers")
 public class Volunteer {
 
-    /**
-     * The id will be equal to the telegram user id value
-     */
     @Id
     private Long id;
 
-    /**
-     * Volunteer name
-     */
     private String name;
 
-    /**
-     * Field in which the user will be stored while the volunteer will correspond with him through the bot
-     */
     @OneToOne
     private User user;
 
-    /**
-     * Indicator by which the bot determines what stage the volunteer is currently at
-     */
     private String state;
 
     public Volunteer() {

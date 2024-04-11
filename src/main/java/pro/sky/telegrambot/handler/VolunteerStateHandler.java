@@ -6,9 +6,6 @@ import org.springframework.stereotype.Component;
 import pro.sky.telegrambot.enums.VolunteerState;
 import pro.sky.telegrambot.service.VolunteerService;
 
-/**
- * This class handles volunteer states
- */
 @Component
 public class VolunteerStateHandler {
 

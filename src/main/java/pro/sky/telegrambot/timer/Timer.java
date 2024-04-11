@@ -80,7 +80,7 @@ public class Timer {
                         String.format("Второй день от вас нет отчета по питомцу %s (либо отчет не приняли)." +
                                 " Если сегодня его не будет, то завтра с вами свяжется волонтер", overdueReport.getPet().getName()));
             } else if (overdueReport.getDays() > 2) {
-                telegramBotService.sendMessage(overdueReport.getUser().getId(), "Скоро с вами свяжется волонтер из-за недосданных отчетов");
+                telegramBotService.sendMessage(overdueReport.getUser().getId(), "Скоро с вами свяжется волонтер из-за не досданных отчетов");
             }
         });
     }

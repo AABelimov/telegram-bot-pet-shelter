@@ -126,7 +126,7 @@ public class PetReportService {
     public void startFillingOutTheReport(Long userId, PetReport petReport) {
         if (petReport.getPhotoPath() == null) {
             userService.setUserState(userId, UserState.FILL_OUT_THE_REPORT_PHOTO);
-            telegramBotService.sendMessage(userId, "Отправте фото животного");
+            telegramBotService.sendMessage(userId, "Отправьте фото животного");
         }
     }
 
@@ -151,12 +151,6 @@ public class PetReportService {
     public void setChangeInBehavior(Long id, String text) {
         PetReport petReport = getReport(id);
         petReport.setChangeInBehavior(text);
-        setTimeSendingReport(id);
-        petReportRepository.save(petReport);
-    }
-
-    public void setTimeSendingReport(Long id) {
-        PetReport petReport = getReport(id);
         petReport.setTimeSendingReport(LocalDateTime.now());
         petReportRepository.save(petReport);
     }

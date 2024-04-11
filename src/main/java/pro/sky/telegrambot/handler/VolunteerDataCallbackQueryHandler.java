@@ -10,9 +10,6 @@ import java.io.File;
 import java.nio.file.Path;
 import java.util.List;
 
-/**
- * This class handles the data coming from the volunteer in the callback query
- */
 @Component
 public class VolunteerDataCallbackQueryHandler {
 
@@ -87,10 +84,8 @@ public class VolunteerDataCallbackQueryHandler {
     public void handleOverdueReports(Long volunteerId, Integer messageId, String data) {
         VolunteerCommand volunteerCommand = VolunteerCommand.valueOf(data);
 
-        switch (volunteerCommand) {
-            case BACK:
-                volunteerTextMessageHandler.handleStart(volunteerId, "/start", messageId);
-                break;
+        if (volunteerCommand == VolunteerCommand.BACK) {
+            volunteerTextMessageHandler.handleStart(volunteerId, "/start", messageId);
         }
     }
 
