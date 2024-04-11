@@ -2,6 +2,7 @@ package pro.sky.telegrambot.handler;
 
 import com.pengrad.telegrambot.model.request.InlineKeyboardMarkup;
 import org.springframework.stereotype.Component;
+import org.springframework.transaction.annotation.Transactional;
 import pro.sky.telegrambot.enums.PetReportState;
 import pro.sky.telegrambot.enums.ProbationState;
 import pro.sky.telegrambot.enums.VolunteerState;
@@ -9,6 +10,7 @@ import pro.sky.telegrambot.model.*;
 import pro.sky.telegrambot.service.*;
 
 @Component
+@Transactional
 public class VolunteerTextMessageHandler {
 
     private final VolunteerService volunteerService;

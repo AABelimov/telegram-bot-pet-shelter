@@ -15,6 +15,7 @@ services:
   server:
     container_name: server
     image: aabelimov/pet-shelter
+    restart: always
     environment:
       DB_PORT: "5432"
       DB_NAME: "${DB_NAME:-postgres_db}"

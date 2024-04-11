@@ -3,8 +3,8 @@ package pro.sky.telegrambot.mapper;
 import org.springframework.stereotype.Component;
 import pro.sky.telegrambot.dto.ProbationDtoIn;
 import pro.sky.telegrambot.dto.ProbationDtoOut;
+import pro.sky.telegrambot.enums.KindOfPet;
 import pro.sky.telegrambot.enums.ProbationState;
-import pro.sky.telegrambot.enums.ShelterType;
 import pro.sky.telegrambot.exception.UserNotFoundException;
 import pro.sky.telegrambot.exception.VolunteerNotFoundException;
 import pro.sky.telegrambot.model.Pet;
@@ -46,9 +46,7 @@ public class ProbationMapper {
         User user = userService.getUser(probationDtoIn.getUserId());
         Pet pet = petService.getPet(probationDtoIn.getPetId());
         Volunteer volunteer = volunteerService.getVolunteer(probationDtoIn.getVolunteerId());
-        ShelterType shelterType;
-        String kindOfPet;
-
+        KindOfPet kindOfPet;
         if (user == null) {
             throw new UserNotFoundException(probationDtoIn.getUserId());
         }
@@ -56,12 +54,11 @@ public class ProbationMapper {
             throw new VolunteerNotFoundException(probationDtoIn.getVolunteerId());
         }
 
-        kindOfPet = pet.getKindOfPet();
-        shelterType = kindOfPet.equals("CAT") ? ShelterType.CAT_SHELTER : ShelterType.DOG_SHELTER;
+        kindOfPet = KindOfPet.valueOf(pet.getKindOfPet());
 
         probation.setUser(user);
         probation.setPet(pet);
-        probation.setShelterType(shelterType.name());
+        probation.setShelterType(kindOfPet.getShelterType());
         probation.setVolunteer(volunteer);
         probation.setProbationEndDate(LocalDateTime.now().plusDays(30));
         probation.setLastReportDate(LocalDateTime.now());

@@ -41,7 +41,7 @@ class PetReportServiceTest {
 
     @Test
     void testCreateReport() {
-        out.createReport(PET_1, USER_1, VOLUNTEER_1, ShelterType.CAT_SHELTER);
+        out.createReport(PET_1, USER_1, VOLUNTEER_1, ShelterType.CAT_SHELTER.name());
         verify(petReportRepositoryMock).save(argThat(x -> {
             assertEquals(PET_1, x.getPet());
             assertEquals(ShelterType.CAT_SHELTER.name(), x.getShelterType());

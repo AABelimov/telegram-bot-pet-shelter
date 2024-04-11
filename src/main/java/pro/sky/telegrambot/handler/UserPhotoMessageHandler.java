@@ -8,6 +8,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.StringUtils;
 import pro.sky.telegrambot.enums.PetReportState;
 import pro.sky.telegrambot.enums.ShelterType;
@@ -46,6 +47,7 @@ public class UserPhotoMessageHandler {
         this.reportPhotosDir = reportPhotosDir;
     }
 
+    @Transactional
     public void handlePhoto(Long userId, PhotoSize photoSize) {
         GetFileResponse getFileResponse = telegramBot.execute(new GetFile(photoSize.fileId()));
         User user = userService.getUser(userId);

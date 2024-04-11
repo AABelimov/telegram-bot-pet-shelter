@@ -7,7 +7,6 @@ import pro.sky.telegrambot.dto.ProbationDtoIn;
 import pro.sky.telegrambot.dto.ProbationDtoOut;
 import pro.sky.telegrambot.enums.PetState;
 import pro.sky.telegrambot.enums.ProbationState;
-import pro.sky.telegrambot.enums.ShelterType;
 import pro.sky.telegrambot.exception.PetIsAlreadyOnProbationException;
 import pro.sky.telegrambot.exception.ProbationNotFoundException;
 import pro.sky.telegrambot.mapper.ProbationMapper;
@@ -66,7 +65,7 @@ public class ProbationService {
         return probationRepository.findFirstByVolunteerIdAndState(volunteerId, state.name());
     }
 
-    public Probation getProbationByUserIdAndShelterTypeAndState(Long userId, ShelterType shelterType, ProbationState state) {
+    public Probation getProbationByUserIdAndShelterTypeAndState(Long userId, String shelterType, ProbationState state) {
         List<Probation> probationList = getProbationListByShelterTypeAndState(userId, shelterType, state);
         if (probationList.size() == 0) {
             return null;
@@ -75,12 +74,12 @@ public class ProbationService {
         }
     }
 
-    public List<Probation> getProbationListByShelterTypeAndState(Long userId, ShelterType shelterType, ProbationState state) {
-        return probationRepository.findAllByUserIdAndShelterTypeAndState(userId, shelterType.name(), state.name());
+    public List<Probation> getProbationListByShelterTypeAndState(Long userId, String shelterType, ProbationState state) {
+        return probationRepository.findAllByUserIdAndShelterTypeAndState(userId, shelterType, state.name());
     }
 
-    public List<Probation> getProbationListByUserIdAndShelterType(Long userId, ShelterType shelterType) {
-        return probationRepository.findAllByUserIdAndShelterType(userId, shelterType.name());
+    public List<Probation> getProbationListByUserIdAndShelterType(Long userId, String shelterType) {
+        return probationRepository.findAllByUserIdAndShelterType(userId, shelterType);
     }
 
     public List<Probation> getProbationListByVolunteerIdAndState(Long volunteerId, ProbationState state) {

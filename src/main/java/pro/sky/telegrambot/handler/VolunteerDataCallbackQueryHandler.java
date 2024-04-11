@@ -2,6 +2,7 @@ package pro.sky.telegrambot.handler;
 
 import com.pengrad.telegrambot.model.request.InlineKeyboardMarkup;
 import org.springframework.stereotype.Component;
+import org.springframework.transaction.annotation.Transactional;
 import pro.sky.telegrambot.enums.*;
 import pro.sky.telegrambot.model.*;
 import pro.sky.telegrambot.service.*;
@@ -11,6 +12,7 @@ import java.nio.file.Path;
 import java.util.List;
 
 @Component
+@Transactional
 public class VolunteerDataCallbackQueryHandler {
 
     private final VolunteerService volunteerService;

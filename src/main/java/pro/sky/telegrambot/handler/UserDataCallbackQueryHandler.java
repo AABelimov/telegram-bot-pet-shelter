@@ -5,6 +5,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
+import org.springframework.transaction.annotation.Transactional;
 import pro.sky.telegrambot.enums.*;
 import pro.sky.telegrambot.model.*;
 import pro.sky.telegrambot.service.*;
@@ -15,6 +16,7 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 @Component
+@Transactional
 public class UserDataCallbackQueryHandler {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(UserDataCallbackQueryHandler.class);
@@ -202,7 +204,7 @@ public class UserDataCallbackQueryHandler {
         switch (userCommand) {
             case SELECT_ANIMAL_TO_REPORT:
                 userService.setUserState(userId, UserState.SELECT_ANIMAL_TO_REPORT);
-                selectAnimalToReport(userId, messageId, shelterType);
+                selectAnimalToReport(userId, messageId, shelterType.name());
                 break;
             case CALL_VOLUNTEER:
                 startConversation(userId, messageId, shelterType);
@@ -220,8 +222,8 @@ public class UserDataCallbackQueryHandler {
     public void handleSelectAnimalToReport(Long userId, Integer messageId, String data) {
         Long petId = Long.parseLong(data);
         User user = userService.getUser(userId);
+        KindOfPet kindOfPet;
         Pet pet;
-        ShelterType shelterType;
         PetReport petReport;
         Probation probation;
         Volunteer volunteer;
@@ -232,8 +234,8 @@ public class UserDataCallbackQueryHandler {
         } else {
             pet = petService.getPet(petId);
             petReport = petReportService.getReport(petId, PetReportState.FILLING);
-            shelterType = pet.getKindOfPet().equals("CAT") ? ShelterType.CAT_SHELTER : ShelterType.DOG_SHELTER;
-            probation = probationService.getProbationByUserIdAndShelterTypeAndState(userId, shelterType, ProbationState.FILLING_REPORT);
+            kindOfPet = KindOfPet.valueOf(pet.getKindOfPet());
+            probation = probationService.getProbationByUserIdAndShelterTypeAndState(userId, kindOfPet.getShelterType(), ProbationState.FILLING_REPORT);
 
             if (probation != null && probation.getPet().getId().equals(petId)) {
                 petReportService.startFillingOutTheReport(userId, petReport);
@@ -249,7 +251,7 @@ public class UserDataCallbackQueryHandler {
             if (petReport == null && probation == null) {
                 probation = probationService.getProbationByPetId(petId);
                 volunteer = probation.getVolunteer();
-                petReport = petReportService.createReport(pet, user, volunteer, shelterType);
+                petReport = petReportService.createReport(pet, user, volunteer, kindOfPet.getShelterType());
                 probationService.setProbationState(probation.getId(), ProbationState.FILLING_REPORT);
                 petReportService.startFillingOutTheReport(userId, petReport);
             }
@@ -376,7 +378,7 @@ public class UserDataCallbackQueryHandler {
         }
     }
 
-    private void selectAnimalToReport(Long userId, Integer messageId, ShelterType shelterType) {
+    private void selectAnimalToReport(Long userId, Integer messageId, String shelterType) {
         Probation probation = probationService.getProbationByUserIdAndShelterTypeAndState(userId, shelterType, ProbationState.FILLING_REPORT);
         List<Probation> probationList = probationService.getProbationListByShelterTypeAndState(userId, shelterType, ProbationState.WAITING_FOR_A_NEW_REPORT);
         List<Pet> pets;

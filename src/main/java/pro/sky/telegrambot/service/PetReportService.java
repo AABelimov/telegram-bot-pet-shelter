@@ -41,11 +41,11 @@ public class PetReportService {
         this.overdueReportService = overdueReportService;
     }
 
-    public PetReport createReport(Pet pet, User user, Volunteer volunteer, ShelterType shelterType) {
+    public PetReport createReport(Pet pet, User user, Volunteer volunteer, String shelterType) {
         PetReport petReport = new PetReport();
 
         petReport.setPet(pet);
-        petReport.setShelterType(shelterType.name());
+        petReport.setShelterType(shelterType);
         petReport.setUser(user);
         petReport.setVolunteer(volunteer);
         petReport.setState(PetReportState.FILLING.name());

@@ -4,6 +4,7 @@ import com.pengrad.telegrambot.model.request.InlineKeyboardMarkup;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Component;
+import org.springframework.transaction.annotation.Transactional;
 import pro.sky.telegrambot.enums.*;
 import pro.sky.telegrambot.model.*;
 import pro.sky.telegrambot.service.*;
@@ -12,6 +13,7 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 @Component
+@Transactional
 public class UserTextMessageHandler {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(UserTextMessageHandler.class);
@@ -115,7 +117,7 @@ public class UserTextMessageHandler {
         User user = userService.getUser(userId);
         ShelterType shelterType = ShelterType.valueOf(user.getSelectedShelter());
         PetReport petReport = petReportService.getReport(userId, shelterType, PetReportState.FILLING);
-        Probation probation = probationService.getProbationByUserIdAndShelterTypeAndState(userId, shelterType, ProbationState.FILLING_REPORT);
+        Probation probation = probationService.getProbationByUserIdAndShelterTypeAndState(userId, shelterType.name(), ProbationState.FILLING_REPORT);
         InlineKeyboardMarkup inlineKeyboardMarkup = inlineKeyboardService.getUserMainMenuKeyboard();
         String textMessage = messageService.getMessage("USER_MAIN_MENU", shelterType);
 
