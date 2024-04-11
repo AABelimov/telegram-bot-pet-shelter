@@ -52,6 +52,9 @@
                         </div>
                     </div>
                 </div>
+                <div th:if="${adoptions.size()} == 0" class="empty-adoption-list">
+                    <span>Усыновленных животных пока нет</span>
+                </div>
             </div>
         </div>
     </div>

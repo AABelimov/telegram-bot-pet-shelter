@@ -66,7 +66,6 @@ public class Timer {
         });
     }
 
-    @Transactional
     @Scheduled(cron = "00 00 07 * * *")
     public void sendNotificationAboutReport() {
         List<OverdueReport> overdueReports = overdueReportService.getAll();

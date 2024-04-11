@@ -2,6 +2,7 @@ package pro.sky.telegrambot.service;
 
 import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import pro.sky.telegrambot.dto.ProbationDtoIn;
 import pro.sky.telegrambot.dto.ProbationDtoOut;
 import pro.sky.telegrambot.enums.PetState;
@@ -37,6 +38,7 @@ public class ProbationService {
         this.telegramBotService = telegramBotService;
     }
 
+    @Transactional
     public void createProbation(ProbationDtoIn probationDtoIn) {
         Probation probation = getProbationByPetId(probationDtoIn.getPetId());
 
@@ -130,6 +132,7 @@ public class ProbationService {
         telegramBotService.sendMessage(user.getId(), String.format("Вам добавили %d дней к испытательному сроку для %s", days, pet.getName()));
     }
 
+    @Transactional
     public void refuseAdoption(Probation probation) {
         User user = probation.getUser();
         Pet pet = probation.getPet();

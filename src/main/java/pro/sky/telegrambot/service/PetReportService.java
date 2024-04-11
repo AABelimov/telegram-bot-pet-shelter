@@ -2,6 +2,7 @@ package pro.sky.telegrambot.service;
 
 import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import pro.sky.telegrambot.dto.PetReportDtoOut;
 import pro.sky.telegrambot.enums.*;
 import pro.sky.telegrambot.exception.PetReportNotFoundException;
@@ -161,6 +162,7 @@ public class PetReportService {
         petReportRepository.save(petReport);
     }
 
+    @Transactional
     public void acceptReport(Long id) {
         PetReport petReport = getReport(id);
         Probation probation = probationService.getProbationByPetId(petReport.getPet().getId());
@@ -168,9 +170,9 @@ public class PetReportService {
         probationService.setProbationState(probation.getId(), ProbationState.REPORT_ACCEPTED);
         probationService.setLastReportDate(probation.getId());
         overdueReportService.deleteOverdueReport(probation);
-        petReportMapper.toDto(petReport);
     }
 
+    @Transactional
     public void denyReport(Long id, String comment) {
         PetReport petReport = getReport(id);
         Probation probation = probationService.getProbationByPetId(petReport.getPet().getId());
@@ -181,7 +183,5 @@ public class PetReportService {
         setReportState(id, PetReportState.DENIED);
 
         telegramBotService.sendMessage(probation.getUser().getId(), comment);
-
-        petReportMapper.toDto(petReport);
     }
 }

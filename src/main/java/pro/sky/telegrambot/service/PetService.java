@@ -3,6 +3,7 @@ package pro.sky.telegrambot.service;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.StringUtils;
 import org.springframework.web.multipart.MultipartFile;
 import pro.sky.telegrambot.dto.PetDtoEdit;
@@ -38,6 +39,7 @@ public class PetService {
         this.photosDir = photosDir;
     }
 
+    @Transactional
     public void createPet(PetDtoIn petDtoIn, MultipartFile file) throws IOException {
         Pet pet;
         petDtoIn.setKindOfPet(petDtoIn.getKindOfPet().toUpperCase());
