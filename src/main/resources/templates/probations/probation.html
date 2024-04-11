@@ -1,0 +1,86 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+    <link rel="stylesheet" th:href="@{/styles/probation-style.css}">
+</head>
+<body>
+<div class="wrapper">
+    <div class="header">
+        <div class="container">
+            <div class="menu-container">
+                <ul class="menu">
+                    <li class="menu__link">
+                        <a th:href="@{/pets/all/all?page=0}">Животные</a>
+                    </li>
+                    <li class="menu__link">
+                        <a th:href="@{'/reports?shelter-type=all&page=0'}">Отчеты</a>
+                    </li>
+                    <li class="menu__link menu__link_active">
+                        <a th:href="@{/probations?page=0}">Испытательные сроки</a>
+                    </li>
+                    <li class="menu__link">
+                        <a th:href="@{/adoptions?page=0}">Семьи</a>
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </div>
+
+    <div class="body">
+        <div class="probation-row">
+            <div class="container">
+                <div class="probation">
+                    <div class="probation__body">
+                        <div class="probation__image">
+                            <img th:src="${probation.getPet().getPhotoPath()}" alt="oops">
+                        </div>
+                        <div class="probation__info">
+                            <div class="probation__field">
+                                <div class="probation__title">Питомец:</div>
+                                <div th:text="${probation.getPet().getName()}" class="probation__value"></div>
+                            </div>
+                            <div class="probation__field">
+                                <div class="probation__title">Усыновитель:</div>
+                                <div th:text="${probation.getUser().getName()}" class="probation__value"></div>
+                            </div>
+                            <div class="probation__field">
+                                <div class="probation__title">Конец срока:</div>
+                                <div th:text="${probation.getProbationEndDate()}" class="probation__value"></div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="probation__interaction">
+                        <div class="probation__action">
+                            <form th:action="@{/adoptions}" th:method="post" class="probation__form">
+                                <label>
+                                    <input type="hidden" th:value="${probation.getId()}" th:name="probation-id"/>
+                                </label>
+                                <button type="submit">Разрешить</button>
+                            </form>
+                        </div>
+                        <div class="probation__action">
+                            <form th:action="@{'/probations/' + ${probation.getId()}}" th:method="patch" class="probation__form">
+                                <label>
+                                    <select th:name="days">
+                                        <option value="14">14</option>
+                                        <option value="30">30</option>
+                                    </select>
+                                </label>
+                                <button type="submit">Продлить</button>
+                            </form>
+                        </div>
+                        <div class="probation__action">
+                            <form th:action="@{'/probations/' + ${probation.getId()}}" th:method="delete" class="probation__form">
+                                <button type="submit">Отказать</button>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+</body>
+</html>

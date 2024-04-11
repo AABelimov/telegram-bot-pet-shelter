@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+    <link rel="stylesheet" th:href="@{/styles/pet-style.css}">
+</head>
+<body>
+<div class="wrapper">
+    <div class="header">
+        <div class="container">
+            <div class="menu-container">
+                <ul class="menu">
+                    <li class="menu__link">
+                        <a th:href="@{/pets/all/all?page=0}">Животные</a>
+                    </li>
+                    <li class="menu__link">
+                        <a th:href="@{'/reports?shelter-type=all&page=0'}">Отчеты</a>
+                    </li>
+                    <li class="menu__link">
+                        <a th:href="@{/probations?page=0}">Испытательные сроки</a>
+                    </li>
+                    <li class="menu__link">
+                        <a th:href="@{/adoptions?page=0}">Семьи</a>
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </div>
+
+    <div class="body">
+        <div class="form-body">
+            <div class="container">
+                <form th:action="@{/pets}" th:object="${pet}" method="post" enctype="multipart/form-data" class="form">
+                    <div class="form__field">
+                        <label for="name">Имя</label>
+                        <input placeholder="Игорь" type="text" th:field="*{name}" id="name" class="form__text-input"/>
+                    </div>
+                    <div class="form__field">
+                        <label for="aboutPet">О животном</label>
+                        <textarea placeholder="Что-нибудь интересное и полезное о животном" type="text" th:field="*{aboutPet}" id="aboutPet"></textarea>
+                    </div>
+                    <div class="form__field">
+                        <label for="file">Фото животного</label>
+                        <input type="file" name="file" id="file" accept="image/*">
+                    </div>
+                    <div class="form__field">
+                        <label th:switch="${shelterType}">
+                            <input th:case="'cat_shelter'" type="hidden" value="CAT" name="kindOfPet"/>
+                            <input th:case="'dog_shelter'" type="hidden" value="DOG" name="kindOfPet"/>
+                            <select th:case="'all'" name="kindOfPet">
+                                <option value="CAT">Кот</option>
+                                <option value="DOG">Собака</option>
+                            </select>
+                        </label>
+                    </div>
+                    <div class="form__button">
+                        <button type="submit">Создать</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+</body>
+</html>

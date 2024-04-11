@@ -3,8 +3,6 @@ package pro.sky.telegrambot.service;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
-import org.mockito.MockedStatic;
-import org.mockito.Mockito;
 import org.mockito.junit.jupiter.MockitoExtension;
 import pro.sky.telegrambot.enums.PetReportState;
 import pro.sky.telegrambot.enums.ShelterType;
@@ -13,7 +11,6 @@ import pro.sky.telegrambot.exception.PetReportNotFoundException;
 import pro.sky.telegrambot.mapper.PetReportMapper;
 import pro.sky.telegrambot.repository.PetReportRepository;
 
-import java.time.LocalDateTime;
 import java.util.Optional;
 
 import static org.junit.jupiter.api.Assertions.*;
@@ -44,10 +41,9 @@ class PetReportServiceTest {
 
     @Test
     void testCreateReport() {
-        out.createPetReport(PET_1, USER_1, VOLUNTEER_1, ShelterType.CAT_SHELTER);
+        out.createReport(PET_1, USER_1, VOLUNTEER_1, ShelterType.CAT_SHELTER.name());
         verify(petReportRepositoryMock).save(argThat(x -> {
             assertEquals(PET_1, x.getPet());
-            assertEquals(ShelterType.CAT_SHELTER.name(), x.getShelterType());
             assertEquals(ShelterType.CAT_SHELTER.name(), x.getShelterType());
             assertEquals(USER_1, x.getUser());
             assertEquals(VOLUNTEER_1, x.getVolunteer());
@@ -58,13 +54,13 @@ class PetReportServiceTest {
 
     @Test
     void testFillReport() {
-        out.fillReport(USER_ID_1, PET_REPORT_1);
+        out.startFillingOutTheReport(USER_ID_1, PET_REPORT_1);
         verify(userServiceMock, times(0)).setUserState(eq(USER_ID_1), eq(UserState.FILL_OUT_THE_REPORT_PHOTO));
-        verify(telegramBotServiceMock, times(0)).sendMessage(eq(USER_ID_1), eq("Отправте фото животного"));
+        verify(telegramBotServiceMock, times(0)).sendMessage(eq(USER_ID_1), eq("Отправьте фото животного"));
 
-        out.fillReport(USER_ID_2, PET_REPORT_2);
+        out.startFillingOutTheReport(USER_ID_2, PET_REPORT_2);
         verify(userServiceMock, times(1)).setUserState(eq(USER_ID_2), eq(UserState.FILL_OUT_THE_REPORT_PHOTO));
-        verify(telegramBotServiceMock, times(1)).sendMessage(eq(USER_ID_2), eq("Отправте фото животного"));
+        verify(telegramBotServiceMock, times(1)).sendMessage(eq(USER_ID_2), eq("Отправьте фото животного"));
     }
 
     @Test
@@ -128,24 +124,6 @@ class PetReportServiceTest {
     }
 
     @Test
-    void testSetTimeSendingReport() {
-        when(petReportRepositoryMock.findById(eq(PET_REPORT_ID_2))).thenReturn(Optional.of(PET_REPORT_2));
-
-        try (MockedStatic<LocalDateTime> mockedStatic = Mockito.mockStatic(LocalDateTime.class)) {
-            mockedStatic.when(LocalDateTime::now).thenReturn(PET_REPORT_TIME_SENDING_REPORT_2);
-            out.setTimeSendingReport(PET_REPORT_ID_2);
-        }
-
-        verify(petReportRepositoryMock).save(argThat(x -> {
-            assertEquals(PET_REPORT_ID_2, x.getId());
-            assertEquals(PET_REPORT_TIME_SENDING_REPORT_2, x.getTimeSendingReport());
-            return true;
-        }));
-
-        assertThrows(PetReportNotFoundException.class, () -> out.setTimeSendingReport(PET_REPORT_ID_1));
-    }
-
-    @Test
     void testSetReportState() {
         when(petReportRepositoryMock.findById(eq(PET_REPORT_ID_2))).thenReturn(Optional.of(PET_REPORT_2));
         out.setReportState(PET_REPORT_ID_2, PetReportState.valueOf(PET_REPORT_STATE_1));
@@ -159,15 +137,4 @@ class PetReportServiceTest {
 
         assertThrows(PetReportNotFoundException.class, () -> out.setReportState(PET_REPORT_ID_1, PetReportState.valueOf(PET_REPORT_STATE_2)));
     }
-
-    @Test
-    void testGetUnverifiedReports() {
-        when(petReportRepositoryMock.findAllByState(eq(PetReportState.WAITING_FOR_VERIFICATION.name()))).thenReturn(UNVERIFIED_REPORTS_LIST);
-        when(petReportMapperMock.toDto(PET_REPORT_1)).thenReturn(PET_REPORT_DTO_OUT_1);
-        when(petReportMapperMock.toDto(PET_REPORT_2)).thenReturn(PET_REPORT_DTO_OUT_2);
-        when(petReportMapperMock.toDto(PET_REPORT_3)).thenReturn(PET_REPORT_DTO_OUT_3);
-
-        assertIterableEquals(UNVERIFIED_REPORTS_DTO_OUT_LIST, out.getUnverifiedReports());
-    }
-
 }

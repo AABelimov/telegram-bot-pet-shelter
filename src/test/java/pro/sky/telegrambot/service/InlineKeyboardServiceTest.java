@@ -36,7 +36,7 @@ class InlineKeyboardServiceTest {
     @Test
     void testGetHowAdoptPetUserMenuKeyboard() {
         assertEquals(HOW_ADOPT_PET_USER_MENU_KEYBOARD_HOW_ADOPT_PET_DOG_SHELTER, out.getHowAdoptPetUserMenuKeyboard(UserCommand.HOW_ADOPT_PET, ShelterType.DOG_SHELTER));
-        assertEquals(HOW_ADOPT_PET_USER_MENU_KEYBOARD_LIST_OF_ANIMALS_DOG_SHELTER, out.getHowAdoptPetUserMenuKeyboard(UserCommand.LIST_OF_ANIMALS, ShelterType.DOG_SHELTER));
+        assertEquals(HOW_ADOPT_PET_USER_MENU_KEYBOARD_LIST_OF_ANIMALS_DOG_SHELTER, out.getHowAdoptPetUserMenuKeyboard(UserCommand.LIST_OF_PETS, ShelterType.DOG_SHELTER));
         assertEquals(HOW_ADOPT_PET_USER_MENU_KEYBOARD_RULES_FOR_MEETING_DOG_SHELTER, out.getHowAdoptPetUserMenuKeyboard(UserCommand.RULES_FOR_MEETING, ShelterType.DOG_SHELTER));
         assertEquals(HOW_ADOPT_PET_USER_MENU_KEYBOARD_DOCUMENTS_DOG_SHELTER, out.getHowAdoptPetUserMenuKeyboard(UserCommand.DOCUMENTS, ShelterType.DOG_SHELTER));
         assertEquals(HOW_ADOPT_PET_USER_MENU_KEYBOARD_TRANSPORTATION_RULES_DOG_SHELTER, out.getHowAdoptPetUserMenuKeyboard(UserCommand.TRANSPORTATION_RULES, ShelterType.DOG_SHELTER));
@@ -49,7 +49,7 @@ class InlineKeyboardServiceTest {
         assertEquals(HOW_ADOPT_PET_USER_MENU_KEYBOARD_CALL_VOLUNTEER_DOG_SHELTER, out.getHowAdoptPetUserMenuKeyboard(UserCommand.CALL_VOLUNTEER, ShelterType.DOG_SHELTER));
 
         assertEquals(HOW_ADOPT_PET_USER_MENU_KEYBOARD_HOW_ADOPT_PET_CAT_SHELTER, out.getHowAdoptPetUserMenuKeyboard(UserCommand.HOW_ADOPT_PET, ShelterType.CAT_SHELTER));
-        assertEquals(HOW_ADOPT_PET_USER_MENU_KEYBOARD_LIST_OF_ANIMALS_CAT_SHELTER, out.getHowAdoptPetUserMenuKeyboard(UserCommand.LIST_OF_ANIMALS, ShelterType.CAT_SHELTER));
+        assertEquals(HOW_ADOPT_PET_USER_MENU_KEYBOARD_LIST_OF_ANIMALS_CAT_SHELTER, out.getHowAdoptPetUserMenuKeyboard(UserCommand.LIST_OF_PETS, ShelterType.CAT_SHELTER));
         assertEquals(HOW_ADOPT_PET_USER_MENU_KEYBOARD_RULES_FOR_MEETING_CAT_SHELTER, out.getHowAdoptPetUserMenuKeyboard(UserCommand.RULES_FOR_MEETING, ShelterType.CAT_SHELTER));
         assertEquals(HOW_ADOPT_PET_USER_MENU_KEYBOARD_DOCUMENTS_CAT_SHELTER, out.getHowAdoptPetUserMenuKeyboard(UserCommand.DOCUMENTS, ShelterType.CAT_SHELTER));
         assertEquals(HOW_ADOPT_PET_USER_MENU_KEYBOARD_TRANSPORTATION_RULES_CAT_SHELTER, out.getHowAdoptPetUserMenuKeyboard(UserCommand.TRANSPORTATION_RULES, ShelterType.CAT_SHELTER));

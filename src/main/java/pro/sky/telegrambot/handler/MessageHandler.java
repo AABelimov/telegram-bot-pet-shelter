@@ -2,7 +2,6 @@ package pro.sky.telegrambot.handler;
 
 import com.pengrad.telegrambot.model.Message;
 import org.springframework.stereotype.Component;
-import org.springframework.transaction.annotation.Transactional;
 import pro.sky.telegrambot.enums.UserState;
 import pro.sky.telegrambot.enums.VolunteerState;
 import pro.sky.telegrambot.model.User;
@@ -12,9 +11,6 @@ import pro.sky.telegrambot.service.TelegramBotService;
 import pro.sky.telegrambot.service.UserService;
 import pro.sky.telegrambot.service.VolunteerService;
 
-/**
- * This class handles the message object if it is not null
- */
 @Component
 public class MessageHandler {
 
@@ -39,11 +35,6 @@ public class MessageHandler {
         this.messageService = messageService;
     }
 
-    /**
-     * This method determines whether the message came from a user or a volunteer and cals the appropriate handler
-     *
-     * @param message this object represents a message
-     */
     public void handleMessage(Message message) {
         Long id = message.chat().id();
         Volunteer volunteer = volunteerService.getVolunteer(id);
@@ -67,7 +58,6 @@ public class MessageHandler {
         volunteerService.setVolunteerState(id, VolunteerState.START);
     }
 
-    @Transactional
     private void userStart(Long id, Message message) {
         User user = userService.getUser(id);
 

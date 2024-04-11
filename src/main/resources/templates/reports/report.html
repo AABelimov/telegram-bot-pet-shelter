@@ -1,0 +1,92 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+    <link rel="stylesheet" th:href="@{/styles/report-style.css}">
+</head>
+<body>
+<div class="wrapper">
+    <div class="header">
+        <div class="container">
+            <div class="menu-container">
+                <ul class="menu">
+                    <li class="menu__link">
+                        <a th:href="@{/pets/all/all?page=0}">Животные</a>
+                    </li>
+                    <li class="menu__link menu__link_active">
+                        <a th:href="@{'/reports?shelter-type=all&page=0'}">Отчеты</a>
+                    </li>
+                    <li class="menu__link">
+                        <a th:href="@{/probations?page=0}">Испытательные сроки</a>
+                    </li>
+                    <li class="menu__link">
+                        <a th:href="@{/adoptions?page=0}">Семьи</a>
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </div>
+
+    <div class="body">
+        <div class="report-row">
+            <div class="container">
+                <div class="report">
+                    <div class="report__body">
+                        <div class="report__image">
+                            <img th:src="${report.getPhotoPath()}" alt="oops">
+                        </div>
+                        <div class="report__info">
+                            <div class="report__field">
+                                <div class="report__title">Питомец:</div>
+                                <div th:text="${report.getPet().getName()}" class="report__value"></div>
+                            </div>
+                            <div class="report__field">
+                                <div class="report__title">Усыновитель:</div>
+                                <div th:text="${report.getUser().getName()}" class="report__value"></div>
+                            </div>
+                            <div class="report__field">
+                                <div class="report__title">Питание:</div>
+                                <div th:text="${report.getDiet()}" class="report__value"></div>
+                            </div>
+                            <div class="report__field">
+                                <div class="report__title">Самочувствие:</div>
+                                <div th:text="${report.getWellBeing()}" class="report__value"></div>
+                            </div>
+                            <div class="report__field">
+                                <div class="report__title">Привычки:</div>
+                                <div th:text="${report.getChangeInBehavior()}" class="report__value"></div>
+                            </div>
+                            <div class="report__field">
+                                <div class="report__title">Время отправки:</div>
+                                <div th:text="${report.getTimeSendingReport()}" class="report__value"></div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="report__interaction">
+                        <div class="report__action">
+                            <form th:action="@{'/reports/' + ${report.getId()} + '/accept'}" th:method="patch" class="report__form">
+                                <div class="report__button">
+                                    <button type="submit">Принять</button>
+                                </div>
+                            </form>
+                        </div>
+                        <div class="report__action">
+                            <form th:action="@{'/reports/' + ${report.getId()} + '/deny'}" th:method="patch" class="report__form">
+                                <div class="report__textarea">
+                                    <label for="comment"></label>
+                                    <textarea id="comment" type="text" th:name="comment"></textarea>
+                                </div>
+                                <div class="report__button">
+                                    <button type="submit">Не принимать</button>
+                                </div>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+</body>
+</html>

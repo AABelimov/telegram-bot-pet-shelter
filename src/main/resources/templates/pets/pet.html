@@ -1,0 +1,77 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+    <link rel="stylesheet" th:href="@{/styles/pet-style.css}">
+</head>
+<body>
+<div class="wrapper">
+    <div class="header">
+        <div class="container">
+            <div class="menu-container">
+                <ul class="menu">
+                    <li class="menu__link">
+                        <a th:href="@{/pets/all/all?page=0}">Животные</a>
+                    </li>
+                    <li class="menu__link">
+                        <a th:href="@{'/reports?shelter-type=all&page=0'}">Отчеты</a>
+                    </li>
+                    <li class="menu__link">
+                        <a th:href="@{/probations?page=0}">Испытательные сроки</a>
+                    </li>
+                    <li class="menu__link">
+                        <a th:href="@{/adoptions?page=0}">Семьи</a>
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </div>
+
+    <div class="body">
+        <div class="pet-card">
+            <div class="pet-body">
+                <div class="container">
+                    <div class="pet">
+                        <div class="pet__image">
+                            <img th:src="${pet.getPhotoPath()}" alt="oops">
+                        </div>
+                        <div class="pet__info">
+                            <div class="pet__field">
+                                <div class="pet__title">Имя:</div>
+                                <div th:text="${pet.getName()}" class="pet__name"></div>
+                            </div>
+                            <div class="pet__field">
+                                <div class="pet__title">О животном:</div>
+                                <p th:text="${pet.getAboutPet()}" class="pet__about-pet"></p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="button-container">
+                <div class="container">
+                    <div class="button-row">
+                        <div class="button">
+                            <a th:href="@{'/pets/' + ${pet.getId()} + '/edit-form'}">
+                                <button>Изменить</button>
+                            </a>
+                        </div>
+                        <div class="button">
+                            <a th:href="@{'/pets/' + ${pet.getId()} + '/potential-parents'}">
+                                <button>Найти родителя</button>
+                            </a>
+                        </div>
+                        <div class="button">
+                            <form th:action="@{'/pets/' + ${pet.getId()}}" th:method="delete">
+                                <button type="submit">Удалить</button>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+</body>
+</html>

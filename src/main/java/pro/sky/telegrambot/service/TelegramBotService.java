@@ -50,16 +50,6 @@ public class TelegramBotService {
         }
     }
 
-    public void editPhoto(Long chatId, Integer messageId, File photo) {
-        InputMedia<?> inputMedia = new InputMediaPhoto(photo);
-        EditMessageMedia editMessageMedia = new EditMessageMedia(chatId, messageId, inputMedia);
-        BaseResponse baseResponse = telegramBot.execute(editMessageMedia);
-
-        if (!baseResponse.isOk()) {
-            LOGGER.error("Send photo was failed due to: " + baseResponse.description());
-        }
-    }
-
     public void sendInlineKeyboard(Long chatId, String text, InlineKeyboardMarkup inlineKeyboardMarkup) {
         SendMessage sendMessage = new SendMessage(chatId, text).replyMarkup(inlineKeyboardMarkup).disableNotification(true);
         SendResponse sendResponse = telegramBot.execute(sendMessage);

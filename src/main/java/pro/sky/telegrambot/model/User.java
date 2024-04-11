@@ -5,37 +5,19 @@ import javax.persistence.Id;
 import javax.persistence.Table;
 import java.util.Objects;
 
-/**
- * The users table will store users who interacted with the bot
- */
 @Entity
 @Table(name = "users")
 public class User {
 
-    /**
-     * The id will be equal to the telegram user id value
-     */
     @Id
     private Long id;
 
-    /**
-     * Username
-     */
     private String name;
 
-    /**
-     * User phone number
-     */
     private String phoneNumber;
 
-    /**
-     * User selected pet shelter
-     */
     private String selectedShelter;
 
-    /**
-     * Indicator by which the bot determines what stage the user is currently at
-     */
     private String state;
 
     public User() {

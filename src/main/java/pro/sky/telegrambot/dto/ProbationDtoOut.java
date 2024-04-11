@@ -5,6 +5,7 @@ import java.util.Objects;
 
 public class ProbationDtoOut {
 
+    private Long id;
     private UserDtoOut user;
     private PetDtoOut pet;
     private LocalDateTime probationEndDate;
@@ -15,16 +16,26 @@ public class ProbationDtoOut {
 
     }
 
-    public ProbationDtoOut(UserDtoOut user,
+    public ProbationDtoOut(Long id,
+                           UserDtoOut user,
                            PetDtoOut pet,
                            LocalDateTime probationEndDate,
                            LocalDateTime lastReportDate,
                            VolunteerDtoOut volunteer) {
+        this.id = id;
         this.user = user;
         this.pet = pet;
         this.probationEndDate = probationEndDate;
         this.lastReportDate = lastReportDate;
         this.volunteer = volunteer;
+    }
+
+    public Long getId() {
+        return id;
+    }
+
+    public void setId(Long id) {
+        this.id = id;
     }
 
     public UserDtoOut getUser() {

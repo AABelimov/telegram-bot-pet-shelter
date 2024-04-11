@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+    <link rel="stylesheet" th:href="@{/styles/adoption-style.css}">
+</head>
+<body>
+<div class="wrapper">
+    <div class="header">
+        <div class="container">
+            <div class="menu-container">
+                <ul class="menu">
+                    <li class="menu__link">
+                        <a th:href="@{/pets/all/all?page=0}">Животные</a>
+                    </li>
+                    <li class="menu__link">
+                        <a th:href="@{'/reports?shelter-type=all&page=0'}">Отчеты</a>
+                    </li>
+                    <li class="menu__link">
+                        <a th:href="@{/probations?page=0}">Испытательные сроки</a>
+                    </li>
+                    <li class="menu__link menu__link_active">
+                        <a th:href="@{/adoptions?page=0}">Семьи</a>
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </div>
+
+    <div class="body">
+        <div class="adoptions">
+            <div class="container">
+                <div class="adoption-container">
+                    <div th:each="adoption : ${adoptions}" class="adoption-item">
+                        <div class="adoption-item__image">
+                            <img th:src="${adoption.getPet().getPhotoPath()}" alt="oops">
+                        </div>
+                        <div class="adoption-item__info">
+                            <div class="adoption-item__field">
+                                <span class="adoption-item__title">Имя родителя:</span>
+                                <span th:text="${adoption.getUser().getName()}" class="adoption-item__value"></span>
+                            </div>
+                            <div class="adoption-item__field">
+                                <span class="adoption-item__title">Имя питомца:</span>
+                                <span th:text="${adoption.getPet().getName()}" class="adoption-item__value"></span>
+                            </div>
+                            <div class="adoption-item__field">
+                                <span class="adoption-item__title">Дата усыновления:</span>
+                                <span th:text="${adoption.getAdoptionTime()}" class="adoption-item__value"></span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div th:if="${adoptions.size()} == 0" class="empty-adoption-list">
+                    <span>Усыновленных животных пока нет</span>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+</body>
+</html>

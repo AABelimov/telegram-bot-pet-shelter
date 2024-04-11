@@ -9,10 +9,8 @@ import pro.sky.telegrambot.enums.VolunteerState;
 import pro.sky.telegrambot.model.*;
 import pro.sky.telegrambot.service.*;
 
-/**
- * This class handles commands coming from the volunteer
- */
 @Component
+@Transactional
 public class VolunteerTextMessageHandler {
 
     private final VolunteerService volunteerService;
@@ -39,7 +37,6 @@ public class VolunteerTextMessageHandler {
         this.overdueReportService = overdueReportService;
     }
 
-    @Transactional
     public void sendMessageToUser(Long volunteerId, String text) {
         Long userId = volunteerService.getUserIdByVolunteerId(volunteerId);
 
@@ -53,10 +50,9 @@ public class VolunteerTextMessageHandler {
         }
     }
 
-    @Transactional
     public void handleStart(Long volunteerId, String text, Integer messageId) {
         if ("/start".equals(text)) {
-            int countReports = petReportService.getReportsByVolunteerIdAndState(volunteerId, PetReportState.WAITING_FOR_VERIFICATION).size();
+            int countReports = petReportService.getReports(volunteerId, PetReportState.WAITING_FOR_VERIFICATION).size();
             int countOverdueReports = overdueReportService.getOverdueReportsByVolunteerId(volunteerId).size();
             int countProbation =  probationService.getProbationListByVolunteerIdAndState(volunteerId, ProbationState.ON_THE_DECISION).size();
             Volunteer volunteer = volunteerService.getVolunteer(volunteerId);
@@ -74,7 +70,6 @@ public class VolunteerTextMessageHandler {
         }
     }
 
-    @Transactional
     public void handleCommentaryOnTheReport(Long volunteerId, String text) {
         PetReport petReport = petReportService.getReportByVolunteerIdAndState(volunteerId, PetReportState.WAITING_FOR_COMMENT);
         User user = petReport.getUser();

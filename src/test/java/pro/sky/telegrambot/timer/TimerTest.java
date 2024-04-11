@@ -74,7 +74,7 @@ class TimerTest {
                         " Если сегодня его не будет, то завтра с вами свяжется волонтер", OVERDUE_REPORT_2.getPet().getName())));
 
         verify(telegramBotService).sendMessage(eq(OVERDUE_REPORT_3.getUser().getId()),
-                eq("Скоро с вами свяжется волонтер из-за недосданных отчетов"));
+                eq("Скоро с вами свяжется волонтер из-за не досданных отчетов"));
     }
 
 }

@@ -1,11 +1,13 @@
 package pro.sky.telegrambot.service;
 
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
 import pro.sky.telegrambot.enums.ShelterType;
 import pro.sky.telegrambot.enums.UserState;
 import pro.sky.telegrambot.model.User;
 import pro.sky.telegrambot.repository.UserRepository;
+
+import java.util.List;
 
 @Service
 public class UserService {
@@ -28,6 +30,13 @@ public class UserService {
         return userRepository.findById(userId).orElse(null);
     }
 
+    public List<User> getUsersByPhoneNumber(String phone) {
+        if (phone == null) {
+            return userRepository.findAll(Pageable.ofSize(10)).getContent();
+        }
+        return userRepository.findAllByPhoneNumberContaining(phone, Pageable.ofSize(10));
+    }
+
     public UserState getUserState(Long userId) {
         User user = getUser(userId);
         if (user == null) {
@@ -36,17 +45,26 @@ public class UserService {
         return UserState.valueOf(user.getState());
     }
 
-    @Transactional
+    public String getSelectedShelter(Long userId) {
+        User user = getUser(userId);
+        return user.getSelectedShelter();
+    }
+
     public void setUserState(Long userId, UserState userState) {
         User user = getUser(userId);
         user.setState(userState.name());
         userRepository.save(user);
     }
 
-    @Transactional
     public void setSelectedShelter(Long userId, ShelterType shelterType) {
         User user = getUser(userId);
         user.setSelectedShelter(shelterType.name());
+        userRepository.save(user);
+    }
+
+    public void setPhoneNumber(Long userId, String phoneNumber) {
+        User user = getUser(userId);
+        user.setPhoneNumber(phoneNumber);
         userRepository.save(user);
     }
 
@@ -56,17 +74,5 @@ public class UserService {
 
     public void stopConversation(Long userId) {
         setUserState(userId, UserState.MAIN_MENU);
-    }
-
-    public String getSelectedShelter(Long userId) {
-        User user = getUser(userId);
-        return user.getSelectedShelter();
-    }
-
-    @Transactional
-    public void setPhoneNumber(Long userId, String phoneNumber) {
-        User user = getUser(userId);
-        user.setPhoneNumber(phoneNumber);
-        userRepository.save(user);
     }
 }

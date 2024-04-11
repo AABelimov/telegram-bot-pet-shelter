@@ -56,9 +56,9 @@ public class ProbationConstants {
     ));
     public static final ProbationDtoIn PROBATION_DTO_IN_1 = new ProbationDtoIn(USER_ID_1, PET_ID_1, VOLUNTEER_ID_1);
     public static final ProbationDtoIn PROBATION_DTO_IN_2 = new ProbationDtoIn(USER_ID_2, PET_ID_2, VOLUNTEER_ID_2);
-    public static final ProbationDtoOut PROBATION_DTO_OUT_1 = new ProbationDtoOut(USER_DTO_OUT_1, PET_DTO_OUT_1,
+    public static final ProbationDtoOut PROBATION_DTO_OUT_1 = new ProbationDtoOut(PROBATION_ID_1, USER_DTO_OUT_1, PET_DTO_OUT_1,
             PROBATION_END_DATE_1, PROBATION_LAST_REPORT_DATE_1, VOLUNTEER_DTO_OUT_1);
-    public static final ProbationDtoOut PROBATION_DTO_OUT_2 = new ProbationDtoOut(USER_DTO_OUT_2, PET_DTO_OUT_2,
+    public static final ProbationDtoOut PROBATION_DTO_OUT_2 = new ProbationDtoOut(PROBATION_ID_2, USER_DTO_OUT_2, PET_DTO_OUT_2,
             PROBATION_END_DATE_2, PROBATION_LAST_REPORT_DATE_2, VOLUNTEER_DTO_OUT_2);
     public static final ProbationDtoIn NOT_FOUNT_PET_ID_PROBATION_DTO_IN = new ProbationDtoIn(USER_ID_1, NOT_FOUND_PET_ID, VOLUNTEER_ID_1);
     public static final ProbationDtoIn NOT_FOUNT_USER_ID_PROBATION_DTO_IN = new ProbationDtoIn(NOT_FOUND_USER_ID, PET_ID_1, VOLUNTEER_ID_1);

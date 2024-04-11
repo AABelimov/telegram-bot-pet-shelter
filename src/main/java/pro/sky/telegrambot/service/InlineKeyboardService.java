@@ -11,15 +11,9 @@ import pro.sky.telegrambot.model.Pet;
 import java.util.ArrayList;
 import java.util.List;
 
-/**
- * This service create inline keyboards
- */
 @Service
 public class InlineKeyboardService {
 
-    /**
-     * This method create inline keyboard for choose shelter menu
-     */
     public InlineKeyboardMarkup getChooseShelterUserMenuKeyboard() {
         InlineKeyboardButton catButton = new InlineKeyboardButton("Приют с кошками")
                 .callbackData(ShelterType.CAT_SHELTER.name());
@@ -30,9 +24,6 @@ public class InlineKeyboardService {
         return new InlineKeyboardMarkup(catButton, dogButton);
     }
 
-    /**
-     * This method create inline keyboard for main menu
-     */
     public InlineKeyboardMarkup getUserMainMenuKeyboard() {
         InlineKeyboardButton infoAboutShelterButton = new InlineKeyboardButton("Информация о приюте")
                 .callbackData(UserCommand.INFO_ABOUT_SHELTER.name());
@@ -56,9 +47,6 @@ public class InlineKeyboardService {
                 .addRow(backButton);
     }
 
-    /**
-     * This method create inline keyboard for info about shelter menu
-     */
     public InlineKeyboardMarkup getInfoAboutShelterUserMenuKeyboard(UserCommand userCommand) {
         InlineKeyboardMarkup inlineKeyboardMarkup = new InlineKeyboardMarkup();
 
@@ -74,7 +62,7 @@ public class InlineKeyboardService {
         InlineKeyboardButton registrationPassButton = new InlineKeyboardButton("Контакты для оформления пропуска")
                 .callbackData(UserCommand.REGISTRATION_PASS.name());
 
-        InlineKeyboardButton safetyPrecautions = new InlineKeyboardButton("Рекомендации по технике беопасности")
+        InlineKeyboardButton safetyPrecautions = new InlineKeyboardButton("Рекомендации по технике безопасности")
                 .callbackData(UserCommand.SAFETY_PRECAUTIONS.name());
 
         InlineKeyboardButton userContactsButton = new InlineKeyboardButton("Оставить контакты для связи")
@@ -127,7 +115,7 @@ public class InlineKeyboardService {
         InlineKeyboardMarkup inlineKeyboardMarkup = new InlineKeyboardMarkup();
 
         InlineKeyboardButton listOfAnimalsButton = new InlineKeyboardButton("Список животных")
-                .callbackData(UserCommand.LIST_OF_ANIMALS.name());
+                .callbackData(UserCommand.LIST_OF_PETS.name());
 
         InlineKeyboardButton rulesForMeetingButton = new InlineKeyboardButton("Правила знакомства с животным")
                 .callbackData(UserCommand.RULES_FOR_MEETING.name());
@@ -138,13 +126,13 @@ public class InlineKeyboardService {
         InlineKeyboardButton transportationRulesButton = new InlineKeyboardButton("Рекомендации по транспортировке")
                 .callbackData(UserCommand.TRANSPORTATION_RULES.name());
 
-        InlineKeyboardButton homeImprovementForSmallPetButton = new InlineKeyboardButton("Обустойство дома для молодого животного")
+        InlineKeyboardButton homeImprovementForSmallPetButton = new InlineKeyboardButton("Обустройство дома для молодого животного")
                 .callbackData(UserCommand.HOME_IMPROVEMENT_FOR_SMALL_PET.name());
 
-        InlineKeyboardButton homeImprovementForBigPetButton = new InlineKeyboardButton("Обустойство дома для взрослого животного")
+        InlineKeyboardButton homeImprovementForBigPetButton = new InlineKeyboardButton("Обустройство дома для взрослого животного")
                 .callbackData(UserCommand.HOME_IMPROVEMENT_FOR_BIG_PET.name());
 
-        InlineKeyboardButton homeImprovementForPetWithDisabilitiesButton = new InlineKeyboardButton("Обустойство дома для животного инвалида")
+        InlineKeyboardButton homeImprovementForPetWithDisabilitiesButton = new InlineKeyboardButton("Обустройство дома для животного инвалида")
                 .callbackData(UserCommand.HOME_IMPROVEMENT_FOR_PET_WITH_DISABILITIES.name());
 
         InlineKeyboardButton adviceFromDogHandlersButton = new InlineKeyboardButton("Советы от кинолога")
@@ -187,7 +175,7 @@ public class InlineKeyboardService {
         }
 
         switch (userCommand) {
-            case LIST_OF_ANIMALS:
+            case LIST_OF_PETS:
                 inlineKeyboardButtons.remove(listOfAnimalsButton);
                 break;
             case RULES_FOR_MEETING:

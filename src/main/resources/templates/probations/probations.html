@@ -1,0 +1,75 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+    <link rel="stylesheet" th:href="@{/styles/probation-style.css}">
+</head>
+<body>
+<div class="wrapper">
+    <div class="header">
+        <div class="container">
+            <div class="menu-container">
+                <ul class="menu">
+                    <li class="menu__link">
+                        <a th:href="@{/pets/all/all?page=0}">Животные</a>
+                    </li>
+                    <li class="menu__link">
+                        <a th:href="@{'/reports?shelter-type=all&page=0'}">Отчеты</a>
+                    </li>
+                    <li class="menu__link menu__link_active">
+                        <a th:href="@{/probations?page=0}">Испытательные сроки</a>
+                    </li>
+                    <li class="menu__link">
+                        <a th:href="@{/adoptions?page=0}">Семьи</a>
+                    </li>
+                </ul>
+
+                <ul class="menu">
+                    <li class="menu__link" th:classappend="${state == null} ? 'menu_' + '_link_active'">
+                        <a th:href="@{/probations?page=0}">Все</a>
+                    </li>
+                    <li class="menu__link" th:classappend="${state == 'coming-to-end'} ? 'menu_' + '_link_active'">
+                        <a th:href="@{/probations/coming-to-end?page=0}">Принять решение</a>
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </div>
+
+    <div class="body">
+        <div class="probations">
+            <div class="container">
+                <div class="probation-container">
+                    <div th:each="probation : ${probations}" class="probation-item">
+                        <div class="probation-item__image">
+                            <img th:src="${probation.getPet().getPhotoPath()}" alt="oops">
+                        </div>
+                        <div class="probation-item__info">
+                            <div class="probation-item__field">
+                                <div class="probation-item__title">Питомец:</div>
+                                <div th:text="${probation.getPet().getName()}" class="probation-item__value"></div>
+                            </div>
+                            <div class="probation-item__field">
+                                <div class="probation-item__title">Усыновитель:</div>
+                                <div th:text="${probation.getUser().getName()}" class="probation-item__value"></div>
+                            </div>
+                            <div class="probation-item__field">
+                                <div class="probation-item__title">Конец срока:</div>
+                                <div th:text="${probation.getProbationEndDate()}" class="probation-item__value"></div>
+                            </div>
+                        </div>
+                        <div class="probation-item__button">
+                            <a th:href="@{'/probations/' + ${probation.getId()}}" th:text="'Принять решение'"></a>
+                        </div>
+                    </div>
+                </div>
+                <div th:if="${probations.size()} == 0" class="empty-probation-list">
+                    <span>Заканчивающихся испытательных сроков нет</span>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+</body>
+</html>

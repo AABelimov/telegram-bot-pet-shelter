@@ -44,14 +44,14 @@ public class InlineKeyboardMarkupConstants {
     public static final InlineKeyboardButton REGISTRATION_PASS_BUTTON = new InlineKeyboardButton("Контакты для оформления пропуска")
             .callbackData(UserCommand.REGISTRATION_PASS.name());
 
-    public static final InlineKeyboardButton SAFETY_PRECAUTIONS = new InlineKeyboardButton("Рекомендации по технике беопасности")
+    public static final InlineKeyboardButton SAFETY_PRECAUTIONS = new InlineKeyboardButton("Рекомендации по технике безопасности")
             .callbackData(UserCommand.SAFETY_PRECAUTIONS.name());
 
     public static final InlineKeyboardButton USER_CONTACTS_BUTTON = new InlineKeyboardButton("Оставить контакты для связи")
             .callbackData(UserCommand.SHARE_CONTACTS.name());
 
     public static final InlineKeyboardButton LIST_OF_ANIMALS_BUTTON = new InlineKeyboardButton("Список животных")
-            .callbackData(UserCommand.LIST_OF_ANIMALS.name());
+            .callbackData(UserCommand.LIST_OF_PETS.name());
 
     public static final InlineKeyboardButton RULES_FOR_MEETING_BUTTON = new InlineKeyboardButton("Правила знакомства с животным")
             .callbackData(UserCommand.RULES_FOR_MEETING.name());
@@ -62,13 +62,13 @@ public class InlineKeyboardMarkupConstants {
     public static final InlineKeyboardButton TRANSPORTATION_RULES_BUTTON = new InlineKeyboardButton("Рекомендации по транспортировке")
             .callbackData(UserCommand.TRANSPORTATION_RULES.name());
 
-    public static final InlineKeyboardButton HOME_IMPROVEMENT_FOR_SMALL_PET_BUTTON = new InlineKeyboardButton("Обустойство дома для молодого животного")
+    public static final InlineKeyboardButton HOME_IMPROVEMENT_FOR_SMALL_PET_BUTTON = new InlineKeyboardButton("Обустройство дома для молодого животного")
             .callbackData(UserCommand.HOME_IMPROVEMENT_FOR_SMALL_PET.name());
 
-    public static final InlineKeyboardButton HOME_IMPROVEMENT_FOR_BIG_PET_BUTTON = new InlineKeyboardButton("Обустойство дома для взрослого животного")
+    public static final InlineKeyboardButton HOME_IMPROVEMENT_FOR_BIG_PET_BUTTON = new InlineKeyboardButton("Обустройство дома для взрослого животного")
             .callbackData(UserCommand.HOME_IMPROVEMENT_FOR_BIG_PET.name());
 
-    public static final InlineKeyboardButton HOME_IMPROVEMENT_FOR_PET_WITH_DISABILITIES_BUTTON = new InlineKeyboardButton("Обустойство дома для животного инвалида")
+    public static final InlineKeyboardButton HOME_IMPROVEMENT_FOR_PET_WITH_DISABILITIES_BUTTON = new InlineKeyboardButton("Обустройство дома для животного инвалида")
             .callbackData(UserCommand.HOME_IMPROVEMENT_FOR_PET_WITH_DISABILITIES.name());
 
     public static final InlineKeyboardButton ADVICE_FROM_DOG_HANDLERS_BUTTON = new InlineKeyboardButton("Советы от кинолога")

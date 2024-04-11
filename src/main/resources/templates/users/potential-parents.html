@@ -1,0 +1,93 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+    <link rel="stylesheet" th:href="@{/styles/user-style.css}">
+</head>
+<body>
+<div class="wrapper">
+    <div class="header">
+        <div class="container">
+            <div class="menu-container">
+                <ul class="menu">
+                    <li class="menu__link">
+                        <a th:href="@{/pets/all/all?page=0}">Животные</a>
+                    </li>
+                    <li class="menu__link">
+                        <a th:href="@{'/reports?shelter-type=all&page=0'}">Отчеты</a>
+                    </li>
+                    <li class="menu__link">
+                        <a th:href="@{/templates/probations?page=0}">Испытательные сроки</a>
+                    </li>
+                    <li class="menu__link">
+                        <a th:href="@{/templates/adoptions?page=0}">Семьи</a>
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </div>
+
+    <div class="body">
+        <div class="search">
+            <div class="container">
+                <form th:action="@{'/pets/' + ${id} + '/potential-parents'}" class="search-form">
+                    <div class="search-form__field">
+                        <label>
+                            <input type="text" th:name="phone" class="search-form__text-input"/>
+                        </label>
+                    </div>
+                    <div class="search-form__button">
+                        <button type="submit">Найти</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+        <div class="users">
+            <div class="container">
+                <div class="user-container">
+                    <div th:each="parent : ${parents}" class="user-card">
+                        <div class="user-card__info">
+                            <div class="user-card__field">
+                                <div class="user-card__title">
+                                    <span>Имя:</span>
+                                </div>
+                                <div class="user-card__value">
+                                    <div th:text="${parent.getName()}"></div>
+                                </div>
+                            </div>
+                            <div class="user-card__field">
+                                <div class="user-card__title">
+                                    <span>Номер телефона:</span>
+                                </div>
+                                <div class="user-card__value">
+                                    <div th:text="${parent.getPhoneNumber()}"></div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="select-volunteer">
+                            <form th:action="@{/probations}" th:object="${probation}" method="post" class="form-select-volunteer">
+                                <input type="hidden" th:value="${parent.getId()}" th:name="userId"/>
+                                <input type="hidden" th:value="${petId}" th:name="petId"/>
+                                <div class="form-select-volunteer__field">
+                                    <label for="volunteer" class="form-select-volunteer__title">Выберете волонтера:</label>
+                                    <select th:name="volunteerId" id="volunteer" class="form-select-volunteer__value">
+                                        <option th:each="volunteer : ${volunteers}" th:value="${volunteer.getId()}" th:text="${volunteer.getName()}"></option>
+                                    </select>
+                                </div>
+                                <div class="form-select-volunteer__button">
+                                    <button type="submit">Выбрать</button>
+                                </div>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+                <div th:if="${parents.size()} == 0" class="empty-user-list">
+                    <span>Кандитатов не нашлось</span>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+</body>
+</html>
